@@ -96,7 +96,7 @@ public static void test(){
 //	product.setProductRecommend(productRecommend);
 //	product.setRecommendContent(recommendContent);
 //	product.setTransportationType(transportationType);
-//	product.setVisaList(visaList);111
+//	product.setVisaList(visaList);
 	
 	
 	
