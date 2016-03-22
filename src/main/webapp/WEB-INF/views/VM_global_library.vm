@@ -1,0 +1,10 @@
+#macro(ShowException $throwable )
+    $!throwable.toString();
+    #foreach($stackTrace in $throwable.getStackTrace())
+        $stackTrace;<br>
+    #end
+    <br><br>
+    #if($throwable.getCause())
+        #ShowException($throwable.getCause())
+    #end
+#end

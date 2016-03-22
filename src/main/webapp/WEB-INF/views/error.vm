@@ -1,0 +1,11 @@
+<!doctype  html>
+<html>
+   <head>
+	<meta charset="utf-8" />
+	<title>出错了</title>
+   </head>
+   <body id="scroll">
+		<h1 class="title_404">提示：您访问的页面出问题了，请咨询管理员。</h1>
+		<p>#ShowException($exception)</p>
+   </body>
+</html>

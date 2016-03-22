@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <display-name>travel</display-name>
+  <context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>travel</param-value>
+	</context-param>
+  <context-param>
+    <param-name>log4jConfigLocation</param-name>
+    <param-value>/WEB-INF/classes/properties/log4j.properties</param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+  </listener>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+			classpath:spring/applicationContext*.xml
+	</param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>travel</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring/travel-servlet.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>travel</servlet-name>
+    <url-pattern>*.in</url-pattern>
+  </servlet-mapping>
+  <!-- 字符集 -->
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <!-- 登录 -->
+  <!-- <filter>  
+    <filter-name>loginFilter</filter-name>  
+    <filter-class>com.travel.common.filter.LoginFilter</filter-class>  
+  </filter>  
+  <filter-mapping>  
+    <filter-name>loginFilter</filter-name>  
+    <url-pattern>*.in</url-pattern>  
+  </filter-mapping> -->
+  <!-- 安全 -->
+  <filter>  
+    <filter-name>xssFilter</filter-name>  
+    <filter-class>com.travel.common.filter.XSSCheckFilter </filter-class>  
+    <init-param>
+    	<description>Filtered exception script</description>
+    	<param-name>errorPath</param-name>
+    	<param-value>/error.in</param-value>
+    </init-param>
+    <init-param>
+    	<description>Do not need to filter the script URL</description>
+    	<param-name>excludePaths</param-name>
+    	<param-value></param-value>
+    </init-param>
+  </filter> 
+  <filter-mapping>  
+    <filter-name>xssFilter</filter-name>  
+    <url-pattern>*.in</url-pattern>  
+  </filter-mapping>
+  <session-config>
+    <session-timeout>1000</session-timeout>
+  </session-config>
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/error.in</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/error.in</location>
+  </error-page>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/error.in</location>
+  </error-page>
+  <welcome-file-list>
+    <welcome-file>/index.jsp</welcome-file>
+  </welcome-file-list>
+  <distributable/>
+</web-app>
