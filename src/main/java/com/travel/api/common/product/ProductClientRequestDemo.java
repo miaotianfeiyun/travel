@@ -1,7 +1,6 @@
 package com.travel.api.common.product;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.travel.api.common.base.ProductOpType;
@@ -104,6 +103,6 @@ public static void test(){
 	client.setProduct(product);
 	SellingSet sellingSet=new SellingSet();
 	client.setSellingSet(sellingSet);
-	String response=client.invoke(client);
+//	String response=client.invoke(client);
 }
 }
