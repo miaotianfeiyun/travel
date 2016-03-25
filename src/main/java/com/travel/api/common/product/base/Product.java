@@ -56,11 +56,6 @@ public class Product implements Serializable{
 	*/ 
 	private String brandName;
 	
-	/** 
-	* @Fields productRecommend : 产品推荐信息
-	* @date 2016年3月14日 下午5:17:13 
-	*/ 
-	private String productRecommend;
 	
 	/** 
 	* @Fields descriptionToCtripOperator : 给携程OP展示的操作注意事项 (此项只在对携程平台时必填)
@@ -92,10 +87,16 @@ public class Product implements Serializable{
 	private TransportationType transportationType;
 	
 	/** 
-	* @Fields recommendContent : 产品推荐信息 可以为多条
+	* @Fields recommendContent : 产品条款内容  
 	* @date 2016年3月15日 上午10:24:28 
 	*/ 
-	private List<String> recommendContent;
+	private String recommendContent;
+	
+	/** 
+	* @Fields productRecommend : 产品推荐信息 最多三条
+	* @date 2016年3月14日 下午5:17:13 
+	*/ 
+	private List<String> productRecommendList;
 	
 	/** 
 	* @Fields isNeedIDCard : 是否需要证件号预定，false-不需要，true-需要
@@ -134,6 +135,22 @@ public class Product implements Serializable{
 	* @date 2016年3月18日 下午4:15:43 
 	*/ 
 	private List<Inventory> InventoryList ;
+	
+	/** 
+	* @Fields IncludeExpense : 费用包含，最多一条，每条不超过4000个字符
+	* @date 2016年3月25日 下午4:35:50 
+	*/ 
+	private String IncludeExpense;
+	/** 
+	* @Fields ExcludeExpense : 自理费用说明，最多一条，每条不超过4000个字符 
+	* @date 2016年3月25日 下午4:36:01 
+	*/ 
+	private String ExcludeExpense;
+	/** 
+	* @Fields ChildPriceDefination : 儿童价定义，最多一条，每条不超过4000个字符 
+	* @date 2016年3月25日 下午4:36:03 
+	*/ 
+	private String ChildPriceDefination;
 
 	public List<Inventory> getInventoryList() {
 		return InventoryList;
@@ -184,12 +201,13 @@ public class Product implements Serializable{
 		this.brandName = brandName;
 	}
 
-	public String getProductRecommend() {
-		return productRecommend;
+
+	public List<String> getProductRecommendList() {
+		return productRecommendList;
 	}
 
-	public void setProductRecommend(String productRecommend) {
-		this.productRecommend = productRecommend;
+	public void setProductRecommendList(List<String> productRecommendList) {
+		this.productRecommendList = productRecommendList;
 	}
 
 	public String getDescriptionToCtripOperator() {
@@ -231,12 +249,11 @@ public class Product implements Serializable{
 	public void setTransportationType(TransportationType transportationType) {
 		this.transportationType = transportationType;
 	}
-
-	public List<String> getRecommendContent() {
+	public String getRecommendContent() {
 		return recommendContent;
 	}
 
-	public void setRecommendContent(List<String> recommendContent) {
+	public void setRecommendContent(String recommendContent) {
 		this.recommendContent = recommendContent;
 	}
 
@@ -286,4 +303,29 @@ public class Product implements Serializable{
 	public void setProductPattern(ProductPattern productPattern) {
 		this.productPattern = productPattern;
 	}
+
+	public String getIncludeExpense() {
+		return IncludeExpense;
+	}
+
+	public void setIncludeExpense(String includeExpense) {
+		IncludeExpense = includeExpense;
+	}
+
+	public String getExcludeExpense() {
+		return ExcludeExpense;
+	}
+
+	public void setExcludeExpense(String excludeExpense) {
+		ExcludeExpense = excludeExpense;
+	}
+
+	public String getChildPriceDefination() {
+		return ChildPriceDefination;
+	}
+
+	public void setChildPriceDefination(String childPriceDefination) {
+		ChildPriceDefination = childPriceDefination;
+	}
+	
 }

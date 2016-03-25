@@ -25,6 +25,45 @@ public class Visa {
 
 	@ElementList(required=false)
 	private List<VisaDetail> VisaList ;
+	
+	/** 
+	* @Fields description : 签证须知，每条不超过4000个字符 
+	* @date 2016年3月25日 下午4:29:01 
+	*/ 
+	private String  description;
+
+	public boolean isIsNeedDeposit() {
+		return IsNeedDeposit;
+	}
+
+	public void setIsNeedDeposit(boolean isNeedDeposit) {
+		IsNeedDeposit = isNeedDeposit;
+	}
+
+	public VisaDeliveryAddress getVisaDeliveryAddress() {
+		return VisaDeliveryAddress;
+	}
+
+	public void setVisaDeliveryAddress(VisaDeliveryAddress visaDeliveryAddress) {
+		VisaDeliveryAddress = visaDeliveryAddress;
+	}
+
+	public List<VisaDetail> getVisaList() {
+		return VisaList;
+	}
+
+	public void setVisaList(List<VisaDetail> visaList) {
+		VisaList = visaList;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 
 
 }

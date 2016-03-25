@@ -62,6 +62,19 @@ public class BookingInfo {
 	* @date 2016年3月15日 下午1:49:39 
 	*/ 
 	private boolean IsHolidayWork;
+	
+	/** 
+	* @Fields Description : 预定须知，每条不超过4000个字符
+	* @date 2016年3月25日 下午4:30:25 
+	*/ 
+	private String Description;
+	
+	public String getDescription() {
+		return Description;
+	}
+	public void setDescription(String description) {
+		Description = description;
+	}
 	public String getProductContact() {
 		return ProductContact;
 	}

@@ -14,20 +14,10 @@ import org.simpleframework.xml.Element;
 
 public class VisaDetail {
 	@Element(required=false)
-	private String VendorVisaCode ;
-	
-	
-	public String getVendorVisaCode() {
-		return VendorVisaCode;
-	 }
-	
-	public void setVendorVisaCode(String vendorvisacode) {
-	VendorVisaCode = vendorvisacode;
-	}
+	private String VisaCode ;
 	
 	@Element(required=false)
 	private String VisaName ;
-	
 	
 	public String getVisaName() {
 		return VisaName;
@@ -36,4 +26,13 @@ public class VisaDetail {
 	public void setVisaName(String visaname) {
 	VisaName = visaname;
 	}
+
+	public String getVisaCode() {
+		return VisaCode;
+	}
+
+	public void setVisaCode(String visaCode) {
+		VisaCode = visaCode;
+	}
+	
 }
