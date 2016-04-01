@@ -6,7 +6,7 @@ import org.simpleframework.xml.Element;
  * <p>Title: PackageInventoryInfo.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
  * <p>Description:套餐库存信息 </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月17日 
  * @version :1.0

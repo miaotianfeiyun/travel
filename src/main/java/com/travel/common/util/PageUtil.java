@@ -14,7 +14,7 @@ import com.github.miemiedev.mybatis.paginator.domain.PageBounds;
 * <p>Title: PageCommon.java</p>
 * <p>Package Name: com.drolay.common.util</p>  
 * <p>Description:分页公共类 </p> 
-* <p>Company:www.drolay.com</p> 
+*  
 * @author liujq
 * @date  :2015年7月3日 
 * @version :1.0

@@ -12,7 +12,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
  * <p>Title: Base64Util.java</p>
  * <p>Package Name: com.drolay.common.util</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2015年6月24日 
  * @version :1.0

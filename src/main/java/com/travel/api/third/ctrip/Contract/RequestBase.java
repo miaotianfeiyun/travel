@@ -17,12 +17,12 @@ public class RequestBase {
 	{
 		if (RequestHeader == null)
 				this.RequestHeader = new RequestHeaderType();
-		this.RequestHeader.SetVendorId(vendorId);
+		this.RequestHeader.setVendorId(vendorId);
 	}
 	public void SetVendorToken(String vendorToken)
 	{
 		if (RequestHeader == null)
 			this.RequestHeader = new RequestHeaderType();
-		this.RequestHeader.SetVendorToken(vendorToken);
+		this.RequestHeader.setVendorToken(vendorToken);
 	}
 }

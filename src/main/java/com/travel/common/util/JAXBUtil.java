@@ -14,7 +14,7 @@ import javax.xml.bind.Unmarshaller;
  * <p>Title: JAXBUtil.java</p>
  * <p>Package Name: com.drolay.common.util</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2015年7月22日 
  * @version :1.0

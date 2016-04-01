@@ -11,7 +11,7 @@ import com.mongodb.MongoClient;
  * <p>Title: SpringMongoConfig.java</p>
  * <p>Package Name: com.drolay.common.config</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年1月22日 
  * @version :1.0

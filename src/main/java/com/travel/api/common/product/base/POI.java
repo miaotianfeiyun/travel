@@ -7,7 +7,7 @@ import org.simpleframework.xml.Root;
  * <p>Title: POI.java</p>
  * <p>Package Name: com.travel.api.common.product.base</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月15日 
  * @version :1.0

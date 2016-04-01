@@ -6,7 +6,7 @@ import java.util.List;
  * <p>Title: BaseMapper.java</p>
  * <p>Package Name: com.travel.common.mapper</p>  
  * <p>Description:基础接口类</p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月11日 
  * @version :1.0

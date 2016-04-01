@@ -1,10 +1,15 @@
 package com.travel.api.common.base;
 
+import net.sf.json.JSONObject;
+
+import org.apache.commons.lang3.StringUtils;
+
+
 /** 
  * <p>Title: OTAResponse.java</p>
  * <p>Package Name: com.travel.api.common.base</p>  
  * <p>Description:平台各自的错误返回</p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月25日 
  * @version :1.0
@@ -24,5 +29,16 @@ public OTAType getOtaType() {
 public void setOtaType(OTAType otaType) {
 	this.otaType = otaType;
 }
-
+public  String instance(String orgStr,JSONObject jsonObj){
+	StringBuffer sb=new StringBuffer();
+	if(jsonObj!=null){
+		String errorCode=(String) jsonObj.get("errorMsg");
+		if(StringUtils.isNotBlank(errorCode)){
+			sb.append(orgStr);
+			sb.append(";");
+			sb.append(errorCode);
+		}
+	}
+	return sb.toString();
+}
 }

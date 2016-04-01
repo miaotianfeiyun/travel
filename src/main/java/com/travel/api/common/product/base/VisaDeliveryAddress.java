@@ -6,7 +6,7 @@ import org.simpleframework.xml.Element;
  * <p>Title: VisaDeliveryAddress.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月15日 
  * @version :1.0

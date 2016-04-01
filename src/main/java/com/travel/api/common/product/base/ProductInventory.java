@@ -8,7 +8,7 @@ import org.simpleframework.xml.ElementList;
  * <p>Title: ProductInventory.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月17日 
  * @version :1.0

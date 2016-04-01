@@ -14,13 +14,15 @@ import com.travel.common.util.HttpTookit;
  * <p>Title: ProductClient.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月18日 
  * @version :1.0
  */
 
 public class ProductClient {
+	private static final String host="http://localhost:8080";
+	private static final String productDealUrl="/v1/product/addOrModify.in";
 	/** 
 	* @Fields appKey : 连接接口平台的key
 	* @date 2016年3月21日 下午6:07:35 
@@ -31,7 +33,6 @@ public class ProductClient {
 	* @date 2016年3月21日 下午6:07:56 
 	*/ 
 	private String appSecret;
-	private static final String productDealUrl="/v1/product/addOrModify.in";
 	/** 
 	* @Fields thirdOTAList : 第三方平台合作key和secret列表
 	* @date 2016年3月21日 下午2:03:41 
@@ -67,7 +68,7 @@ public class ProductClient {
 	}
 	public String invoke(ProductClient client){
 		client.setToken(Sign.signature(JsonUtil.toJson(client),getAppKey(), getAppSecret()));
-		return HttpTookit.doPost("/travel"+productDealUrl, Sign.getRequestMap(JsonUtil.toJson(client)), HttpTookit.CHARSET, false);
+		return HttpTookit.postStream(host+"/travel"+productDealUrl, JsonUtil.toJson(client), HttpTookit.CHARSET, false);
 	}
 	
 	public Product getProduct() {

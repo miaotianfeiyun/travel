@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
  * <p>Title: Sign.java</p>
  * <p>Package Name: com.travel.api.common</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月21日 
  * @version :1.0

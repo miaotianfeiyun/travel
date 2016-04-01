@@ -14,7 +14,7 @@ import com.travel.api.common.base.TransportationType;
  * <p>Title: Product.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月14日 
  * @version :1.0
@@ -114,7 +114,7 @@ public class Product implements Serializable{
 	* @Fields VisaList : 签证信息列表
 	* @date 2016年3月15日 下午3:15:45 
 	*/ 
-	private List<Visa> VisaList;
+	private Visa visaInfo;
 	
 	/** 
 	* @Fields BreachClauseList : 违约条款
@@ -151,6 +151,34 @@ public class Product implements Serializable{
 	* @date 2016年3月25日 下午4:36:03 
 	*/ 
 	private String ChildPriceDefination;
+	
+	/** 
+	* @Fields bookingInfo : 预定控制
+	* @date 2016年3月28日 上午11:47:19 
+	*/ 
+	private BookingInfo bookingInfo;
+	/** 
+	* @Fields description : 签证须知，每条不超过4000个字符 
+	* @date 2016年3月25日 下午4:29:01 
+	*/ 
+	private String  visaInfoDescription;
+	
+
+	public String getVisaInfoDescription() {
+		return visaInfoDescription;
+	}
+
+	public void setVisaInfoDescription(String visaInfoDescription) {
+		this.visaInfoDescription = visaInfoDescription;
+	}
+
+	public BookingInfo getBookingInfo() {
+		return bookingInfo;
+	}
+
+	public void setBookingInfo(BookingInfo bookingInfo) {
+		this.bookingInfo = bookingInfo;
+	}
 
 	public List<Inventory> getInventoryList() {
 		return InventoryList;
@@ -273,13 +301,14 @@ public class Product implements Serializable{
 		ItineraryList = itineraryList;
 	}
 
-	public List<Visa> getVisaList() {
-		return VisaList;
+	public Visa getVisaInfo() {
+		return visaInfo;
 	}
 
-	public void setVisaList(List<Visa> visaList) {
-		VisaList = visaList;
+	public void setVisaInfo(Visa visaInfo) {
+		this.visaInfo = visaInfo;
 	}
+
 	public BreachClause getBreachClause() {
 		return BreachClause;
 	}

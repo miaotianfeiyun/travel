@@ -7,7 +7,7 @@ import org.simpleframework.xml.Root;
 * <p>Title: BreachClauseType.java</p>
 * <p>Package Name: com.travel.api.common.product.base</p>  
 * <p>Description:违约条款 </p> 
-* <p>Company:www.drolay.com</p> 
+*  
 * @author liujq
 * @date  :2016年3月22日 
 * @version :1.0

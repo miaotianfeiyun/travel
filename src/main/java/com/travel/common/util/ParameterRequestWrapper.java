@@ -15,7 +15,7 @@ import org.springframework.web.util.HtmlUtils;
 * <p>Title: ParameterRequestWrapper.java</p>
 * <p>Package Name: com.drolay.common.util</p>  
 * <p>Description:TODO </p> 
-* <p>Company:www.drolay.com</p> 
+*  
 * @author liujq
 * @date  :2015年9月7日 
 * @version :1.0

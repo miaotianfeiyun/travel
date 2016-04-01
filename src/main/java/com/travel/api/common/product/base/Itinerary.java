@@ -6,7 +6,7 @@ import java.util.List;
  * <p>Title: Itinerary.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
  * <p>Description:行程 </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月15日 
  * @version :1.0

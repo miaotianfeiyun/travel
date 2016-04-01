@@ -8,7 +8,7 @@ import org.simpleframework.xml.Element;
  * <p>Title: BeginSelling.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
  * <p>Description:班期信息 </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月18日 
  * @version :1.0

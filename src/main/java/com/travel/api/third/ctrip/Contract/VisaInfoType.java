@@ -8,40 +8,37 @@ import org.simpleframework.xml.ElementList;
 
 @Root
 public class VisaInfoType {
-@Element(required=false)
-private boolean IsNeedDeposit ;
+	@Element(required = false)
+	private boolean IsNeedDeposit;
 
+	@Element(required = false)
+	private VisaDeliveryAddressType VisaDeliveryAddress;
 
-public boolean getIsNeedDeposit() {
-	return IsNeedDeposit;
- }
+	@ElementList(required = false)
+	private List<Visa> VisaList;
 
-public void setIsNeedDeposit(boolean isneeddeposit) {
-IsNeedDeposit = isneeddeposit;
-}
+	public boolean isIsNeedDeposit() {
+		return IsNeedDeposit;
+	}
 
-@Element(required=false)
-private VisaDeliveryAddressType VisaDeliveryAddress ;
+	public void setIsNeedDeposit(boolean isNeedDeposit) {
+		IsNeedDeposit = isNeedDeposit;
+	}
 
+	public VisaDeliveryAddressType getVisaDeliveryAddress() {
+		return VisaDeliveryAddress;
+	}
 
-public VisaDeliveryAddressType getVisaDeliveryAddress() {
-	return VisaDeliveryAddress;
- }
+	public void setVisaDeliveryAddress(VisaDeliveryAddressType visaDeliveryAddress) {
+		VisaDeliveryAddress = visaDeliveryAddress;
+	}
 
-public void setVisaDeliveryAddress(VisaDeliveryAddressType visadeliveryaddress) {
-VisaDeliveryAddress = visadeliveryaddress;
-}
+	public List<Visa> getVisaList() {
+		return VisaList;
+	}
 
-@ElementList(required=false)
-private List<Visa> VisaList ;
-
-
-public List<Visa> getVisaList() {
-	return VisaList;
- }
-
-public void setVisaList(List<Visa> visalist) {
-VisaList = visalist;
-}
+	public void setVisaList(List<Visa> visaList) {
+		VisaList = visaList;
+	}
 
 }

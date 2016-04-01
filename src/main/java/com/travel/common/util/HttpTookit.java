@@ -2,11 +2,17 @@ package com.travel.common.util;
 
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +24,7 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang.StringUtils;
@@ -28,7 +35,7 @@ import org.apache.log4j.Logger;
 * <p>Title: Snippet.java</p>
 * <p>Package Name: com.drolay.common.util</p>  
 * <p>Description:TODO </p> 
-* <p>Company:www.drolay.com</p> 
+*  
 * @author liujq
 * @date  :2015年6月11日 
 * @version :1.0
@@ -257,7 +264,38 @@ public class HttpTookit {
             }
         }
         return result;
-    }    
+    }  
+    public static String postStream(String url, String params, String charset, boolean pretty){
+    	String result="";
+    	HttpClient client = new HttpClient();   
+    	PostMethod method = new PostMethod(url); 
+        method.getParams().setHttpElementCharset(charset);
+  		method.getParams().setContentCharset(charset);
+  		method.getParams().setCredentialCharset(charset);
+  		try{
+	  		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(params);
+	    	byte[] data = baos.toByteArray();
+	    	ByteArrayInputStream bis = new ByteArrayInputStream(data);
+	    	InputStreamRequestEntity entity=new InputStreamRequestEntity(bis);
+	    	method.setRequestEntity(entity);
+    	    client.executeMethod(method);
+    	    result = method.getResponseBodyAsString();
+    	    logger.info(result);
+    	    return result;
+    	 }catch (Throwable e){
+    		 e.printStackTrace();
+    	 }finally{
+    		 method.releaseConnection();
+    	 }
+    	 return result;
+    }
+    public static String getFromStream(HttpServletRequest request) throws Exception{
+    	InputStream is = request.getInputStream();
+	    ObjectInputStream ois = new ObjectInputStream(is);
+	    return ois.readObject().toString();
+    }
 	/** 
 	 * @Description:	重试请求
 	 * @param params

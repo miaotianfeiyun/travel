@@ -15,7 +15,7 @@ import org.xml.sax.InputSource;
  * <p>Title: XPathUtil.java</p>
  * <p>Package Name: com.drolay.common.util</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2015年11月13日 
  * @version :1.0

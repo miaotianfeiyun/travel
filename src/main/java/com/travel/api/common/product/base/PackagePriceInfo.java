@@ -6,7 +6,7 @@ import org.simpleframework.xml.Element;
  * <p>Title: PackagePriceInfo.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
  * <p>Description:套餐价格信息 </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月17日 
  * @version :1.0
@@ -74,6 +74,54 @@ public double getSinglePersonSalePrice() {
 
 public void setSinglePersonSalePrice(double singlepersonsaleprice) {
 SinglePersonSalePrice = singlepersonsaleprice;
+}
+
+public String getPackageCode() {
+	return PackageCode;
+}
+
+public void setPackageCode(String packageCode) {
+	PackageCode = packageCode;
+}
+
+public double getAdultCostPrice() {
+	return AdultCostPrice;
+}
+
+public void setAdultCostPrice(double adultCostPrice) {
+	AdultCostPrice = adultCostPrice;
+}
+
+public double getAdultSalePrice() {
+	return AdultSalePrice;
+}
+
+public void setAdultSalePrice(double adultSalePrice) {
+	AdultSalePrice = adultSalePrice;
+}
+
+public double getChildCostPrice() {
+	return ChildCostPrice;
+}
+
+public void setChildCostPrice(double childCostPrice) {
+	ChildCostPrice = childCostPrice;
+}
+
+public double getChildSalePrice() {
+	return ChildSalePrice;
+}
+
+public void setChildSalePrice(double childSalePrice) {
+	ChildSalePrice = childSalePrice;
+}
+
+public double getSinglePersonCostPrice() {
+	return SinglePersonCostPrice;
+}
+
+public void setSinglePersonCostPrice(double singlePersonCostPrice) {
+	SinglePersonCostPrice = singlePersonCostPrice;
 }
 
 

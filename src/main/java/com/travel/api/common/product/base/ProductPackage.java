@@ -9,7 +9,7 @@ import org.simpleframework.xml.ElementList;
  * <p>Title: Package.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月16日 
  * @version :1.0

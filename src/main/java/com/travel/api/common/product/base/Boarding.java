@@ -4,7 +4,7 @@ package com.travel.api.common.product.base;
  * <p>Title: ProductBoardingDetail.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
  * <p>Description:上车地点 </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月16日 
  * @version :1.0

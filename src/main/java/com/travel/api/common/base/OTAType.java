@@ -4,7 +4,7 @@ package com.travel.api.common.base;
  * <p>Title: OTAType.java</p>
  * <p>Package Name: com.travel.api.common.base</p>  
  * <p>Description:ota平台的名称</p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月21日 
  * @version :1.0

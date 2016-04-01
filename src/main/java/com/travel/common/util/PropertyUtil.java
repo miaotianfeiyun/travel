@@ -10,7 +10,7 @@ import java.util.Properties;
 * <p>Title: PropertyUtil.java</p>
 * <p>Package Name: com.drolay.common.util</p>  
 * <p>Description:处理Properties文件的一个基础类 </p> 
-* <p>Company:www.drolay.com</p> 
+*  
 * @author liujq
 * @date  :2015年6月25日 
 * @version :1.0

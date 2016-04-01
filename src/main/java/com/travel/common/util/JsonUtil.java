@@ -14,7 +14,7 @@ import net.sf.json.JSONObject;
  * <p>Title: JsonUtil.java</p>
  * <p>Package Name: com.drolay.common.util</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2015年10月23日 
  * @version :1.0
@@ -24,7 +24,7 @@ import net.sf.json.JSONObject;
 * <p>Title: JsonUtil.java</p>
 * <p>Package Name: com.drolay.common.util</p>  
 * <p>Description:JSON转换工具类 </p> 
-* <p>Company:www.drolay.com</p> 
+*  
 * @author liujq
 * @date  :2015年10月23日 
 * @version :1.0

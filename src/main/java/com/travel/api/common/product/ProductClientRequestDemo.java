@@ -3,10 +3,13 @@ package com.travel.api.common.product;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.travel.api.common.ThirdOTA;
+import com.travel.api.common.base.OTAType;
 import com.travel.api.common.base.ProductOpType;
 import com.travel.api.common.base.ProductPattern;
 import com.travel.api.common.base.TourType;
 import com.travel.api.common.base.TransportationType;
+import com.travel.api.common.product.base.BookingInfo;
 import com.travel.api.common.product.base.BreachClause;
 import com.travel.api.common.product.base.BreachClauseType;
 import com.travel.api.common.product.base.Inventory;
@@ -17,22 +20,34 @@ import com.travel.api.common.product.base.POI;
 import com.travel.api.common.product.base.PackageInventoryInfo;
 import com.travel.api.common.product.base.Price;
 import com.travel.api.common.product.base.Product;
+import com.travel.api.common.product.base.Selling;
 import com.travel.api.common.product.base.SellingSet;
+import com.travel.api.common.product.base.Visa;
+import com.travel.api.common.product.base.VisaDeliveryAddress;
+import com.travel.api.common.product.base.VisaDetail;
 import com.travel.common.util.DateUtil;
 
 /** 
  * <p>Title: ProductClientRequestDemo.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月21日 
  * @version :1.0
  */
 
 public class ProductClientRequestDemo {
-public static void test(){
+public static void main(String [] argus){
 	ProductClient client=new ProductClient();
+	List<ThirdOTA> thirdOTAList=new ArrayList<ThirdOTA>();
+	ThirdOTA ctrip=new ThirdOTA();
+	ctrip.setAppKey("9001");
+	ctrip.setAppSecret("9001");
+	ctrip.setOTAType(OTAType.CTRIP);
+	thirdOTAList.add(ctrip);
+	client.setThirdOTAList(thirdOTAList);
+	
 	client.setAppKey("test");
 	client.setAppSecret("123456");
 	client.setOperationType(ProductOpType.ADD);
@@ -91,8 +106,8 @@ public static void test(){
 	for (int i = 0; i < 5; i++) {
 		Inventory inventory=new Inventory();
 		inventory.setDayOfWeek("1234567");
-		inventory.setEndDate(DateUtil.parse("2016-03-22"));
-		inventory.setStartDate(DateUtil.parse("2016-03-26"));
+		inventory.setEndDate(DateUtil.parse("2016-03-26"));
+		inventory.setStartDate(DateUtil.parse("2016-03-22"));
 		
 		
 		inventory.setPackageInventoryInfoList(packageInventoryInfoList);
@@ -122,13 +137,15 @@ public static void test(){
 	
 	product.setItineraryList(itineraryList);
 	//-------------------------------行程 end------------------------------------
+	
+	//-------------------------------价格 start-------------------------------------
 	List<Price> priceList=new ArrayList<Price>();
 	
 	for (int i = 0; i < 5; i++) {
 		Price temp=new Price();
 		temp.setDayOfWeek("1234567");
-		temp.setEndDate(DateUtil.parse("2016-03-22"));
-		temp.setStartDate(DateUtil.parse("2016-03-26"));
+		temp.setEndDate(DateUtil.parse("2016-03-26"));
+		temp.setStartDate(DateUtil.parse("2016-03-22"));
 		List<OptionPriceInfo> optionpriceinfolist=new ArrayList<OptionPriceInfo>();
 		OptionPriceInfo optionPriceInfo=new OptionPriceInfo();
 		optionPriceInfo.setCostPrice(100);
@@ -146,14 +163,63 @@ public static void test(){
 		priceList.add(temp);
 	}
 	product.setPriceList(priceList);
+	//--------------------------------价格 end-------------------------------------------
+	Visa visaInfo=new Visa();
+	visaInfo.setIsNeedDeposit(true);
+	VisaDeliveryAddress visaDeliveryAddress=new VisaDeliveryAddress();
+	visaDeliveryAddress.setAddress("北京市丰台区南方庄一号院 安富大厦");
+	visaDeliveryAddress.setCityName("北京");
+	visaDeliveryAddress.setCompanyName("北京联拓天际");
+	visaDeliveryAddress.setContact("刘建青");
+	visaDeliveryAddress.setEmail("871334842@qq.com");
+	visaDeliveryAddress.setMobile("18210424665");
+	visaDeliveryAddress.setPhone("");
+	visaDeliveryAddress.setPostCode("100022");
+	visaDeliveryAddress.setRemark("测试测试");
+	visaDeliveryAddress.setWorkingHours("24");
+	visaInfo.setVisaDeliveryAddress(visaDeliveryAddress);
+	List<VisaDetail> visaList=new ArrayList<VisaDetail>();
+	VisaDetail visaDetail=new VisaDetail();
+	visaDetail.setVisaCode("QZ-0001");
+	visaDetail.setVisaName("非洲签");
+	visaList.add(visaDetail);
+	visaInfo.setVisaList(visaList);
+	product.setVisaInfo(visaInfo);
+	product.setVisaInfoDescription("签证描述，签证描述签证描述签证描述签证描述签证描述签证描述签证描述签证描述");
+	//--------------------------------预定 start-------------------------------------------
+	BookingInfo bookingInfo =new BookingInfo();
+	bookingInfo.setAdvancedCloseDays(1);
+	bookingInfo.setAdvancedCloseTime("24");
+	bookingInfo.setDescription("cesfsfsdfsd");
+	bookingInfo.setEmergencyContact("liujq");
+	bookingInfo.setEmergencyContactMobile("18210424665");
+	bookingInfo.setIsHolidayWork(true);
+	bookingInfo.setIsPublishEmergencyContact(true);
+	bookingInfo.setIsSMSNotify(false);
+	bookingInfo.setIsWeekendWork(true);
+	bookingInfo.setProductContact("liujq");
+	bookingInfo.setProductContactMobile("18210424665");
 	
-//	product.setVisaList(visaList);
-	
-	
-	
-	client.setProduct(product);
+	product.setBookingInfo(bookingInfo);
+	//--------------------------------预定 end-------------------------------------------
+	//--------------------------------团期设置 start-------------------------------------------
 	SellingSet sellingSet=new SellingSet();
+	List<Selling> sellingList=new ArrayList<Selling>();
+	for (int i = 1; i <6; i++) {
+		Selling selling=new Selling();
+		selling.setDayOfWeek("1234567");
+		selling.setStartDate(DateUtil.parse("2016-03-2"+i));
+		selling.setEndDate(DateUtil.parse("2016-04-2"+i));
+	}
+	sellingSet.setSellingList(sellingList);
+	sellingSet.setType(true);
 	client.setSellingSet(sellingSet);
+	//--------------------------------团期设置 end-------------------------------------------
+	//----------------------------
+	product.setExcludeExpense("费用不含，费用不含，费用不含费用不含费用不含费用不含费用不含费用不含");
+	product.setIncludeExpense("费用包含费用包含费用包含费用包含费用包含费用包含费用包含费用包含费用包含");
+	client.setProduct(product);
 	String response=client.invoke(client);
+	System.out.println(response);
 }
 }

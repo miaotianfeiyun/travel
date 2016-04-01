@@ -6,7 +6,7 @@ import org.simpleframework.xml.Element;
  * <p>Title: PackageDetail.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
  * <p>Description:套餐详情</p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月16日 
  * @version :1.0

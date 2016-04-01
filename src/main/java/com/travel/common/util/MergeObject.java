@@ -21,7 +21,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * <p>Title: MergeObject.java</p>
  * <p>Package Name: com.drolay.common.util</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年1月6日 
  * @version :1.0

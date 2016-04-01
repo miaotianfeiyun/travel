@@ -11,7 +11,7 @@ import org.springframework.util.StringUtils;
  * <p>Title: DateEditor.java</p>
  * <p>Package Name: com.drolay.common.util</p>  
  * <p>Description:时间转换 </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2015年7月16日 
  * @version :1.0

@@ -8,7 +8,7 @@ import org.junit.Test;
  * <p>Title: UserMapperTest.java</p>
  * <p>Package Name: com.travel.mybatis.dao</p>  
  * <p>Description:TODO </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月11日 
  * @version :1.0

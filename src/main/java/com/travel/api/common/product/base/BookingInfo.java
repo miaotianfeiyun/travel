@@ -4,7 +4,7 @@ package com.travel.api.common.product.base;
  * <p>Title: BookingInfo.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
  * <p>Description:预定控制信息 </p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月15日 
  * @version :1.0

@@ -7,7 +7,7 @@ import org.simpleframework.xml.ElementList;
  * <p>Title: BeginSelling.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
  * <p>Description:班期设置，打开的班期同时也宣布成团</p> 
- * <p>Company:www.drolay.com</p> 
+ *  
  * @author liujq
  * @date  :2016年3月18日 
  * @version :1.0
