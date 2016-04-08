@@ -1,6 +1,5 @@
 package com.travel.api.common.product.base;
 
-import java.util.Date;
 import java.util.List;
 
 import org.simpleframework.xml.Element;
