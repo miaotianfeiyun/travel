@@ -26,7 +26,7 @@
 	        <bean class="com.github.miemiedev.mybatis.paginator.springmvc.PageListAttrHandlerInterceptor" />
 	    </mvc:interceptor>
 	</mvc:interceptors>
-	<context:property-placeholder location="classpath:properties/log4j.properties,classpath:properties/jdbc.properties,classpath:properties/system.properties,classpath:properties/mongodb.properties" />
+	<context:property-placeholder location="classpath:properties/log4j.properties,classpath:properties/jdbc.properties,classpath:properties/system.properties,classpath:properties/jdbc.properties" />
 	<task:annotation-driven mode="proxy" proxy-target-class="false" />
 	<!-- 引入属性文件 -->
 <!--   	<import resource="classpath:spring/controller-context.xml"/> -->

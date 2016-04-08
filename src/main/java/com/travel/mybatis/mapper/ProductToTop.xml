@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="com.travel.mybatis.dao.ProductToTopMapper">
+	<sql id="Base_Column_List">
+		id,product_code,appkey,appsecret,sn,request_xml,response_xml,request_time,response_time,real_action
+	</sql>
+	<sql id="Base_Column_insert">
+        	#{id,jdbcType=INTEGER},
+        	#{product_code,jdbcType=VARCHAR},
+        	#{appkey,jdbcType=VARCHAR},
+        	#{appsecret,jdbcType=VARCHAR},
+        	#{sn,jdbcType=VARCHAR},
+        	#{request_xml,jdbcType=LONGVARCHAR},
+        	#{response_xml,jdbcType=LONGVARCHAR},
+        	#{request_time,jdbcType=TIMESTAMP},
+        	#{response_time,jdbcType=TIMESTAMP},
+        	#{real_action,jdbcType=VARCHAR}
+	</sql>
+	<sql id="Base_query_column">
+		id,product_code,appkey,appsecret,sn,request_xml,response_xml,request_time,response_time,real_action
+	</sql>
+	<sql id="Base_query_where">
+		 	<if test="product_code != null and product_code != ''">
+	          and product_code = #{product_code}
+	         </if>
+		 	<if test="appkey != null and appkey != ''">
+	          and appkey = #{appkey}
+	         </if>
+		 	<if test="appsecret != null and appsecret != ''">
+	          and appsecret = #{appsecret}
+	         </if>
+		 	<if test="sn != null and sn != ''">
+	          and sn = #{sn}
+	         </if>
+		 	<if test="request_xml != null and request_xml != ''">
+	          and request_xml = #{request_xml}
+	         </if>
+		 	<if test="response_xml != null and response_xml != ''">
+	          and response_xml = #{response_xml}
+	         </if>
+		 	<if test="request_time != null and request_time != ''">
+	          and request_time = #{request_time}
+	         </if>
+		 	<if test="response_time != null and response_time != ''">
+	          and response_time = #{response_time}
+	         </if>
+		 	<if test="real_action != null and real_action != ''">
+	          and real_action = #{real_action}
+	         </if>
+	</sql>
+	
+	<insert id="save" parameterType="com.travel.mybatis.entity.ProductToTop" useGeneratedKeys="true"  keyProperty="id" >
+        INSERT INTO product_to_top ( <include refid="Base_Column_List" /> )  VALUES (
+            <include refid="Base_Column_insert" /> 
+        )
+	</insert>
+
+	
+	<update id="update" parameterType="com.travel.mybatis.entity.ProductToTop" flushCache="true">
+        UPDATE product_to_top 
+        <set>
+	        	<if test=" product_code!= null  and product_code != ''">
+	        		product_code = #{product_code,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" appkey!= null  and appkey != ''">
+	        		appkey = #{appkey,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" appsecret!= null  and appsecret != ''">
+	        		appsecret = #{appsecret,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" sn!= null  and sn != ''">
+	        		sn = #{sn,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" request_xml!= null  and request_xml != ''">
+	        		request_xml = #{request_xml,jdbcType=LONGVARCHAR} ,
+	        	</if>
+	        	<if test=" response_xml!= null  and response_xml != ''">
+	        		response_xml = #{response_xml,jdbcType=LONGVARCHAR} ,
+	        	</if>
+	        	<if test=" request_time!= null  and request_time != ''">
+	        		request_time = #{request_time,jdbcType=TIMESTAMP} ,
+	        	</if>
+	        	<if test=" response_time!= null  and response_time != ''">
+	        		response_time = #{response_time,jdbcType=TIMESTAMP} ,
+	        	</if>
+	        	<if test=" real_action!= null  and real_action != ''">
+	        		real_action = #{real_action,jdbcType=VARCHAR} 
+	        	</if>
+	      </set>
+        WHERE 
+	        id = #{id,jdbcType=INTEGER} 
+	</update>   
+	
+	
+	<delete id="delete" parameterType="string">
+	    delete from product_to_top where id=#id
+	</delete>
+	
+	
+	<select id="getProductToTopByParas" resultType="com.travel.mybatis.entity.ProductToTop" parameterType="com.travel.mybatis.entity.ProductToTop">
+		select <include refid="Base_query_column" /> from product_to_top where 1=1
+		<include refid="Base_query_where" />
+	</select>
+	
+	<select id="getProductToTopByParasNoPage" resultType="com.travel.mybatis.entity.ProductToTop" parameterType="com.travel.mybatis.entity.ProductToTop">
+		select <include refid="Base_query_column" /> from product_to_top where 1=1
+		<include refid="Base_query_where" />
+	</select>
+</mapper>

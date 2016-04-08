@@ -20,9 +20,9 @@
 	http://www.springframework.org/schema/data/mongo
 	http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd"> 
 	 <!-- 定义mongo对象，对应的是mongodb官方jar包中的Mongo，replica-set设置集群副本的ip地址和端口 -->
-    <mongo:mongo id="mongo" replica-set="${mongo.hostport}">
+    <!-- <mongo:mongo id="mongo" replica-set="${mongo.hostport}"> -->
         <!-- 一些连接属性的设置 -->    
-        <mongo:options
+     <!--   <mongo:options
              connections-per-host="${mongo.connectionsPerHost}"
              threads-allowed-to-block-for-connection-multiplier="${mongo.threadsAllowedToBlockForConnectionMultiplier}"
              connect-timeout="${mongo.connectTimeout}"
@@ -39,10 +39,10 @@
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
         <constructor-arg ref="mongo" />
         <constructor-arg name="databaseName" value="test" />
-    </bean>
-<!-- 引入属性文件 -->  
-<!--   	<context:property-placeholder location="classpath:properties/jdbc.properties" /> -->
-<!-- <bean id="masterDataSource"
+    </bean>-->
+	<!-- 引入属性文件   -->
+  	<context:property-placeholder location="classpath:properties/jdbc.properties" />
+	<bean id="masterDataSource"
 		class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close" lazy-init="default" autowire="default">
 		<property name="driverClass" value="${jdbc.driverClassName0}" />
@@ -60,43 +60,43 @@
 		<property name="breakAfterAcquireFailure" value="true" />
 		<property name="testConnectionOnCheckout" value="true" />
 		<property name="testConnectionOnCheckin" value="true" />
-	</bean> -->	
-	<!-- <bean id="slaveDataSource"
-		class="com.mchange.v2.c3p0.ComboPooledDataSource"
-		destroy-method="close" lazy-init="default" autowire="default">
-		<property name="driverClass" value="${jdbc.driverClassName1}" />
-		<property name="jdbcUrl" value="${jdbc.url1}" />
-		<property name="user" value="${jdbc.username1}" />
-		<property name="password" value="${jdbc.password1}" />
-		<property name="minPoolSize" value="2" />
-		<property name="maxPoolSize" value="200" />
-		<property name="maxIdleTime" value="600" />
-		<property name="acquireIncrement" value="2" />
-		<property name="maxStatements" value="0" />
-		<property name="initialPoolSize" value="3" />
-		<property name="idleConnectionTestPeriod" value="600" />
-		<property name="acquireRetryAttempts" value="30" />
-		<property name="breakAfterAcquireFailure" value="true" />
-		<property name="testConnectionOnCheckout" value="true" />
-		<property name="testConnectionOnCheckin" value="true" />
-	</bean> -->
-	<!-- <bean id="dataSource" class="com.travel.common.datesource.DynamicDataSource">
+	</bean>
+<!-- 	 <bean id="slaveDataSource" -->
+<!-- 		class="com.mchange.v2.c3p0.ComboPooledDataSource" -->
+<!-- 		destroy-method="close" lazy-init="default" autowire="default"> -->
+<!-- 		<property name="driverClass" value="${jdbc.driverClassName1}" /> -->
+<!-- 		<property name="jdbcUrl" value="${jdbc.url1}" /> -->
+<!-- 		<property name="user" value="${jdbc.username1}" /> -->
+<!-- 		<property name="password" value="${jdbc.password1}" /> -->
+<!-- 		<property name="minPoolSize" value="2" /> -->
+<!-- 		<property name="maxPoolSize" value="200" /> -->
+<!-- 		<property name="maxIdleTime" value="600" /> -->
+<!-- 		<property name="acquireIncrement" value="2" /> -->
+<!-- 		<property name="maxStatements" value="0" /> -->
+<!-- 		<property name="initialPoolSize" value="3" /> -->
+<!-- 		<property name="idleConnectionTestPeriod" value="600" /> -->
+<!-- 		<property name="acquireRetryAttempts" value="30" /> -->
+<!-- 		<property name="breakAfterAcquireFailure" value="true" /> -->
+<!-- 		<property name="testConnectionOnCheckout" value="true" /> -->
+<!-- 		<property name="testConnectionOnCheckin" value="true" /> -->
+<!-- 	</bean>  -->
+	<bean id="dataSource" class="com.travel.common.datesource.DynamicDataSource">
 		<property name="targetDataSources">
 			<map key-type="java.lang.String">
 				<entry key="slave" value-ref="masterDataSource" /> 
 			</map>
 		</property>
 		<property name="defaultTargetDataSource" ref="masterDataSource" />
-	</bean> -->
+	</bean>
 	<!-- 切换数据源 -->  
 <!--     <bean id="dataSourceAdvice" class="com.travel.common.datesource.DataSourceAdvice" /> -->
-    <!-- <aop:config>  
-        <aop:advisor  
-            pointcut="execution(* *..*Service.*(..))"  
-            advice-ref="dataSourceAdvice" />  
-    </aop:config> -->  
+<!--     <aop:config>   -->
+<!--         <aop:advisor   -->
+<!--             pointcut="execution(* *..*Service.*(..))"   -->
+<!--             advice-ref="dataSourceAdvice" />   -->
+<!--     </aop:config>   -->
     <!-- mybatis 配置 --> 
-   <!-- <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
        <property name="dataSource" ref="dataSource" />
       
         <property name="configLocation" value="classpath:mybatis/myBatis-Configuration.cfg.xml"/>
@@ -110,42 +110,39 @@
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
        <property name="basePackage" value="com.travel.mybatis.dao"/>
     </bean>
-     --> 
      
      <!-- mongo 配置 -->
      <!-- 映射转换器，扫描back-package目录下的文件，根据注释，把它们作为mongodb的一个collection的映射 -->  
-    <mongo:mapping-converter base-package="com.travel.mongo.model" />  
+<!--     <mongo:mapping-converter base-package="com.travel.mongo.model" />   -->
   
     <!-- mongodb bean的仓库目录，会自动扫描扩展了MongoRepository接口的接口进行注入 -->  
-    <mongo:repositories base-package="com.travel.service.impl" />  
+<!--     <mongo:repositories base-package="com.travel.service.impl" />   -->
 	<!-- 使用spring jdbc 事务管理。 -->
-<!-- 	<bean id="transactionManager" 	class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  -->
-<!-- 		<property name="dataSource" ref="dataSource" /> -->
-<!-- 	</bean> -->
-<!-- 	<tx:advice id="txAdvice" transaction-manager="transactionManager"> -->
-<!-- 		<tx:attributes> -->
-<!-- 			<tx:method name="save*" read-only="false" rollback-for="Exception" propagation="REQUIRED" /> -->
-<!-- 			<tx:method name="insert*" read-only="false" rollback-for="Exception" propagation="REQUIRED" /> -->
-<!-- 			<tx:method name="create*" read-only="false" rollback-for="Exception" propagation="REQUIRED" /> -->
-<!-- 			<tx:method name="update*" read-only="false" rollback-for="Exception" propagation="REQUIRED" /> -->
-<!-- 			<tx:method name="merge*" read-only="false" rollback-for="Exception" propagation="REQUIRED" /> -->
-<!-- 			<tx:method name="modify*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />				 -->
-<!-- 			<tx:method name="delete*" read-only="false" rollback-for="Exception" propagation="REQUIRED" /> -->
-<!-- 			<tx:method name="clear*" read-only="false" rollback-for="Exception" propagation="REQUIRED" /> -->
-<!-- 			<tx:method name="close*" read-only="false" rollback-for="Exception" propagation="REQUIRED" /> -->
-<!-- 			<tx:method name="do*" read-only="false" rollback-for="Exception" propagation="REQUIRED" /> -->
-<!-- 			<tx:method name="add*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />   -->
-<!--             <tx:method name="edit*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />   -->
-<!--             <tx:method name="remove*" read-only="false" rollback-for="Exception" propagation="REQUIRED" /> -->
-<!-- 			<tx:method name="batch*" read-only="false" rollback-for="Exception" propagation="REQUIRED" /> -->
-<!-- 			<tx:method name="*" read-only="true" propagation="REQUIRED" /> -->
-<!-- 		</tx:attributes> -->
-<!-- 	</tx:advice> -->
+	<bean id="transactionManager" 	class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="save*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />
+			<tx:method name="insert*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />
+			<tx:method name="create*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />
+			<tx:method name="update*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />
+			<tx:method name="merge*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />
+			<tx:method name="modify*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />				
+			<tx:method name="delete*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />
+			<tx:method name="clear*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />
+			<tx:method name="close*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />
+			<tx:method name="do*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />
+			<tx:method name="add*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />  
+            <tx:method name="edit*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />  
+            <tx:method name="remove*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />
+			<tx:method name="batch*" read-only="false" rollback-for="Exception" propagation="REQUIRED" />
+			<tx:method name="*" read-only="true" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
 	<aop:config proxy-target-class="true">
 		<!-- 只对业务逻辑层实施事务 -->
-<!-- 		<aop:pointcut id="serviceCommonPointcut" expression="execution(* com.travel.service.impl.*.*(..))" /> -->
-<!-- 		<aop:pointcut id="serviceModulesPointcut" expression="execution(* com.drolay.partner.*.service.impl.*.*(..))" /> -->
-<!-- 		<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceCommonPointcut" /> -->
-<!-- 		<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceModulesPointcut" /> -->
+		<aop:pointcut id="serviceCommonPointcut" expression="execution(* com.travel.service.impl.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceCommonPointcut" />
 	</aop:config>
 </beans>

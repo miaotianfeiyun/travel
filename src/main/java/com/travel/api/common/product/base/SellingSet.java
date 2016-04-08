@@ -2,6 +2,7 @@ package com.travel.api.common.product.base;
 
 import java.util.List;
 
+import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 /** 
  * <p>Title: BeginSelling.java</p>
@@ -20,13 +21,14 @@ public class SellingSet {
 	* @Fields type : true-打开，false-关闭
 	* @date 2016年3月18日 上午11:37:21 
 	*/ 
+	@Element(required=true)
 	private boolean type;
 	
 	/** 
 	* @Fields SellingList : 班期列表
 	* @date 2016年3月18日 上午10:53:14 
 	*/ 
-	@ElementList(required=false)
+	@ElementList(required=true)
 	private List<Selling> SellingList ;
 	
 	public boolean isType() {

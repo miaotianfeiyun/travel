@@ -203,8 +203,8 @@ public class Program {
 		for (int i = 0; i <2; i++) {
 			Price price=new Price();
 			price.setDayOfWeek("12");
-			price.setEndDate(dateFormat.parse("2015-10-31"));
-			price.setStartDate(dateFormat.parse("2015-09-24"));
+			price.setEndDate("2015-10-31");
+			price.setStartDate("2015-09-24");
 			List<OptionPriceInfo>	optionpriceinfolist=new ArrayList<OptionPriceInfo>();//附加服务价格信息列表
 		
 			for (int j = 0; j < 2; j++) {
@@ -257,7 +257,7 @@ public class Program {
 		for (int i = 0; i <3; i++) {
 			Inventory inventory=new Inventory();
 			inventory.setDayOfWeek("12");
-			inventory.setEndDate(dateFormat.parse("2015-10-31"));
+			inventory.setEndDate("2015-10-31");
 			List<PackageInventoryInfo>	packageinventoryinfolist=new ArrayList<PackageInventoryInfo>();
 			for (int j = 0; j < 3; j++) {
 				PackageInventoryInfo packageInventoryInfo=new PackageInventoryInfo();
@@ -270,7 +270,7 @@ public class Program {
 				packageinventoryinfolist.add(packageInventoryInfo);
 			}
 			inventory.setPackageInventoryInfoList(packageinventoryinfolist);
-			inventory.setStartDate(dateFormat.parse("2015-09-24"));
+			inventory.setStartDate("2015-09-24");
 			inventorylist.add(inventory);
 		}
 		request.setInventoryList(inventorylist);

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="com.travel.mybatis.dao.ProductAuditContentMapper">
+	<sql id="Base_Column_List">
+		id,product_code,request_xml,app_key,app_secret,is_notify,request_time,send_success_time
+	</sql>
+	<sql id="Base_Column_insert">
+        	#{id,jdbcType=INTEGER},
+        	#{product_code,jdbcType=VARCHAR},
+        	#{request_xml,jdbcType=LONGVARCHAR},
+        	#{app_key,jdbcType=VARCHAR},
+        	#{app_secret,jdbcType=VARCHAR},
+        	#{is_notify,jdbcType=CHAR},
+        	#{request_time,jdbcType=TIMESTAMP},
+        	#{send_success_time,jdbcType=TIMESTAMP}
+	</sql>
+	<sql id="Base_query_column">
+		id,product_code,request_xml,app_key,app_secret,is_notify,request_time,send_success_time
+	</sql>
+	<sql id="Base_query_where">
+		 	<if test="product_code != null and product_code != ''">
+	          and product_code = #{product_code}
+	         </if>
+		 	<if test="request_xml != null and request_xml != ''">
+	          and request_xml = #{request_xml}
+	         </if>
+		 	<if test="app_key != null and app_key != ''">
+	          and app_key = #{app_key}
+	         </if>
+		 	<if test="app_secret != null and app_secret != ''">
+	          and app_secret = #{app_secret}
+	         </if>
+		 	<if test="is_notify != null and is_notify != ''">
+	          and is_notify = #{is_notify}
+	         </if>
+		 	<if test="request_time != null and request_time != ''">
+	          and request_time = #{request_time}
+	         </if>
+		 	<if test="send_success_time != null and send_success_time != ''">
+	          and send_success_time = #{send_success_time}
+	         </if>
+	</sql>
+	
+	<insert id="save" parameterType="com.travel.mybatis.entity.ProductAuditContent" keyProperty="id" >
+        INSERT INTO product_audit_content ( <include refid="Base_Column_List" /> )  VALUES (
+            <include refid="Base_Column_insert" /> 
+        )
+	</insert>
+
+	
+	<update id="update" parameterType="com.travel.mybatis.entity.ProductAuditContent" flushCache="true">
+        UPDATE product_audit_content 
+        <set>
+	        	<if test=" product_code!= null  and product_code != ''">
+	        		product_code = #{product_code,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" request_xml!= null  and request_xml != ''">
+	        		request_xml = #{request_xml,jdbcType=LONGVARCHAR} ,
+	        	</if>
+	        	<if test=" app_key!= null  and app_key != ''">
+	        		app_key = #{app_key,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" app_secret!= null  and app_secret != ''">
+	        		app_secret = #{app_secret,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" is_notify!= null  and is_notify != ''">
+	        		is_notify = #{is_notify,jdbcType=CHAR} ,
+	        	</if>
+	        	<if test=" request_time!= null  and request_time != ''">
+	        		request_time = #{request_time,jdbcType=TIMESTAMP} ,
+	        	</if>
+	        	<if test=" send_success_time!= null  and send_success_time != ''">
+	        		send_success_time = #{send_success_time,jdbcType=TIMESTAMP} 
+	        	</if>
+	      </set>
+        WHERE 
+	        id = #{id,jdbcType=INTEGER} 
+	</update>   
+	
+	
+	<delete id="delete" parameterType="string">
+	    delete from product_audit_content where id=#id
+	</delete>
+	
+	
+	<select id="getProductAuditContentByParas" resultType="com.travel.mybatis.entity.ProductAuditContent" parameterType="com.travel.mybatis.entity.ProductAuditContent">
+		select <include refid="Base_query_column" /> from product_audit_content where 1=1
+		<include refid="Base_query_where" />
+	</select>
+	
+	<select id="getProductAuditContentByParasNoPage" resultType="com.travel.mybatis.entity.ProductAuditContent" parameterType="com.travel.mybatis.entity.ProductAuditContent">
+		select <include refid="Base_query_column" /> from product_audit_content where 1=1
+		<include refid="Base_query_where" />
+	</select>
+	<select id="getProductAuditContentForNoSendSuccess" resultType="com.travel.mybatis.entity.ProductAuditContent">
+		select 
+			pac.id,pac.request_xml,pan.notify_url product_code 
+		from product_audit_content pac left join notify  pan 
+		on (pac.app_key=pan.app_key and pac.app_secret=pan.app_secret) 
+		where pac.is_notify='N';
+		
+	</select>
+</mapper>

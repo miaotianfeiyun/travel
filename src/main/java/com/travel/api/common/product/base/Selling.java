@@ -1,7 +1,5 @@
 package com.travel.api.common.product.base;
 
-import java.util.Date;
-
 import org.simpleframework.xml.Element;
 
 /** 
@@ -20,14 +18,14 @@ public class Selling {
 	* @date 2016年3月18日 上午10:51:42 
 	*/ 
 	@Element(required=false)
-	private Date StartDate;
+	private String StartDate;
 	
 	/** 
 	* @Fields EndDate : 结束日期
 	* @date 2016年3月18日 上午10:51:48 
 	*/ 
 	@Element(required=false)
-	private Date EndDate;
+	private String EndDate;
 	
 	/** 
 	* @Fields DayOfWeek : 每周的有效班期。若每天都有班期则为1234567, 124则为周一、二、四开班
@@ -35,20 +33,36 @@ public class Selling {
 	*/ 
 	@Element(required=false)
 	private String DayOfWeek;
+	
+	/** 
+	* @Fields Reason : 班期关闭原因
+	* @date 2016年4月8日 下午4:30:47 
+	*/ 
+	@Element(required=false)
+	private String Reason;
+	
 
-	public Date getStartDate() {
+	public String getReason() {
+		return Reason;
+	}
+
+	public void setReason(String reason) {
+		Reason = reason;
+	}
+
+	public String getStartDate() {
 		return StartDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(String startDate) {
 		StartDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public String getEndDate() {
 		return EndDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(String endDate) {
 		EndDate = endDate;
 	}
 

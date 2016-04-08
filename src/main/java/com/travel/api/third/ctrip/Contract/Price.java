@@ -1,35 +1,33 @@
 package com.travel.api.third.ctrip.Contract;
 
-import java.util.Date;
 import java.util.List;
 
-import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Root;
 
 @Root(name="Price")
 public class Price {
 @Element(required=false)
-private Date StartDate ;
+private String StartDate ;
 
-
-public Date getStartDate() {
+public String getStartDate() {
 	return StartDate;
  }
 
-public void setStartDate(Date startdate) {
+public void setStartDate(String startdate) {
 StartDate = startdate;
 }
 
 @Element(required=false)
-private Date EndDate ;
+private String EndDate ;
 
 
-public Date getEndDate() {
+public String getEndDate() {
 	return EndDate;
  }
 
-public void setEndDate(Date enddate) {
+public void setEndDate(String enddate) {
 EndDate = enddate;
 }
 

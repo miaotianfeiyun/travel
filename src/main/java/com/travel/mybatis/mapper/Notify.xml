@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="com.travel.mybatis.dao.NotifyMapper">
+	<sql id="Base_Column_List">
+		id,app_key,app_secret,notify_url,notify_type,third_type
+	</sql>
+	<sql id="Base_Column_insert">
+        	#{id,jdbcType=INTEGER},
+        	#{app_key,jdbcType=VARCHAR},
+        	#{app_secret,jdbcType=VARCHAR},
+        	#{notify_url,jdbcType=VARCHAR},
+        	#{notify_type,jdbcType=VARCHAR},
+        	#{third_type,jdbcType=VARCHAR}
+	</sql>
+	<sql id="Base_query_column">
+		id,app_key,app_secret,notify_url,notify_type,third_type
+	</sql>
+	<sql id="Base_query_where">
+		 	<if test="app_key != null and app_key != ''">
+	          and app_key = #{app_key}
+	         </if>
+		 	<if test="app_secret != null and app_secret != ''">
+	          and app_secret = #{app_secret}
+	         </if>
+		 	<if test="notify_url != null and notify_url != ''">
+	          and notify_url = #{notify_url}
+	         </if>
+		 	<if test="notify_type != null and notify_type != ''">
+	          and notify_type = #{notify_type}
+	         </if>
+		 	<if test="third_type != null and third_type != ''">
+	          and third_type = #{third_type}
+	         </if>
+	</sql>
+	
+	<insert id="save" parameterType="com.travel.mybatis.entity.Notify" keyProperty="id" >
+        INSERT INTO notify ( <include refid="Base_Column_List" /> )  VALUES (
+            <include refid="Base_Column_insert" /> 
+        )
+	</insert>
+
+	
+	<update id="update" parameterType="com.travel.mybatis.entity.Notify" flushCache="true">
+        UPDATE notify 
+        <set>
+	        	<if test=" app_key!= null  and app_key != ''">
+	        		app_key = #{app_key,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" app_secret!= null  and app_secret != ''">
+	        		app_secret = #{app_secret,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" notify_url!= null  and notify_url != ''">
+	        		notify_url = #{notify_url,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" notify_type!= null  and notify_type != ''">
+	        		notify_type = #{notify_type,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" third_type!= null  and third_type != ''">
+	        		third_type = #{third_type,jdbcType=VARCHAR} 
+	        	</if>
+	      </set>
+        WHERE 
+	        id = #{id,jdbcType=INTEGER} 
+	</update>   
+	
+	
+	<delete id="delete" parameterType="string">
+	    delete from notify where id=#id
+	</delete>
+	
+	
+	<select id="getNotifyByParas" resultType="com.travel.mybatis.entity.Notify" parameterType="com.travel.mybatis.entity.Notify">
+		select <include refid="Base_query_column" /> from notify where 1=1
+		<include refid="Base_query_where" />
+	</select>
+	
+	<select id="getNotifyByParasNoPage" resultType="com.travel.mybatis.entity.Notify" parameterType="com.travel.mybatis.entity.Notify">
+		select <include refid="Base_query_column" /> from notify where 1=1
+		<include refid="Base_query_where" />
+	</select>
+</mapper>

@@ -18,6 +18,7 @@ import com.travel.api.common.product.base.Itinerary;
 import com.travel.api.common.product.base.OptionPriceInfo;
 import com.travel.api.common.product.base.POI;
 import com.travel.api.common.product.base.PackageInventoryInfo;
+import com.travel.api.common.product.base.PackagePriceInfo;
 import com.travel.api.common.product.base.Price;
 import com.travel.api.common.product.base.Product;
 import com.travel.api.common.product.base.Selling;
@@ -25,7 +26,6 @@ import com.travel.api.common.product.base.SellingSet;
 import com.travel.api.common.product.base.Visa;
 import com.travel.api.common.product.base.VisaDeliveryAddress;
 import com.travel.api.common.product.base.VisaDetail;
-import com.travel.common.util.DateUtil;
 
 /** 
  * <p>Title: ProductClientRequestDemo.java</p>
@@ -47,10 +47,10 @@ public static void main(String [] argus){
 	ctrip.setOTAType(OTAType.CTRIP);
 	thirdOTAList.add(ctrip);
 	client.setThirdOTAList(thirdOTAList);
-	
+	client.setTimeStamp(System.currentTimeMillis()+"");
 	client.setAppKey("test");
 	client.setAppSecret("123456");
-	client.setOperationType(ProductOpType.ADD);
+	client.setOperationType(ProductOpType.UPDATE_PRICE);
 	Product product=new Product();
 	product.setTravelDays(3);
 	product.setDepartureCityName("北京");
@@ -58,15 +58,15 @@ public static void main(String [] argus){
 	product.setBrandName("测试");
 	product.setTourType(TourType.OutboundTour);
 	product.setThirdProductName("测试上~~~~~");
-	product.setProductCode("test001");
-	product.setProductName("jlt测试");
+	product.setProductCode("test0012");
+	product.setProductName("jlt测试00012修改");
 	product.setProductPattern(ProductPattern.Tour);
 	product.setNeedIDCard(true);
-	product.setDescriptionToCtripOperator("给携程OP展示的操作注意事项 (此项只在对携程平台时必填)");
+	product.setDescriptionToCtripOperator("给携程OP展示的操作注意事项 (此项只在对携程平台时必填)修改");
 	List<String> productRecommend=new ArrayList<String>();
-	productRecommend.add("产品经理推荐,最多三条");
+	productRecommend.add("产品经理推荐,最多三条修改");
 	product.setProductRecommendList(productRecommend);
-	product.setRecommendContent("条款内容  ");
+	product.setRecommendContent("条款内容 修改 ");
 	product.setTransportationType(TransportationType.Airplane);
 	//-------------------------BreachClause start---------------------------
 	BreachClause breachClause=new BreachClause();
@@ -96,24 +96,23 @@ public static void main(String [] argus){
 	for (int i = 0; i < 2; i++) {
 		PackageInventoryInfo temp=new PackageInventoryInfo();
 		temp.setInventoryType(InventoryType.Inventory);
-		temp.setPackageCode("PackageCode000001");
+//		temp.setPackageCode("PackageCode000001");
 		temp.setReservedInventoryCleanUpHour(24);
-		temp.setReservedInventoryQuantity(100);
-		temp.setSharedInventoryQuantity(100);
+		temp.setReservedInventoryQuantity(50);
+		temp.setSharedInventoryQuantity(80);
 		packageInventoryInfoList.add(temp);
 	}
 	
-	for (int i = 0; i < 5; i++) {
 		Inventory inventory=new Inventory();
-		inventory.setDayOfWeek("1234567");
-		inventory.setEndDate(DateUtil.parse("2016-03-26"));
-		inventory.setStartDate(DateUtil.parse("2016-03-22"));
+		inventory.setDayOfWeek("1357");
+		inventory.setEndDate("2016-04-26");
+		inventory.setStartDate("2016-04-22");
 		
 		
 		inventory.setPackageInventoryInfoList(packageInventoryInfoList);
 		
 		inventoryList.add(inventory);
-	}
+		
 	product.setInventoryList(inventoryList);
 	//-------------------------------库存 end------------------------------------
 	//-------------------------------行程 start------------------------------------
@@ -141,27 +140,34 @@ public static void main(String [] argus){
 	//-------------------------------价格 start-------------------------------------
 	List<Price> priceList=new ArrayList<Price>();
 	
-	for (int i = 0; i < 5; i++) {
 		Price temp=new Price();
-		temp.setDayOfWeek("1234567");
-		temp.setEndDate(DateUtil.parse("2016-03-26"));
-		temp.setStartDate(DateUtil.parse("2016-03-22"));
+		temp.setDayOfWeek("1357");
+		temp.setEndDate("2016-04-26");
+		temp.setStartDate("2016-04-22");
 		List<OptionPriceInfo> optionpriceinfolist=new ArrayList<OptionPriceInfo>();
 		OptionPriceInfo optionPriceInfo=new OptionPriceInfo();
 		optionPriceInfo.setCostPrice(100);
 		optionPriceInfo.setSalePrice(120);
 		optionPriceInfo.setMaxPersonCount(100);
 		optionPriceInfo.setMinPersonCount(1);
-		optionPriceInfo.setOptionCode("OptionCode");
+		optionPriceInfo.setOptionCode("OptionCode01");
 		optionPriceInfo.setOptionDescription("附加服务描述");
 		optionPriceInfo.setOptionName("附加服务");
 		optionpriceinfolist.add(optionPriceInfo);
 		temp.setOptionPriceInfoList(optionpriceinfolist);
-		
-		//temp.setPackagePriceInfoList(packagepriceinfolist);
+		List<PackagePriceInfo> packagepriceinfolist =new ArrayList<PackagePriceInfo>();
+		PackagePriceInfo packagePriceInfo=new PackagePriceInfo();
+		packagePriceInfo.setAdultCostPrice(60);
+		packagePriceInfo.setAdultSalePrice(100);
+		packagePriceInfo.setChildCostPrice(60);
+		packagePriceInfo.setChildSalePrice(100);
+//		packagePriceInfo.setPackageCode("PackageCode0001");
+		packagePriceInfo.setSinglePersonCostPrice(10);
+		packagePriceInfo.setSinglePersonSalePrice(20);
+		packagepriceinfolist.add(packagePriceInfo);
+		temp.setPackagePriceInfoList(packagepriceinfolist);
 		
 		priceList.add(temp);
-	}
 	product.setPriceList(priceList);
 	//--------------------------------价格 end-------------------------------------------
 	Visa visaInfo=new Visa();
@@ -205,14 +211,14 @@ public static void main(String [] argus){
 	//--------------------------------团期设置 start-------------------------------------------
 	SellingSet sellingSet=new SellingSet();
 	List<Selling> sellingList=new ArrayList<Selling>();
-	for (int i = 1; i <6; i++) {
-		Selling selling=new Selling();
-		selling.setDayOfWeek("1234567");
-		selling.setStartDate(DateUtil.parse("2016-03-2"+i));
-		selling.setEndDate(DateUtil.parse("2016-04-2"+i));
-	}
+	Selling selling=new Selling();
+	selling.setDayOfWeek("1234567");
+	selling.setStartDate("2016-04-22");
+	selling.setEndDate("2016-04-26");
+	selling.setReason("操作错误");
+	sellingList.add(selling);
 	sellingSet.setSellingList(sellingList);
-	sellingSet.setType(true);
+	sellingSet.setType(false);
 	client.setSellingSet(sellingSet);
 	//--------------------------------团期设置 end-------------------------------------------
 	//----------------------------

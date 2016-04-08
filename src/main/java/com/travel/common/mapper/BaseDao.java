@@ -1,8 +1,5 @@
 package com.travel.common.mapper;
 
-import javax.annotation.Resource;
-
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
 /** 

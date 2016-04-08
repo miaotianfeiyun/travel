@@ -1,14 +1,18 @@
 package com.travel.common.business;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import net.sf.json.JSONObject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.travel.api.common.ThirdOTA;
 import com.travel.api.common.base.ErrorCode;
 import com.travel.api.common.base.OTAResponse;
 import com.travel.api.common.base.OTAType;
+import com.travel.api.common.base.ProductOpType;
 import com.travel.api.common.product.ProductClient;
 import com.travel.api.common.product.base.SellingSet;
 import com.travel.api.common.product.base.VisaDetail;
@@ -36,6 +40,9 @@ import com.travel.api.third.ctrip.Contract.RequestHeaderType;
 import com.travel.api.third.ctrip.Contract.StopSelling;
 import com.travel.api.third.ctrip.Contract.StopSellingRequest;
 import com.travel.api.third.ctrip.Contract.StopSellingResponse;
+import com.travel.api.third.ctrip.Contract.UpdateProductInfoRequest;
+import com.travel.api.third.ctrip.Contract.UpdateProductInfoResponse;
+import com.travel.api.third.ctrip.Contract.UpdateProductInfoType;
 import com.travel.api.third.ctrip.Contract.UpdateProductInventoryRequest;
 import com.travel.api.third.ctrip.Contract.UpdateProductInventoryResponse;
 import com.travel.api.third.ctrip.Contract.UpdateProductPriceRequest;
@@ -44,18 +51,29 @@ import com.travel.api.third.ctrip.Contract.Visa;
 import com.travel.api.third.ctrip.Contract.VisaDeliveryAddressType;
 import com.travel.api.third.ctrip.Contract.VisaInfoType;
 import com.travel.api.third.ctrip.SDK.OPENAPI;
+import com.travel.api.third.ctrip.SDK.SDKCore;
+import com.travel.common.constant.ThirdAPIInterfaceName;
+import com.travel.common.util.ToolSpring;
+import com.travel.mybatis.entity.ProductToThirdOta;
+import com.travel.service.ProductToThirdOtaService;
 
 /** 
  * <p>Title: CtripApiDeal.java</p>
  * <p>Package Name: com.travel.common.business</p>  
- * <p>Description:TODO </p> 
+ * <p>Description:携程处理主类 </p> 
  * @author liujq
  * @date  :2016年3月28日 
  * @version :1.0
  */
-
 public class CtripApiDeal {
+	private ProductToThirdOtaService productToThirdOtaService =(ProductToThirdOtaService)ToolSpring.getBean("productToThirdOtaService");
 	private static OPENAPI openAPI = new OPENAPI();
+	/** 
+	 * @Description:	处理产品请求 主方法
+	 * @return	OTAResponse
+	 * @author	liujq
+	 * @Date	2016年4月8日 上午11:13:15 
+	 */
 	public  OTAResponse main(ProductClient client,ThirdOTA otaInfo) throws Exception{
 		String errorMsg="";
 		OTAResponse response=new OTAResponse();
@@ -64,30 +82,323 @@ public class CtripApiDeal {
 		RequestHeaderType requestHeader=new RequestHeaderType();
 		requestHeader.setVendorId(Long.valueOf(otaInfo.getAppKey()));
 		requestHeader.setVendorToken(otaInfo.getAppSecret());
-		AddProductInfoResponse addProductInfoResponse=this.addProduct(client, requestHeader);
-		UpdateProductInventoryResponse updateProductInventoryResponse=this.doInventory(client, requestHeader);
-		UpdateProductPriceResponse updateProductPriceResponse=this.doPrice(client, requestHeader);
-		errorMsg=response.instance(errorMsg, JSONObject.fromObject(addProductInfoResponse));
-		errorMsg=response.instance(errorMsg, JSONObject.fromObject(updateProductInventoryResponse));
-		errorMsg=response.instance(errorMsg, JSONObject.fromObject(updateProductPriceResponse));
-		if(client.getSellingSet().isType()){//true-打开班期
-			BeginSellingResponse beginSellingResponse= this.doBeginSelling(client, requestHeader);
-			errorMsg=response.instance(errorMsg, JSONObject.fromObject(beginSellingResponse));
-		}else{
-			StopSellingResponse  stopSellingResponse =this.doStopSelling(client, requestHeader);
-			errorMsg=response.instance(errorMsg, JSONObject.fromObject(stopSellingResponse));
+		
+		if(client.getOperationType().equals(ProductOpType.ADD_PRODUCT)){
+			response=this.doProductAdd(errorMsg, client, requestHeader, response);
+		}else if(client.getOperationType().equals(ProductOpType.UPDATE_PRODUCT)){
+			response=this.doProductUpdate(errorMsg, client, requestHeader, response);
+		}else if(client.getOperationType().equals(ProductOpType.UPDATE_STOCK)){
+			response=this.doProductUpdateStock(errorMsg, client, requestHeader, response);
+		}else if(client.getOperationType().equals(ProductOpType.UPDATE_PRICE)){
+			response=this.doProductUpdatePrice(errorMsg, client, requestHeader, response);
+		}else if(client.getOperationType().equals(ProductOpType.OPEN_DAYS)){
+			response=this.doProductOpenDays(errorMsg, client, requestHeader, response);
+		}else if(client.getOperationType().equals(ProductOpType.CLOSE_DAYS)){
+			response=this.doProductCloseDays(errorMsg, client, requestHeader, response);
 		}
-		AnnounceGroupResponse announceGroupResponse=this.doAnnounceGroup(client, requestHeader);
-		errorMsg=response.instance(errorMsg, JSONObject.fromObject(announceGroupResponse));
-		response.setErrorCode(ErrorCode.THIRD_EXCEPTION);
+		return response;
+	}
+	/** 
+	 * @Description:	关闭班期
+	 * @return	OTAResponse
+	 * @author	liujq
+	 * @throws Exception 
+	 * @Date	2016年4月8日 下午4:56:07 
+	 */
+	private OTAResponse doProductCloseDays(String errorMsg,ProductClient client, RequestHeaderType requestHeader,OTAResponse response) throws Exception {
+		StopSellingResponse stopSellingResponse=this.doStopSelling(client, requestHeader);
+		errorMsg=response.instance(errorMsg, JSONObject.fromObject(stopSellingResponse));
+		if(StringUtils.isNotBlank(errorMsg)){
+			response.setErrorCode(ErrorCode.THIRD_EXCEPTION);
+		}
 		response.setErrorMsg(errorMsg);
 		return response;
 	}
-	
-	 private AddProductInfoResponse addProduct(ProductClient client,RequestHeaderType requestHeader) throws Exception{
-		//产品基本信息
-				AddProductInfoRequest addProductInfo=new AddProductInfoRequest();
+	/** 
+	 * @Description:	打开班期
+	 * @return	OTAResponse
+	 * @author	liujq
+	 * @throws Exception 
+	 * @Date	2016年4月8日 下午4:56:02 
+	 */
+	private OTAResponse doProductOpenDays(String errorMsg,ProductClient client, RequestHeaderType requestHeader,OTAResponse response) throws Exception {
+		BeginSellingResponse beginSellingResponse=this.doBeginSelling(client, requestHeader);
+		errorMsg=response.instance(errorMsg, JSONObject.fromObject(beginSellingResponse));
+		if(StringUtils.isNotBlank(errorMsg)){
+			response.setErrorCode(ErrorCode.THIRD_EXCEPTION);
+		}
+		response.setErrorMsg(errorMsg);
+		return response;
+	}
+	/** 
+	 * @Description:	处理更新价格集合
+	 * @return	OTAResponse
+	 * @author	liujq
+	 * @throws Exception 
+	 * @Date	2016年4月5日 上午11:02:47 
+	 */
+	private OTAResponse doProductUpdatePrice(String errorMsg,ProductClient client, RequestHeaderType requestHeader,OTAResponse response) throws Exception {
+		UpdateProductPriceResponse updateProductPriceResponse=this.doPrice(client, requestHeader);
+		errorMsg=response.instance(errorMsg, JSONObject.fromObject(updateProductPriceResponse));
+		if(StringUtils.isNotBlank(errorMsg)){
+			response.setErrorCode(ErrorCode.THIRD_EXCEPTION);
+		}
+		response.setErrorMsg(errorMsg);
+		return response;
+	}
+	/** 
+	 * @Description:	处理更新价格集合
+	 * @return	OTAResponse
+	 * @author	liujq
+	 * @throws Exception 
+	 * @Date	2016年4月5日 上午11:02:45 
+	 */
+	private OTAResponse doProductUpdateStock(String errorMsg,ProductClient client, RequestHeaderType requestHeader,OTAResponse response) throws Exception {
+		UpdateProductInventoryResponse updateProductInventoryResponse=this.doInventory(client, requestHeader);
+		errorMsg=response.instance(errorMsg, JSONObject.fromObject(updateProductInventoryResponse));
+		if(StringUtils.isNotBlank(errorMsg)){
+			response.setErrorCode(ErrorCode.THIRD_EXCEPTION);
+		}
+		response.setErrorMsg(errorMsg);
+		return response;
+	}
+	/** 
+	 * @Description:	处理更新的集合
+	 * @return	OTAResponse
+	 * @author	liujq
+	 * @Date	2016年4月5日 上午10:40:44 
+	 */
+	private OTAResponse doProductUpdate(String errorMsg,ProductClient client,RequestHeaderType requestHeader,OTAResponse response) throws Exception{
+		UpdateProductInfoResponse updateProductInfoResponse=this.updateProduct(client, requestHeader);
+		errorMsg=response.instance(errorMsg, JSONObject.fromObject(updateProductInfoResponse));
+		if(client.getProduct().getInventoryList()!=null && client.getProduct().getInventoryList().size()>0){
+			UpdateProductInventoryResponse updateProductInventoryResponse=this.doInventory(client, requestHeader);
+			errorMsg=response.instance(errorMsg, JSONObject.fromObject(updateProductInventoryResponse));
+		}
+		if(client.getProduct().getItineraryList()!=null && client.getProduct().getItineraryList().size()>0){
+			UpdateProductPriceResponse updateProductPriceResponse=this.doPrice(client, requestHeader);
+			errorMsg=response.instance(errorMsg, JSONObject.fromObject(updateProductPriceResponse));
+		}
+		if(client.getSellingSet()!=null && client.getSellingSet().getSellingList()!=null && client.getSellingSet().getSellingList().size()>0){
+			if(client.getSellingSet().isType()){//true-打开班期
+				BeginSellingResponse beginSellingResponse= this.doBeginSelling(client, requestHeader);
+				errorMsg=response.instance(errorMsg, JSONObject.fromObject(beginSellingResponse));
+			}else{
+				StopSellingResponse  stopSellingResponse =this.doStopSelling(client, requestHeader);
+				errorMsg=response.instance(errorMsg, JSONObject.fromObject(stopSellingResponse));
+			}
+			AnnounceGroupResponse announceGroupResponse=this.doAnnounceGroup(client, requestHeader);
+			errorMsg=response.instance(errorMsg, JSONObject.fromObject(announceGroupResponse));
+		}
+		if(StringUtils.isNotBlank(errorMsg)){
+			response.setErrorCode(ErrorCode.THIRD_EXCEPTION);
+		}
+		response.setErrorMsg(errorMsg);
+		return response;
+	}
+	/** 
+	 * @Description:	处理添加的集合
+	 * @return	OTAResponse
+	 * @author	liujq
+	 * @Date	2016年4月5日 上午10:20:45 
+	 */
+	private OTAResponse doProductAdd(String errorMsg,ProductClient client,RequestHeaderType requestHeader,OTAResponse response) throws Exception{
+		AddProductInfoResponse addProductInfoResponse=this.addProduct(client, requestHeader);
+		errorMsg=response.instance(errorMsg, JSONObject.fromObject(addProductInfoResponse));
+		if(!StringUtils.isNotBlank(addProductInfoResponse.getErrorCode())){//每天加成功 其他的操作都白扯 
+			UpdateProductInventoryResponse updateProductInventoryResponse=this.doInventory(client, requestHeader);
+			UpdateProductPriceResponse updateProductPriceResponse=this.doPrice(client, requestHeader);
+			errorMsg=response.instance(errorMsg, JSONObject.fromObject(updateProductInventoryResponse));
+			errorMsg=response.instance(errorMsg, JSONObject.fromObject(updateProductPriceResponse));
+			if(client.getSellingSet().isType()){//true-打开班期
+				BeginSellingResponse beginSellingResponse= this.doBeginSelling(client, requestHeader);
+				errorMsg=response.instance(errorMsg, JSONObject.fromObject(beginSellingResponse));
+			}else{
+				StopSellingResponse  stopSellingResponse =this.doStopSelling(client, requestHeader);
+				errorMsg=response.instance(errorMsg, JSONObject.fromObject(stopSellingResponse));
+			}
+			AnnounceGroupResponse announceGroupResponse=this.doAnnounceGroup(client, requestHeader);
+			errorMsg=response.instance(errorMsg, JSONObject.fromObject(announceGroupResponse));
+		}
+		if(StringUtils.isNotBlank(errorMsg)){
+			response.setErrorCode(ErrorCode.THIRD_EXCEPTION);
+		}
+		response.setErrorMsg(errorMsg);
+		return response;
+	}
+	private UpdateProductInfoResponse updateProduct(ProductClient client,RequestHeaderType requestHeader) throws Exception{
+
+				//产品基本信息
+				UpdateProductInfoRequest updateProductInfo=new UpdateProductInfoRequest();
 				
+				updateProductInfo.setRequestHeader(requestHeader);
+//				addProductInfo.SetVendorId(Long.valueOf(otaInfo.getAppKey()));
+//				addProductInfo.SetVendorToken(otaInfo.getAppSecret());
+				updateProductInfo.setVendorProductCode(client.getProduct().getProductCode());
+				
+				com.travel.api.common.product.base.BookingInfo bookThis=client.getProduct().getBookingInfo();
+				BookingInfo  bookOther=new BookingInfo();
+				bookOther.setAdvancedCloseDays(bookThis.getAdvancedCloseDays());
+				bookOther.setAdvancedCloseTime(bookThis.getAdvancedCloseTime());
+				//bookThis.getDescription();预定说明后边留着用
+				bookOther.setEmergencyContact(bookThis.getEmergencyContact());
+				bookOther.setEmergencyContactMobile(bookThis.getEmergencyContactMobile());
+				bookOther.setIsHolidayWork(bookThis.isIsHolidayWork());
+				bookOther.setIsPublishEmergencyContact(bookThis.isIsPublishEmergencyContact());
+				bookOther.setIsSMSNotify(bookThis.isIsSMSNotify());
+				bookOther.setIsWeekendWork(bookThis.isIsWeekendWork());
+				bookOther.setProductContact(bookThis.getProductContact());
+				bookOther.setProductContactMobile(bookThis.getProductContactMobile());
+				
+				updateProductInfo.setBookingInfo(bookOther);
+				//违约条款
+				com.travel.api.common.product.base.BreachClause breachClauseThis=client.getProduct().getBreachClause();
+				BreachClause breachclauseOther =new BreachClause();
+				List<BreachClauseType> agencybreachclauselist=new ArrayList<BreachClauseType>();//旅行社违约
+				List<BreachClauseType> travelerbreachclauselist=new ArrayList<BreachClauseType>();//旅客违约
+				List<com.travel.api.common.product.base.BreachClauseType> breachClauseThisItem1=breachClauseThis.getAgencyBreachClauseList();
+				for (int i = 0; i < breachClauseThisItem1.size(); i++) {
+					com.travel.api.common.product.base.BreachClauseType  temp= breachClauseThisItem1.get(i);
+					BreachClauseType newTemp=new BreachClauseType();
+					newTemp.setFromDaysBeforeDeparture(temp.getFromDaysBeforeDeparture());
+					newTemp.setLossPercent(temp.getLossPercent());
+					newTemp.setToDaysBeforeDeparture(temp.getToDaysBeforeDeparture());
+					agencybreachclauselist.add(newTemp);
+				}
+				List<com.travel.api.common.product.base.BreachClauseType> breachClauseThisItem2=breachClauseThis.getTravelerBreachClauseList();
+				for (int i = 0; i < breachClauseThisItem2.size(); i++) {
+					com.travel.api.common.product.base.BreachClauseType  temp= breachClauseThisItem2.get(i);
+					BreachClauseType newTemp=new BreachClauseType();
+					newTemp.setFromDaysBeforeDeparture(temp.getFromDaysBeforeDeparture());
+					newTemp.setLossPercent(temp.getLossPercent());
+					newTemp.setToDaysBeforeDeparture(temp.getToDaysBeforeDeparture());
+					travelerbreachclauselist.add(newTemp);
+				}
+				
+				breachclauseOther.setAgencyBreachClauseList(agencybreachclauselist);
+				breachclauseOther.setTravelerBreachClauseList(travelerbreachclauselist);
+				//
+				updateProductInfo.setBreachClause(breachclauseOther);
+				//行程
+				List<com.travel.api.common.product.base.Itinerary> itinerarylistThis=client.getProduct().getItineraryList();
+				List<ItineraryDay> itinerarylistOther=new ArrayList<ItineraryDay>();
+				for (int i = 0; i < itinerarylistThis.size(); i++) { 
+					com.travel.api.common.product.base.Itinerary temp =itinerarylistThis.get(i);
+					ItineraryDay newTemp=new ItineraryDay();
+					newTemp.setAccommdationDescription(temp.getAccommdationDescription());
+					newTemp.setDay(temp.getDay());
+					newTemp.setItineraryDescription(temp.getItineraryDescription());
+					newTemp.setItineraryName(temp.getItineraryName());
+					newTemp.setMealDescription(temp.getMealDescription());
+					List<POI> poilist=new ArrayList<POI>();
+					if(newTemp.getPOIList()!=null){
+						for (int j = 0; j < newTemp.getPOIList().size(); j++) {
+							com.travel.api.common.product.base.POI tempPoi=temp.getPOIList().get(j);
+							POI newTempPoi=new POI();
+							newTempPoi.setPOIName(tempPoi.getPOIName());
+							poilist.add(newTempPoi);
+						}
+					}
+					newTemp.setPOIList(poilist);
+					itinerarylistOther.add(newTemp);
+				}
+				updateProductInfo.setItineraryList(itinerarylistOther);
+				//产品描述
+				List<ProductDescription> productdescriptionlist=new ArrayList<ProductDescription>();
+				//产品经理推荐
+				List<String> recommendList=client.getProduct().getProductRecommendList();
+				for (int i = 0; i < recommendList.size(); i++) {
+					String temp=recommendList.get(i);
+					ProductDescription newTemp=new ProductDescription();
+					newTemp.setContent(temp);
+					newTemp.setDescriptionType("Recommend");
+					productdescriptionlist.add(newTemp);
+				}
+				//预定须知
+				ProductDescription productDescriptionBook=new ProductDescription();
+				productDescriptionBook.setContent(bookThis.getDescription());
+				productDescriptionBook.setDescriptionType("BookingInfo");
+				productdescriptionlist.add(productDescriptionBook);
+				//费用包含
+				ProductDescription productDescriptionIncludeExpense=new ProductDescription();
+				productDescriptionIncludeExpense.setContent(client.getProduct().getIncludeExpense());
+				productDescriptionIncludeExpense.setDescriptionType("IncludeExpense");
+				productdescriptionlist.add(productDescriptionIncludeExpense);
+				//签证须知
+				ProductDescription productDescriptionVisaInfo=new ProductDescription();
+				productDescriptionVisaInfo.setContent(client.getProduct().getVisaInfoDescription());
+				productDescriptionVisaInfo.setDescriptionType("VisaInfo");
+				productdescriptionlist.add(productDescriptionVisaInfo);
+				//自理费用
+				ProductDescription productDescriptionExcludeExpense=new ProductDescription();
+				productDescriptionExcludeExpense.setContent(client.getProduct().getExcludeExpense());
+				productDescriptionExcludeExpense.setDescriptionType("ExcludeExpense");
+				productdescriptionlist.add(productDescriptionExcludeExpense);
+				//儿童价定义
+				ProductDescription productDescriptionChildPriceDefination=new ProductDescription();
+				productDescriptionChildPriceDefination.setContent(client.getProduct().getChildPriceDefination());
+				productDescriptionChildPriceDefination.setDescriptionType("ChildPriceDefination");
+				productdescriptionlist.add(productDescriptionChildPriceDefination);
+				
+				updateProductInfo.setProductDescriptionList(productdescriptionlist);
+				//产品基础信息
+				UpdateProductInfoType productInfo=new UpdateProductInfoType();
+				//productInfo.setArrivalCityName(client.getProduct().getArrivalCityName());
+				productInfo.setBrandName(client.getProduct().getBrandName());
+				//productInfo.setDepartureCityName(client.getProduct().getDepartureCityName());
+				productInfo.setDescriptionToCtripOperator(client.getProduct().getDescriptionToCtripOperator());
+				productInfo.setIsNeedIDCard(client.getProduct().isNeedIDCard());
+				productInfo.setProductRecommend(client.getProduct().getRecommendContent());
+				//productInfo.setTourType(client.getProduct().getTourType()+"");
+				productInfo.setTransportationType(client.getProduct().getTransportationType()+"");
+				//productInfo.setTravelDays(client.getProduct().getTravelDays());
+				productInfo.setVendorProductName(client.getProduct().getProductName());
+				
+				updateProductInfo.setProductInfo(productInfo);
+				//签证
+				VisaInfoType visainfo=new VisaInfoType();
+				visainfo.setIsNeedDeposit(client.getProduct().isNeedIDCard());
+				com.travel.api.common.product.base.Visa visaInfoThis=client.getProduct().getVisaInfo();
+				if(visaInfoThis!=null){
+					com.travel.api.common.product.base.VisaDeliveryAddress visaDeliveryAddressThis=visaInfoThis.getVisaDeliveryAddress();
+					VisaDeliveryAddressType visaDeliveryAddressOther=new VisaDeliveryAddressType();
+					visaDeliveryAddressOther.setAddress(visaDeliveryAddressThis.getAddress());
+					visaDeliveryAddressOther.setCityName(visaDeliveryAddressThis.getCityName());
+					visaDeliveryAddressOther.setCompanyName(visaDeliveryAddressThis.getCompanyName());
+					visaDeliveryAddressOther.setContact(visaDeliveryAddressThis.getContact());
+					visaDeliveryAddressOther.setEmail(visaDeliveryAddressThis.getEmail());
+					visaDeliveryAddressOther.setMobile(visaDeliveryAddressThis.getMobile());
+					visaDeliveryAddressOther.setPhone(visaDeliveryAddressThis.getPhone());
+					visaDeliveryAddressOther.setPostCode(visaDeliveryAddressThis.getPostCode());
+					visaDeliveryAddressOther.setRemark(visaDeliveryAddressThis.getRemark());
+					visaDeliveryAddressOther.setWorkingHours(visaDeliveryAddressThis.getWorkingHours());
+					
+					visainfo.setVisaDeliveryAddress(visaDeliveryAddressOther);
+					
+					List<VisaDetail> visaDetailLst=visaInfoThis.getVisaList();
+					List<Visa> visalist=new ArrayList<Visa>();
+					for (int i = 0; i < visaDetailLst.size(); i++) {
+						VisaDetail visaDetail=visaDetailLst.get(i);
+						Visa visa=new Visa();
+						visa.setVendorVisaCode(visaDetail.getVisaCode());
+						visa.setVisaName(visaDetail.getVisaName());
+						visalist.add(visa);
+					}
+					visainfo.setVisaList(visalist);
+				}
+				
+				updateProductInfo.setVisaInfo(visainfo);
+				ProductToThirdOta productToThirdOta=new ProductToThirdOta(null, client.getProduct().getProductCode(), OTAType.CTRIP+"", SDKCore.ObjToXMLString(updateProductInfo), null, new Date(), null, ThirdAPIInterfaceName.CTRIP_UPDATEPRODUCTINFO, client.getOperationType()+"", client.getTimeStamp());
+				productToThirdOtaService.save(productToThirdOta);
+				UpdateProductInfoResponse updateProductInfoResponse= openAPI.UpdateProductInfo(updateProductInfo);
+				ProductToThirdOta productToThirdOtaU=new ProductToThirdOta(productToThirdOta.getId(), SDKCore.ObjToXMLString(updateProductInfoResponse), new Date());
+				productToThirdOtaService.update(productToThirdOtaU);
+		return updateProductInfoResponse;
+	
+	}
+	 private AddProductInfoResponse addProduct(ProductClient client,RequestHeaderType requestHeader) throws Exception{
+		 		//产品基本信息
+				AddProductInfoRequest addProductInfo=new AddProductInfoRequest();
 				addProductInfo.setRequestHeader(requestHeader);
 //				addProductInfo.SetVendorId(Long.valueOf(otaInfo.getAppKey()));
 //				addProductInfo.SetVendorToken(otaInfo.getAppSecret());
@@ -245,8 +556,12 @@ public class CtripApiDeal {
 				}
 				
 				addProductInfo.setVisaInfo(visainfo);
-				
-		return openAPI.AddProductInfo(addProductInfo);
+				ProductToThirdOta productToThirdOta=new ProductToThirdOta(null, client.getProduct().getProductCode(), OTAType.CTRIP+"", SDKCore.ObjToXMLString(addProductInfo), null, new Date(), null, ThirdAPIInterfaceName.CTRIP_ADDPRODUCT, client.getOperationType()+"", client.getTimeStamp());
+				productToThirdOtaService.save(productToThirdOta);
+				AddProductInfoResponse response=openAPI.AddProductInfo(addProductInfo);
+				ProductToThirdOta productToThirdOtaU=new ProductToThirdOta(productToThirdOta.getId(), SDKCore.ObjToXMLString(response), new Date());
+				productToThirdOtaService.update(productToThirdOtaU);
+		return response;
 	};
 	/** 
 	 * @Description:	处理价格
@@ -295,7 +610,12 @@ public class CtripApiDeal {
 			pricelist.add(newTempPrice);
 		}
 		request.setPriceList(pricelist);
-		return openAPI.UpdateProductPrice(request);
+		ProductToThirdOta productToThirdOta=new ProductToThirdOta(null, client.getProduct().getProductCode(), OTAType.CTRIP+"", SDKCore.ObjToXMLString(request), null, new Date(), null, ThirdAPIInterfaceName.CTRIP_UPDATEPRODUCTPRICE, client.getOperationType()+"", client.getTimeStamp());
+		productToThirdOtaService.save(productToThirdOta);
+		UpdateProductPriceResponse updateProductPriceResponse= openAPI.UpdateProductPrice(request);
+		ProductToThirdOta productToThirdOtaU=new ProductToThirdOta(productToThirdOta.getId(), SDKCore.ObjToXMLString(updateProductPriceResponse), new Date());
+		productToThirdOtaService.update(productToThirdOtaU);
+		return updateProductPriceResponse;
 	}
 	/** 
 	 * @Description:	库存处理
@@ -333,7 +653,12 @@ public class CtripApiDeal {
 		}
 				 
 		request.setInventoryList(inventoryList);
-		return openAPI.UpdateProductInventory(request);
+		ProductToThirdOta productToThirdOta=new ProductToThirdOta(null, client.getProduct().getProductCode(), OTAType.CTRIP+"", SDKCore.ObjToXMLString(request), null, new Date(), null, ThirdAPIInterfaceName.CTRIP_UPDATEPRODUCTINVENTORY, client.getOperationType()+"", client.getTimeStamp());
+		productToThirdOtaService.save(productToThirdOta);
+		UpdateProductInventoryResponse  updateProductInventoryResponse=openAPI.UpdateProductInventory(request); 
+		ProductToThirdOta productToThirdOtaU=new ProductToThirdOta(productToThirdOta.getId(), SDKCore.ObjToXMLString(updateProductInventoryResponse), new Date());
+		productToThirdOtaService.update(productToThirdOtaU);
+		return updateProductInventoryResponse;
 	}
 	/** 
 	 * @Description:	打开班期
@@ -357,7 +682,12 @@ public class CtripApiDeal {
 			sellinglist.add(sellNew);
 		}
 		request.setSellingList(sellinglist);
-		return openAPI.BeginSelling(request);
+		ProductToThirdOta productToThirdOta=new ProductToThirdOta(null, client.getProduct().getProductCode(), OTAType.CTRIP+"", SDKCore.ObjToXMLString(request), null, new Date(), null, ThirdAPIInterfaceName.CTRIP_BEGINSELLING, client.getOperationType()+"", client.getTimeStamp());
+		productToThirdOtaService.save(productToThirdOta);
+		BeginSellingResponse  beginSellingResponse=openAPI.BeginSelling(request); 
+		ProductToThirdOta productToThirdOtaU=new ProductToThirdOta(productToThirdOta.getId(), SDKCore.ObjToXMLString(beginSellingResponse), new Date());
+		productToThirdOtaService.update(productToThirdOtaU);
+		return beginSellingResponse;
 	}
 	/** 
 	 * @Description:	关闭班期
@@ -378,10 +708,16 @@ public class CtripApiDeal {
 			sellNew.setDayOfWeek(sellOld.getDayOfWeek());
 			sellNew.setStartDate(sellOld.getStartDate());
 			sellNew.setEndDate(sellOld.getEndDate());
+			sellNew.setReason(sellOld.getReason());
 			sellinglist.add(sellNew);
 		}
 		request.setSellingList(sellinglist);
-		return openAPI.StopSelling(request);
+		ProductToThirdOta productToThirdOta=new ProductToThirdOta(null, client.getProduct().getProductCode(), OTAType.CTRIP+"", SDKCore.ObjToXMLString(request), null, new Date(), null, ThirdAPIInterfaceName.CTRIP_STOPSELLING, client.getOperationType()+"", client.getTimeStamp());
+		productToThirdOtaService.save(productToThirdOta);
+		StopSellingResponse  beginSellingResponse=openAPI.StopSelling(request); 
+		ProductToThirdOta productToThirdOtaU=new ProductToThirdOta(productToThirdOta.getId(), SDKCore.ObjToXMLString(beginSellingResponse), new Date());
+		productToThirdOtaService.update(productToThirdOtaU);
+		return beginSellingResponse;
 	}
 	/** 
 	 * @Description:	宣布成团标识
@@ -404,7 +740,12 @@ public class CtripApiDeal {
 			announceGroupList.add(announceGroupNew);
 		}
 		request.setAnnounceGroupList(announceGroupList);
-		return openAPI.AnnounceGroup(request);
+		ProductToThirdOta productToThirdOta=new ProductToThirdOta(null, client.getProduct().getProductCode(), OTAType.CTRIP+"", SDKCore.ObjToXMLString(request), null, new Date(), null, ThirdAPIInterfaceName.CTRIP_ANNOUNCEGROUP, client.getOperationType()+"", client.getTimeStamp());
+		productToThirdOtaService.save(productToThirdOta);
+		AnnounceGroupResponse  announceGroupResponse=openAPI.AnnounceGroup(request); 
+		ProductToThirdOta productToThirdOtaU=new ProductToThirdOta(productToThirdOta.getId(), SDKCore.ObjToXMLString(announceGroupResponse), new Date());
+		productToThirdOtaService.update(productToThirdOtaU);
+		return announceGroupResponse;
 	}
 	/*public UpdateProductUpgradePackageResponse doUpdateProductUpgradePackage(ProductClient client,RequestHeaderType requestHeader){
 		UpdateProductUpgradePackageRequest request=new UpdateProductUpgradePackageRequest();

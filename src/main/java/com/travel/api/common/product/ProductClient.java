@@ -59,6 +59,21 @@ public class ProductClient {
 	* @date 2016年3月18日 下午5:41:26 
 	*/ 
 	private SellingSet sellingSet;
+	
+	/** 
+	* @Fields timeStamp : 时间戳
+	* @date 2016年4月5日 下午4:05:10 
+	*/ 
+	private String timeStamp;
+	
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
 	public List<ThirdOTA> getThirdOTAList() {
 		return thirdOTAList;
 	}

@@ -23,14 +23,14 @@ public class Inventory {
 	* @date 2016年3月17日 下午3:57:25 
 	*/ 
 	@Element(required=false)
-	private Date StartDate ;
+	private String StartDate ;
 	
 	/** 
 	* @Fields EndDate : 结束日期
 	* @date 2016年3月17日 下午3:57:37 
 	*/ 
 	@Element(required=false)
-	private Date EndDate ;
+	private String EndDate ;
 	
 	/** 
 	* @Fields DayOfWeek : 每周的有效班期。若每天都有班期则为1234567, 124则为设置周一、二、四的库存
@@ -44,16 +44,16 @@ public class Inventory {
 	*/ 
 	@ElementList(required=false)
 	private List<PackageInventoryInfo> PackageInventoryInfoList ;
-	public Date getStartDate() {
+	public String getStartDate() {
 		return StartDate;
 	}
-	public void setStartDate(Date startDate) {
+	public void setStartDate(String startDate) {
 		StartDate = startDate;
 	}
-	public Date getEndDate() {
+	public String getEndDate() {
 		return EndDate;
 	}
-	public void setEndDate(Date endDate) {
+	public void setEndDate(String endDate) {
 		EndDate = endDate;
 	}
 	public String getDayOfWeek() {

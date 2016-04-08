@@ -1,5 +1,8 @@
 package com.travel.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,12 +10,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +26,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.travel.api.common.Sign;
 import com.travel.api.common.ThirdOTA;
+import com.travel.api.common.base.CommonConstant;
 import com.travel.api.common.base.ErrorCode;
 import com.travel.api.common.base.OTAResponse;
 import com.travel.api.common.base.OTAType;
+import com.travel.api.common.product.ProductAudit;
+import com.travel.api.common.product.ProductAuditResultResponse;
 import com.travel.api.common.product.ProductClient;
 import com.travel.api.common.product.ProductResponse;
 import com.travel.api.common.product.base.BreachClauseType;
@@ -34,13 +42,22 @@ import com.travel.api.common.product.base.POI;
 import com.travel.api.common.product.base.PackageInventoryInfo;
 import com.travel.api.common.product.base.PackagePriceInfo;
 import com.travel.api.common.product.base.Price;
-import com.travel.api.common.product.base.SellingSet;
+import com.travel.api.common.product.base.Selling;
 import com.travel.api.common.product.base.VisaDetail;
+import com.travel.api.third.ctrip.Contract.ProductAuditResultRequest;
+import com.travel.api.third.ctrip.Contract.ProductAuditResultType;
+import com.travel.api.third.ctrip.SDK.SDKCore;
 import com.travel.common.business.CtripApiDeal;
 import com.travel.common.util.HttpTookit;
 import com.travel.common.util.JsonDateValueProcessor;
 import com.travel.common.util.JsonUtil;
-import com.travel.mongo.dao.ProductDao;
+import com.travel.common.util.Md5;
+import com.travel.mybatis.entity.Notify;
+import com.travel.mybatis.entity.ProductAuditContent;
+import com.travel.mybatis.entity.ProductToTop;
+import com.travel.service.NotifyService;
+import com.travel.service.ProductAuditContentService;
+import com.travel.service.ProductToTopService;
 
 
 /** 
@@ -57,7 +74,11 @@ import com.travel.mongo.dao.ProductDao;
 public class ProductController {
 	private static Logger log=Logger.getLogger(ProductController.class);
 	@Autowired
-	private ProductDao productDao;
+	private ProductToTopService productToTopService;
+	@Autowired
+	private ProductAuditContentService productAuditContentService;
+	@Resource
+	private NotifyService notifyService;
 	/** 
 	 * @Description:	处理产品请求
 	 * @return	void
@@ -73,11 +94,13 @@ public class ProductController {
 		String orToken=(String) json.get("token");
 		String appkey=(String) json.get("appKey");
 		String appSecret=(String) json.get("appSecret");
+		Integer id=null;
 		json.remove("token");
 		if(StringUtils.isNoneBlank(orToken) && orToken.equalsIgnoreCase(Sign.signature(json.toString(), appkey, appSecret))){
+			@SuppressWarnings("rawtypes")
 			Map<String,Class> classMap =new HashMap<String,Class>();
 			classMap.put("thirdOTAList", ThirdOTA.class);
-			classMap.put("sellingSet", SellingSet.class);
+			classMap.put("sellingList", Selling.class);
 			classMap.put("packageInventoryInfoList", PackageInventoryInfo.class);
 			classMap.put("inventoryList", Inventory.class);
 			classMap.put("optionPriceInfoList", OptionPriceInfo.class);
@@ -92,7 +115,9 @@ public class ProductController {
 			JsonConfig jsonConfig = new JsonConfig();  
 			jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor());
 			ProductClient clientReq=(ProductClient)JSONObject.toBean(JSONObject.fromObject(strXml,jsonConfig), ProductClient.class,classMap);
-			productDao.insert(clientReq);
+			ProductToTop productToTop=new ProductToTop(null,clientReq.getProduct().getProductCode(), clientReq.getAppKey(), clientReq.getAppSecret(), clientReq.getTimeStamp(), strXml, null, new Date(), null, clientReq.getOperationType()+"");
+			productToTopService.save(productToTop);
+			id=productToTop.getId();
 			List<ThirdOTA> otaLst=clientReq.getThirdOTAList();
 			for (int i = 0; i < otaLst.size(); i++) {
 				ThirdOTA temp=otaLst.get(i);
@@ -112,6 +137,73 @@ public class ProductController {
 			log.info("签名不通过");
 			rsp=new ProductResponse(ErrorCode.SIGN_EXCEPTION, "签名错误", "");
 		}
+		ProductToTop productToTopU=new ProductToTop(id,null,null, null, null, null, JsonUtil.toJson(rsp), null, new Date(), null);
+		productToTopService.update(productToTopU);
 		response.getWriter().print(JSONObject.fromObject(rsp));
+	}
+	/** 
+	 * @Description:	携程产品审核
+	 * @return	void
+	 * @author	liujq
+	 * @Date	2016年4月8日 下午5:04:54 
+	 */
+	@RequestMapping("/product/productAudit.in")
+	public void productAuditReceive(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		response.setCharacterEncoding("UTF-8");
+		BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream(),"UTF-8"));
+        String line = null;
+        StringBuffer sb = new StringBuffer();
+        while ((line = br.readLine()) != null) {
+            sb.append(line);
+        }
+        String strXml=sb.toString();
+		ProductAuditResultResponse productAuditResultResponse=null;
+		try {
+			ProductAuditResultRequest productAuditResultRequest=SDKCore.XMLStringToObj(ProductAuditResultRequest.class, strXml);
+			//给携程的token是md5（key#value）
+			String strToken=productAuditResultRequest.getToken();
+			String key=productAuditResultRequest.getRequestHeader().getVendorId()+"";
+			String value=productAuditResultRequest.getRequestHeader().getVendorToken();
+			if(Md5.getMd5Str(key+"#"+value).equals(strToken)){
+				ProductAuditResultType auditResult=productAuditResultRequest.getProductAuditResult();
+				auditResult.getAuditType();
+				auditResult.getAuditResult();
+				auditResult.getDays();
+				auditResult.getRejectReason();
+				auditResult.getVendorProductCode();
+				
+				//返回给供应商的
+				ProductAudit productAudit=new ProductAudit();
+				BeanUtils.copyProperties(productAudit, auditResult);
+				productAudit.setOtaType(OTAType.CTRIP);
+				
+				String strRequestXml=SDKCore.<ProductAudit> ObjToXMLString(productAudit);
+				Map<String,Object> params=new HashMap<String, Object>();
+				params.put("bodyParas", strRequestXml);
+				params.put("sessionID", Md5.getMd5Str(strRequestXml, "UTF-8"));
+				log.info("向旅业通供应商平台发送的xml"+strRequestXml);
+				Notify paraAuditNotify=new Notify(key,value);
+				paraAuditNotify.setThird_type(OTAType.CTRIP+"");
+				paraAuditNotify.setNotify_type(CommonConstant.NOTIFY_TYPE_CTIP_PRODUCT_AUDIT);
+				Notify productAuditNotify=notifyService.getNotifyByParas(paraAuditNotify); 
+				String drolayResponseXml="F";
+				if(productAuditNotify!=null){
+					drolayResponseXml=HttpTookit.retryReqest(params,productAuditNotify.getNotify_url());
+				}else{
+					log.info("供应商url没有配置");
+				}
+				log.info("记录审核报文");
+				ProductAuditContent productAuditContent=new ProductAuditContent(auditResult.getVendorProductCode(), strXml, key, value, drolayResponseXml.equals("S")?"Y":"N");
+				productAuditContent.setRequest_time(new Date());
+				productAuditContentService.save(productAuditContent);
+				productAuditResultResponse=new ProductAuditResultResponse("","");
+				String rspCtripXml=SDKCore.<ProductAuditResultResponse> ObjToXMLString(productAuditResultResponse);
+				response.getWriter().print(rspCtripXml);
+				log.info("返回携程结果"+rspCtripXml);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			productAuditResultResponse=new ProductAuditResultResponse("SYSTEM_EXCEPTION","系统异常");
+		}
 	}
 }
