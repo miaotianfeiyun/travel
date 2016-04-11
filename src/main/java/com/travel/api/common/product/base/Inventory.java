@@ -1,5 +1,4 @@
 package com.travel.api.common.product.base;
-
 import java.util.List;
 
 import org.simpleframework.xml.Element;

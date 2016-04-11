@@ -303,12 +303,12 @@ public class HttpTookit {
 	 * @author	liujq
 	 * @Date	2015年11月3日 下午6:41:37 
 	 */
-	public static String retryReqest(Map<String,Object> params,String url){
+	public static String retryReqest(String params,String url){
 		int retryTimes=Integer.valueOf(PropertyUtil.getSystemProperty("retry_times")).intValue();
-		String rsp=HttpTookit.doPost(url, params, CHARSET, false);
+		String rsp=HttpTookit.postStream(url, params, CHARSET, false);
 		int temp=1;
 		while("F".equals(rsp) && temp<retryTimes){
-			rsp=HttpTookit.doPost(url, params,CHARSET, false);
+			rsp=HttpTookit.postStream(url, params, CHARSET, false);
 			temp++;
 		}
 		return rsp;

@@ -157,11 +157,13 @@ public class ProductController {
             sb.append(line);
         }
         String strXml=sb.toString();
-		ProductAuditResultResponse productAuditResultResponse=null;
+		ProductAuditResultResponse productAuditResultResponse=null;//携程返回
 		try {
 			ProductAuditResultRequest productAuditResultRequest=SDKCore.XMLStringToObj(ProductAuditResultRequest.class, strXml);
-			//给携程的token是md5（key#value）
+			//给携程的token是本平台分配的 id-key#md5（key#value）
 			String strToken=productAuditResultRequest.getToken();
+			String appkey=strToken.split("#")[0].split("-")[0];
+			String appSecret=strToken.split("#")[0].split("-")[1];
 			String key=productAuditResultRequest.getRequestHeader().getVendorId()+"";
 			String value=productAuditResultRequest.getRequestHeader().getVendorToken();
 			if(Md5.getMd5Str(key+"#"+value).equals(strToken)){
@@ -177,24 +179,25 @@ public class ProductController {
 				BeanUtils.copyProperties(productAudit, auditResult);
 				productAudit.setOtaType(OTAType.CTRIP);
 				
-				String strRequestXml=SDKCore.<ProductAudit> ObjToXMLString(productAudit);
-				Map<String,Object> params=new HashMap<String, Object>();
-				params.put("bodyParas", strRequestXml);
-				params.put("sessionID", Md5.getMd5Str(strRequestXml, "UTF-8"));
-				log.info("向旅业通供应商平台发送的xml"+strRequestXml);
+				productAudit.setToken(Sign.signature(JsonUtil.toJson(productAudit),appkey, appSecret));
+				
+				log.info("向供应商平台发送的xml"+JsonUtil.toJson(productAudit));
+				//通过key value找到对应的通知地址
 				Notify paraAuditNotify=new Notify(key,value);
 				paraAuditNotify.setThird_type(OTAType.CTRIP+"");
 				paraAuditNotify.setNotify_type(CommonConstant.NOTIFY_TYPE_CTIP_PRODUCT_AUDIT);
 				Notify productAuditNotify=notifyService.getNotifyByParas(paraAuditNotify); 
 				String drolayResponseXml="F";
-				if(productAuditNotify!=null){
-					drolayResponseXml=HttpTookit.retryReqest(params,productAuditNotify.getNotify_url());
+				if(productAuditNotify!=null){//通知地址不为空
+					//请求供应商地址 如果失败重试N次
+					drolayResponseXml=HttpTookit.retryReqest(JsonUtil.toJson(productAudit),productAuditNotify.getNotify_url());
 				}else{
 					log.info("供应商url没有配置");
 				}
 				log.info("记录审核报文");
 				ProductAuditContent productAuditContent=new ProductAuditContent(auditResult.getVendorProductCode(), strXml, key, value, drolayResponseXml.equals("S")?"Y":"N");
 				productAuditContent.setRequest_time(new Date());
+				//记录供应商是否有返回 返回S标识此通知发送成功
 				productAuditContentService.save(productAuditContent);
 				productAuditResultResponse=new ProductAuditResultResponse("","");
 				String rspCtripXml=SDKCore.<ProductAuditResultResponse> ObjToXMLString(productAuditResultResponse);
@@ -203,7 +206,6 @@ public class ProductController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			productAuditResultResponse=new ProductAuditResultResponse("SYSTEM_EXCEPTION","系统异常");
 		}
 	}
 }
