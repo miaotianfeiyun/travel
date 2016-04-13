@@ -3,10 +3,10 @@ package com.travel.api.common.product;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.travel.api.common.ThirdOTA;
 import com.travel.api.common.base.OTAType;
 import com.travel.api.common.base.ProductOpType;
 import com.travel.api.common.base.ProductPattern;
+import com.travel.api.common.base.ThirdOTA;
 import com.travel.api.common.base.TourType;
 import com.travel.api.common.base.TransportationType;
 import com.travel.api.common.product.base.BookingInfo;
@@ -225,7 +225,7 @@ public static void main(String [] argus){
 	product.setExcludeExpense("费用不含，费用不含，费用不含费用不含费用不含费用不含费用不含费用不含");
 	product.setIncludeExpense("费用包含费用包含费用包含费用包含费用包含费用包含费用包含费用包含费用包含");
 	client.setProduct(product);
-	String response=client.invoke(client);
+	String response=client.invoke(client,"http://localhost:8080/travel");
 	System.out.println(response);
 }
 }

@@ -1,4 +1,4 @@
-package com.travel.api.common;
+package com.travel.api.common.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

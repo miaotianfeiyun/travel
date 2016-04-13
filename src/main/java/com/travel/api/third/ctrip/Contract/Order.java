@@ -8,24 +8,42 @@ import org.simpleframework.xml.ElementList;
 
 @Root
 public class Order {
+	/**
+	 * 携程订单编号
+	 */
 	@Element(required = false)
 	private String OrderId;
 
 	@Element(required = false)
 	private OrderAction Action;
 	
+	/**
+	 * 供应商产品编码
+	 */
 	@Element(required = false)
-	private String VendorProductCode;
+	private String ProductCode;
 	
+	/**
+	 * 出发日期
+	 */
 	@Element(required = false)
 	private String DepartureDate;
 	
+	/**
+	 * 订单信息 
+	 */
 	@Element(required = false)
 	private OrderInfo OrderInfo;
 	
+	/**
+	 * 订单的修改信息
+	 */
 	@ElementList(required = false)
 	private List<Change> ChangeList;
 	
+	/**
+	 * 消息Id
+	 */
 	@Element(required = false)
 	private String MessageId;
 	
@@ -36,15 +54,16 @@ public class Order {
 	public void setAction(OrderAction action) {
 		Action = action;
 	}
-	public String getVendorProductCode() {
-		return VendorProductCode;
-	}
-
-	public void setVendorProductCode(String vendorproductcode) {
-		VendorProductCode = vendorproductcode;
-	}
 	public String getDepartureDate() {
 		return DepartureDate;
+	}
+
+	public String getProductCode() {
+		return ProductCode;
+	}
+
+	public void setProductCode(String productCode) {
+		ProductCode = productCode;
 	}
 
 	public void setDepartureDate(String departuredate) {

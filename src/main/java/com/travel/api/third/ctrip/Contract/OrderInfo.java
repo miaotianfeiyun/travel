@@ -9,24 +9,49 @@ import org.simpleframework.xml.ElementList;
 @Root
 public class OrderInfo {
 
+	/**
+	 * 预定时间
+	 */
 	@Element(required = false)
 	private String BookingTime;
 	
+	/**
+	 * 套餐信息
+	 */
 	@Element(required = false)
 	private PackageInfo PackageInfo;
 	
+	/**
+	 * 订单附加服务列表
+	 */
 	@ElementList(required = false)
 	private List<OptionInfo> OptionInfoList;
 	
-	@Element(required = false)
-	private BoardingInfo BoardingInfo;
-	
+	/**
+	 * 出行人列表
+	 */
 	@ElementList(required = false)
 	private List<Traveler> TravelerList;
 	
+	/**
+	 * 上车地点
+	 */
+	@Deprecated
+	@Element(required = false)
+	private BoardingInfo BoardingInfo;
+	
+	
+	/**
+	 * 付款状态
+			true：已付
+			false：未付
+	 */
 	@Element(required = false)
 	private boolean IsPaid;
 	
+	/**
+	 * 备注
+	 */
 	@Element(required = false)
 	private String Remark;
 

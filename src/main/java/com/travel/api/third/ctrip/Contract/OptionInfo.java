@@ -6,22 +6,45 @@ import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 
+/**
+ * @author liujq
+ * 附加服务信息
+ *
+ */
 @Root
 public class OptionInfo {
+	/**
+	 * 供应商附加服务编码
+	 */
 	@Element(required = false)
-	private String VendorOptionCode;
+	private String OptionCode;
+	/**
+	 * 币种
+	 */
 	@Element(required = false)
 	private String Currency;
 
+	/**
+	 * 汇率
+	 */
 	@Element(required = false)
 	private double ExchangeRate;
 
+	/**
+	 * 底价
+	 */
 	@Element(required = false)
 	private double CostPrice;
 
+	/**
+	 * 份数
+	 */
 	@Element(required = false)
 	private int Quantity;
 
+	/**
+	 * 出行人编号列表
+	 */
 	@ElementList(required = false)
 	private List<String> TravelerIdList;
 
@@ -65,12 +88,13 @@ public class OptionInfo {
 		TravelerIdList = traveleridlist;
 	}
 
-	public String getVendorOptionCode() {
-		return VendorOptionCode;
+	public String getOptionCode() {
+		return OptionCode;
 	}
 
-	public void setVendorOptionCode(String vendorOptionCode) {
-		VendorOptionCode = vendorOptionCode;
+	public void setOptionCode(String optionCode) {
+		OptionCode = optionCode;
 	}
+
 
 }

@@ -8,11 +8,13 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.travel.api.common.ThirdOTA;
 import com.travel.api.common.base.ErrorCode;
 import com.travel.api.common.base.OTAResponse;
 import com.travel.api.common.base.OTAType;
 import com.travel.api.common.base.ProductOpType;
+import com.travel.api.common.base.ThirdOTA;
+import com.travel.api.common.order.OrderClient;
+import com.travel.api.common.order.base.OrderOperateType;
 import com.travel.api.common.product.ProductClient;
 import com.travel.api.common.product.base.SellingSet;
 import com.travel.api.common.product.base.VisaDetail;
@@ -27,6 +29,8 @@ import com.travel.api.third.ctrip.Contract.BeginSellingResponse;
 import com.travel.api.third.ctrip.Contract.BookingInfo;
 import com.travel.api.third.ctrip.Contract.BreachClause;
 import com.travel.api.third.ctrip.Contract.BreachClauseType;
+import com.travel.api.third.ctrip.Contract.ConfirmOrderRequest;
+import com.travel.api.third.ctrip.Contract.ConfirmOrderResponse;
 import com.travel.api.third.ctrip.Contract.Inventory;
 import com.travel.api.third.ctrip.Contract.ItineraryDay;
 import com.travel.api.third.ctrip.Contract.OptionPriceInfo;
@@ -36,6 +40,8 @@ import com.travel.api.third.ctrip.Contract.PackagePriceInfo;
 import com.travel.api.third.ctrip.Contract.Price;
 import com.travel.api.third.ctrip.Contract.ProductDescription;
 import com.travel.api.third.ctrip.Contract.ProductInfoType;
+import com.travel.api.third.ctrip.Contract.RejectOrderRequest;
+import com.travel.api.third.ctrip.Contract.RejectOrderResponse;
 import com.travel.api.third.ctrip.Contract.RequestHeaderType;
 import com.travel.api.third.ctrip.Contract.StopSelling;
 import com.travel.api.third.ctrip.Contract.StopSellingRequest;
@@ -54,7 +60,9 @@ import com.travel.api.third.ctrip.SDK.OPENAPI;
 import com.travel.api.third.ctrip.SDK.SDKCore;
 import com.travel.common.constant.ThirdAPIInterfaceName;
 import com.travel.common.util.ToolSpring;
+import com.travel.mybatis.entity.OrderToThirdOta;
 import com.travel.mybatis.entity.ProductToThirdOta;
+import com.travel.service.OrderToThirdOtaService;
 import com.travel.service.ProductToThirdOtaService;
 
 /** 
@@ -67,6 +75,7 @@ import com.travel.service.ProductToThirdOtaService;
  */
 public class CtripApiDeal {
 	private ProductToThirdOtaService productToThirdOtaService =(ProductToThirdOtaService)ToolSpring.getBean("productToThirdOtaService");
+	private OrderToThirdOtaService orderToThirdOtaService=(OrderToThirdOtaService)ToolSpring.getBean("orderToThirdOtaService");
 	private static OPENAPI openAPI = new OPENAPI();
 	/** 
 	 * @Description:	处理产品请求 主方法
@@ -74,7 +83,7 @@ public class CtripApiDeal {
 	 * @author	liujq
 	 * @Date	2016年4月8日 上午11:13:15 
 	 */
-	public  OTAResponse main(ProductClient client,ThirdOTA otaInfo) throws Exception{
+	public  OTAResponse mainProduct(ProductClient client,ThirdOTA otaInfo) throws Exception{
 		String errorMsg="";
 		OTAResponse response=new OTAResponse();
 		response.setOtaType(OTAType.CTRIP);
@@ -754,4 +763,75 @@ public class CtripApiDeal {
 		List<UpgradePackage> upgradepackagelist =new ArrayList<UpgradePackage>();
 		request.setUpgradePackageList(upgradepackagelist);
 	}*/
+	/** 
+	 * @Description:	处理订单的确认和拒绝操作
+	 * @return	void
+	 * @author	liujq
+	 * @throws Exception 
+	 * @Date	2016年4月12日 下午3:38:35 
+	 */
+	public OTAResponse mainOrder(OrderClient orderClient,ThirdOTA otaInfo) throws Exception {
+		String errorMsg="";
+		OTAResponse rsp=new OTAResponse();
+		rsp.setOtaType(OTAType.CTRIP);
+		//请求头
+		RequestHeaderType requestHeader=new RequestHeaderType();
+		requestHeader.setVendorId(Long.valueOf(otaInfo.getAppKey()));
+		requestHeader.setVendorToken(otaInfo.getAppSecret());
+		
+		if(orderClient.getOperateType().equals(OrderOperateType.CONFIRM)){
+			rsp=this.doConfirmOrder(orderClient,requestHeader,rsp,errorMsg);
+		}else if(orderClient.getOperateType().equals(OrderOperateType.REJECT)){
+			rsp=this.doRejectOrder(orderClient,requestHeader,rsp,errorMsg);
+		}else{
+			throw new Exception("OperateType 值异常");
+		}
+		return rsp;
+	}
+	/** 
+	 * @Description:	处理订单确认
+	 * @return	OTAResponse
+	 * @author	liujq
+	 * @Date	2016年4月12日 下午6:01:53 
+	 */
+	public OTAResponse doConfirmOrder(OrderClient order,RequestHeaderType requestHeader,OTAResponse rsp,String errorMsg) throws Exception{
+		ConfirmOrderRequest request=new ConfirmOrderRequest();
+		request.setRequestHeader(requestHeader);
+		request.setOrderId(order.getThirdOrderId());
+		request.setVendorOrderId(order.getOrderId());
+		request.setMessageId(order.getMessageId());
+		OrderToThirdOta orderToThirdOta=new OrderToThirdOta(order.getOrderId(), order.getThirdOrderId(), System.currentTimeMillis()+"", OTAType.CTRIP+"", ThirdAPIInterfaceName.CTRIP_CONFIRMORDER, order.getOperateType()+"", SDKCore.ObjToXMLString(request), null, new Date(), null);
+		orderToThirdOtaService.save(orderToThirdOta);
+		
+		ConfirmOrderResponse  confirmOrderResponse =openAPI.ConfirmOrder(request);
+		errorMsg=rsp.instance(errorMsg, JSONObject.fromObject(confirmOrderResponse));
+		
+		OrderToThirdOta orderToThirdOtaU=new OrderToThirdOta(orderToThirdOta.getId(), SDKCore.ObjToXMLString(confirmOrderResponse), new Date());
+		orderToThirdOtaService.update(orderToThirdOtaU);
+		return rsp;
+	}
+	
+	/** 
+	 * @Description:	处理订单拒绝
+	 * @return	OTAResponse
+	 * @author	liujq
+	 * @Date	2016年4月12日 下午6:01:56 
+	 */
+	public OTAResponse doRejectOrder(OrderClient orderClient,RequestHeaderType requestHeader,OTAResponse rsp,String errorMsg) throws Exception{
+		RejectOrderRequest request=new RejectOrderRequest();
+		request.setRequestHeader(requestHeader);
+		request.setOrderId(orderClient.getThirdOrderId());
+		request.setVendorOrderId(orderClient.getOrderId());
+		request.setMessageId(orderClient.getMessageId());
+		request.setReason(orderClient.getReason());
+		OrderToThirdOta orderToThirdOta=new OrderToThirdOta(orderClient.getOrderId(), orderClient.getThirdOrderId(), System.currentTimeMillis()+"", OTAType.CTRIP+"", ThirdAPIInterfaceName.CTRIP_REJECTORDER, orderClient.getOperateType()+"", SDKCore.ObjToXMLString(request), null, new Date(), null);
+		orderToThirdOtaService.save(orderToThirdOta);
+		
+		RejectOrderResponse  rejectOrderResponse =openAPI.RejectOrder(request);
+		errorMsg=rsp.instance(errorMsg, JSONObject.fromObject(rejectOrderResponse));;
+		
+		OrderToThirdOta orderToThirdOtaU=new OrderToThirdOta(orderToThirdOta.getId(), SDKCore.ObjToXMLString(rejectOrderResponse), new Date());
+		orderToThirdOtaService.update(orderToThirdOtaU);
+		return rsp;
+	}
 }

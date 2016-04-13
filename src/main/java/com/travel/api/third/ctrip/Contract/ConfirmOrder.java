@@ -1,4 +1,4 @@
-package com.travel.api.common.order;
+package com.travel.api.third.ctrip.Contract;
 
 import org.simpleframework.xml.Element;
 

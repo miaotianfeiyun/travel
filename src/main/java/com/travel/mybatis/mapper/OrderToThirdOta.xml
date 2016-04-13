@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="com.travel.mybatis.dao.OrderToThirdOtaMapper">
+	<sql id="Base_Column_List">
+		id,vendororderid,thirdorderid,sn,third_type,interface_name,real_action,request_xml,response_xml,request_time,response_time
+	</sql>
+	<sql id="Base_Column_insert">
+        	#{id,jdbcType=INTEGER},
+        	#{vendororderid,jdbcType=VARCHAR},
+        	#{thirdorderid,jdbcType=VARCHAR},
+        	#{sn,jdbcType=VARCHAR},
+        	#{third_type,jdbcType=VARCHAR},
+        	#{interface_name,jdbcType=VARCHAR},
+        	#{real_action,jdbcType=VARCHAR},
+        	#{request_xml,jdbcType=LONGVARCHAR},
+        	#{response_xml,jdbcType=LONGVARCHAR},
+        	#{request_time,jdbcType=TIMESTAMP},
+        	#{response_time,jdbcType=TIMESTAMP}
+	</sql>
+	<sql id="Base_query_column">
+		id,vendororderid,thirdorderid,sn,third_type,interface_name,real_action,request_xml,response_xml,request_time,response_time
+	</sql>
+	<sql id="Base_query_where">
+		 	<if test="vendororderid != null and vendororderid != ''">
+	          and vendororderid = #{vendororderid}
+	         </if>
+		 	<if test="thirdorderid != null and thirdorderid != ''">
+	          and thirdorderid = #{thirdorderid}
+	         </if>
+		 	<if test="sn != null and sn != ''">
+	          and sn = #{sn}
+	         </if>
+		 	<if test="third_type != null and third_type != ''">
+	          and third_type = #{third_type}
+	         </if>
+		 	<if test="interface_name != null and interface_name != ''">
+	          and interface_name = #{interface_name}
+	         </if>
+		 	<if test="real_action != null and real_action != ''">
+	          and real_action = #{real_action}
+	         </if>
+		 	<if test="request_xml != null and request_xml != ''">
+	          and request_xml = #{request_xml}
+	         </if>
+		 	<if test="response_xml != null and response_xml != ''">
+	          and response_xml = #{response_xml}
+	         </if>
+		 	<if test="request_time != null and request_time != ''">
+	          and request_time = #{request_time}
+	         </if>
+		 	<if test="response_time != null and response_time != ''">
+	          and response_time = #{response_time}
+	         </if>
+	</sql>
+	
+	<insert id="save" parameterType="com.travel.mybatis.entity.OrderToThirdOta" keyProperty="id" >
+        INSERT INTO order_to_third_ota ( <include refid="Base_Column_List" /> )  VALUES (
+            <include refid="Base_Column_insert" /> 
+        )
+	</insert>
+
+	
+	<update id="update" parameterType="com.travel.mybatis.entity.OrderToThirdOta" flushCache="true">
+        UPDATE order_to_third_ota 
+        <set>
+	        	<if test=" vendororderid!= null  and vendororderid != ''">
+	        		vendororderid = #{vendororderid,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" thirdorderid!= null  and thirdorderid != ''">
+	        		thirdorderid = #{thirdorderid,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" sn!= null  and sn != ''">
+	        		sn = #{sn,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" third_type!= null  and third_type != ''">
+	        		third_type = #{third_type,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" interface_name!= null  and interface_name != ''">
+	        		interface_name = #{interface_name,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" real_action!= null  and real_action != ''">
+	        		real_action = #{real_action,jdbcType=VARCHAR} ,
+	        	</if>
+	        	<if test=" request_xml!= null  and request_xml != ''">
+	        		request_xml = #{request_xml,jdbcType=LONGVARCHAR} ,
+	        	</if>
+	        	<if test=" response_xml!= null  and response_xml != ''">
+	        		response_xml = #{response_xml,jdbcType=LONGVARCHAR} ,
+	        	</if>
+	        	<if test=" request_time!= null  and request_time != ''">
+	        		request_time = #{request_time,jdbcType=TIMESTAMP} ,
+	        	</if>
+	        	<if test=" response_time!= null  and response_time != ''">
+	        		response_time = #{response_time,jdbcType=TIMESTAMP} 
+	        	</if>
+	      </set>
+        WHERE 
+	        id = #{id,jdbcType=INTEGER} 
+	</update>   
+	
+	
+	<delete id="delete" parameterType="string">
+	    delete from order_to_third_ota where id=#id
+	</delete>
+	
+	
+	<select id="getOrderToThirdOtaByParas" resultType="com.travel.mybatis.entity.OrderToThirdOta" parameterType="com.travel.mybatis.entity.OrderToThirdOta">
+		select <include refid="Base_query_column" /> from order_to_third_ota where 1=1
+		<include refid="Base_query_where" />
+	</select>
+	
+	<select id="getOrderToThirdOtaByParasNoPage" resultType="com.travel.mybatis.entity.OrderToThirdOta" parameterType="com.travel.mybatis.entity.OrderToThirdOta">
+		select <include refid="Base_query_column" /> from order_to_third_ota where 1=1
+		<include refid="Base_query_where" />
+	</select>
+</mapper>

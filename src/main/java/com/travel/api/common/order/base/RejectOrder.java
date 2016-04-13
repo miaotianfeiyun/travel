@@ -1,4 +1,4 @@
-package com.travel.api.common.order;
+package com.travel.api.common.order.base;
 
 import org.simpleframework.xml.Element;
 
@@ -22,7 +22,6 @@ public class RejectOrder {
 	 */
 	@Element(required = false)
 	private String Reason;
-
 
 	public String getThirdOrderId() {
 		return thirdOrderId;

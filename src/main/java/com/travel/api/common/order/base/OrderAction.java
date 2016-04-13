@@ -1,4 +1,4 @@
-package com.travel.api.common.order;
+package com.travel.api.common.order.base;
 
 import org.simpleframework.xml.Root;
 

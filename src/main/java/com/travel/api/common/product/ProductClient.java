@@ -2,12 +2,13 @@ package com.travel.api.common.product;
 
 import java.util.List;
 
-import com.travel.api.common.JsonUtil;
-import com.travel.api.common.Sign;
-import com.travel.api.common.ThirdOTA;
+import com.travel.api.common.base.ClientBase;
 import com.travel.api.common.base.ProductOpType;
+import com.travel.api.common.base.ThirdOTA;
 import com.travel.api.common.product.base.Product;
 import com.travel.api.common.product.base.SellingSet;
+import com.travel.api.common.util.JsonUtil;
+import com.travel.api.common.util.Sign;
 import com.travel.common.util.HttpTookit;
 
 /** 
@@ -20,19 +21,9 @@ import com.travel.common.util.HttpTookit;
  * @version :1.0
  */
 
-public class ProductClient {
-	private static final String host="http://localhost:8080";
-	private static final String productDealUrl="/v1/product/addOrModify.in";
-	/** 
-	* @Fields appKey : 连接接口平台的key
-	* @date 2016年3月21日 下午6:07:35 
-	*/ 
-	private String appKey;
-	/** 
-	* @Fields appSecret : 连接接口平台的secret
-	* @date 2016年3月21日 下午6:07:56 
-	*/ 
-	private String appSecret;
+public class ProductClient extends ClientBase{
+	
+	
 	/** 
 	* @Fields thirdOTAList : 第三方平台合作key和secret列表
 	* @date 2016年3月21日 下午2:03:41 
@@ -81,7 +72,7 @@ public class ProductClient {
 	public void setThirdOTAList(List<ThirdOTA> thirdOTAList) {
 		this.thirdOTAList = thirdOTAList;
 	}
-	public String invoke(ProductClient client){
+	public String invoke(ProductClient client,String host){
 		client.setToken(Sign.signature(JsonUtil.toJson(client),getAppKey(), getAppSecret()));
 		return HttpTookit.postStream(host+"/travel"+productDealUrl, JsonUtil.toJson(client), HttpTookit.CHARSET, false);
 	}
@@ -115,22 +106,6 @@ public class ProductClient {
 
 	public void setToken(String token) {
 		this.token = token;
-	}
-
-	public String getAppKey() {
-		return appKey;
-	}
-
-	public void setAppKey(String appKey) {
-		this.appKey = appKey;
-	}
-
-	public String getAppSecret() {
-		return appSecret;
-	}
-
-	public void setAppSecret(String appSecret) {
-		this.appSecret = appSecret;
 	}
 	
 }

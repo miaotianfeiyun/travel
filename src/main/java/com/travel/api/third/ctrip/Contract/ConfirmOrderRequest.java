@@ -4,41 +4,38 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 @Root(name = "ConfirmOrderRequest")
-public class ConfirmOrderRequest  extends RequestBase  {
-@Element(required=false)
-private long OrderId ;
+public class ConfirmOrderRequest extends RequestBase {
+	@Element(required = false)
+	private String OrderId;
 
+	@Element(required = false)
+	private String VendorOrderId;
 
-public long getOrderId() {
-	return OrderId;
- }
+	@Element(required = false)
+	private String MessageId;
 
-public void setOrderId(long orderid) {
-OrderId = orderid;
-}
+	public String getOrderId() {
+		return OrderId;
+	}
 
-@Element(required=false)
-private String VendorOrderId ;
+	public void setOrderId(String orderid) {
+		OrderId = orderid;
+	}
 
+	public String getVendorOrderId() {
+		return VendorOrderId;
+	}
 
-public String getVendorOrderId() {
-	return VendorOrderId;
- }
+	public void setVendorOrderId(String vendororderid) {
+		VendorOrderId = vendororderid;
+	}
 
-public void setVendorOrderId(String vendororderid) {
-VendorOrderId = vendororderid;
-}
+	public String getMessageId() {
+		return MessageId;
+	}
 
-@Element(required=false)
-private String MessageId ;
-
-
-public String getMessageId() {
-	return MessageId;
- }
-
-public void setMessageId(String messageid) {
-MessageId = messageid;
-}
+	public void setMessageId(String messageid) {
+		MessageId = messageid;
+	}
 
 }

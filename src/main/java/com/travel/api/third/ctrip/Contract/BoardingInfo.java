@@ -7,37 +7,35 @@ import org.simpleframework.xml.Element;
 public class BoardingInfo {
 	@Element(required=false)
 	private String Location;
-
-
-public String getLocation() {
-	return Location;
- }
-
-public void setLocation(String location) {
-Location = location;
-}
 	
 	@Element(required=false)
 	private String Price;
-
-
-public String getPrice() {
-	return Price;
- }
-
-public void setPrice(String price) {
-Price = price;
-}
 	
 	@Element(required=false)
 	private String Time;
 
+	public String getLocation() {
+		return Location;
+	}
 
-public String getTime() {
-	return Time;
- }
+	public void setLocation(String location) {
+		Location = location;
+	}
 
-public void setTime(String time) {
-Time = time;
-}
+	public String getPrice() {
+		return Price;
+	}
+
+	public void setPrice(String price) {
+		Price = price;
+	}
+
+	public String getTime() {
+		return Time;
+	}
+
+	public void setTime(String time) {
+		Time = time;
+	}
+
 }

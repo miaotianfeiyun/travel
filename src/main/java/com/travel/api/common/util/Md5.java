@@ -1,4 +1,4 @@
-package com.travel.api.common;
+package com.travel.api.common.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

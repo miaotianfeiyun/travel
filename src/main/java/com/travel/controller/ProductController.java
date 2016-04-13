@@ -24,12 +24,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.travel.api.common.Sign;
-import com.travel.api.common.ThirdOTA;
 import com.travel.api.common.base.CommonConstant;
 import com.travel.api.common.base.ErrorCode;
 import com.travel.api.common.base.OTAResponse;
 import com.travel.api.common.base.OTAType;
+import com.travel.api.common.base.ThirdOTA;
 import com.travel.api.common.product.ProductAudit;
 import com.travel.api.common.product.ProductAuditResultResponse;
 import com.travel.api.common.product.ProductClient;
@@ -44,6 +43,7 @@ import com.travel.api.common.product.base.PackagePriceInfo;
 import com.travel.api.common.product.base.Price;
 import com.travel.api.common.product.base.Selling;
 import com.travel.api.common.product.base.VisaDetail;
+import com.travel.api.common.util.Sign;
 import com.travel.api.third.ctrip.Contract.ProductAuditResultRequest;
 import com.travel.api.third.ctrip.Contract.ProductAuditResultType;
 import com.travel.api.third.ctrip.SDK.SDKCore;
@@ -70,7 +70,7 @@ import com.travel.service.ProductToTopService;
  * @version :1.0
  */
 @Controller
-@RequestMapping("/v1")
+@RequestMapping("/v1/product")
 public class ProductController {
 	private static Logger log=Logger.getLogger(ProductController.class);
 	@Autowired
@@ -85,7 +85,7 @@ public class ProductController {
 	 * @author	liujq
 	 * @Date	2016年3月25日 下午5:11:24 
 	 */
-	@RequestMapping(value="/product/addOrModify.in")
+	@RequestMapping(value="/addOrModify.in")
 	public void productDeal(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		response.setCharacterEncoding("UTF-8");
 		ProductResponse rsp=new ProductResponse();
@@ -124,7 +124,7 @@ public class ProductController {
 				//携程
 				List<OTAResponse> responseList=new ArrayList<OTAResponse>();
 				if(OTAType.CTRIP.equals(temp.getOTAType())){
-					responseList.add(new CtripApiDeal().main(clientReq,temp));
+					responseList.add(new CtripApiDeal().mainProduct(clientReq,temp));
 					rsp.setResponseList(responseList);
 					log.info(JsonUtil.toJson(rsp));
 				}else if(OTAType.TUNIU.equals(temp.getOTAType())){
@@ -147,7 +147,7 @@ public class ProductController {
 	 * @author	liujq
 	 * @Date	2016年4月8日 下午5:04:54 
 	 */
-	@RequestMapping("/product/productAudit.in")
+	@RequestMapping("/productAudit.in")
 	public void productAuditReceive(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		response.setCharacterEncoding("UTF-8");
 		BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream(),"UTF-8"));

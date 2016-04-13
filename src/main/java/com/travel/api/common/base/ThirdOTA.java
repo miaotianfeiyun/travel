@@ -1,6 +1,5 @@
-package com.travel.api.common;
+package com.travel.api.common.base;
 
-import com.travel.api.common.base.OTAType;
 
 /** 
  * <p>Title: ThirdOTA.java</p>
