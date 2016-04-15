@@ -15,7 +15,7 @@ public class Order {
 	private String OrderId;
 
 	@Element(required = false)
-	private OrderAction Action;
+	private String Action;
 	
 	/**
 	 * 供应商产品编码
@@ -47,11 +47,11 @@ public class Order {
 	@Element(required = false)
 	private String MessageId;
 	
-	public OrderAction getAction() {
+	public String getAction() {
 		return Action;
 	}
 
-	public void setAction(OrderAction action) {
+	public void setAction(String action) {
 		Action = action;
 	}
 	public String getDepartureDate() {

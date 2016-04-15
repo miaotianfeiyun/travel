@@ -69,5 +69,34 @@ public static final  String CTRIP_CONFIRMORDER="ConfirmOrder";
 * @Fields CTRIP_REJECTORDER : 拒绝订单
 * @date 2016年4月5日 下午5:54:45 
 */ 
+/** 
+* @Fields CTRIP_REJECTORDER : TODO
+* @date 2016年4月13日 下午3:53:28 
+*/ 
 public static final  String CTRIP_REJECTORDER="RejectOrder"; 
+/** 
+* @Fields CTRIP_PRODUCTAUDIT : 携程产品审核
+* @date 2016年4月13日 下午3:53:32 
+*/ 
+public static final  String CTRIP_PRODUCTAUDIT="ProductAudit";
+/** 
+* @Fields CTRIP_CREATEORDER : 携程 -创建订单
+* @date 2016年4月13日 下午3:53:35 
+*/ 
+public static final  String CTRIP_CREATEORDER="CreateOrder";
+/** 
+* @Fields CTRIP_PAYORDER : TODO
+* @date 2016年4月13日 下午3:53:37 
+*/ 
+public static final  String CTRIP_PAYORDER="PayOrder";
+/** 
+* @Fields CTRIP_MODIFYORDER : 携程-修改订单
+* @date 2016年4月13日 下午3:53:40 
+*/ 
+public static final  String CTRIP_MODIFYORDER="ModifyOrder";
+/** 
+* @Fields CTRIP_CANCELORDER : 携程-取消订单
+* @date 2016年4月13日 下午3:53:42 
+*/ 
+public static final  String CTRIP_CANCELORDER="CancelOrder";
 }

@@ -166,7 +166,7 @@ public class ProductController {
 			String appSecret=strToken.split("#")[0].split("-")[1];
 			String key=productAuditResultRequest.getRequestHeader().getVendorId()+"";
 			String value=productAuditResultRequest.getRequestHeader().getVendorToken();
-			if(Md5.getMd5Str(key+"#"+value).equals(strToken)){
+			if(Md5.getMd5Str(key+"#"+value).equals(strToken.split("#")[1])){
 				ProductAuditResultType auditResult=productAuditResultRequest.getProductAuditResult();
 				auditResult.getAuditType();
 				auditResult.getAuditResult();
