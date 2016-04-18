@@ -1,5 +1,7 @@
 package com.travel.api.common.product.base;
 
+import java.io.Serializable;
+
 import org.simpleframework.xml.Element;
 
 /** 
@@ -12,7 +14,11 @@ import org.simpleframework.xml.Element;
  * @version :1.0
  */
 
-public class OptionPriceInfo {
+public class OptionPriceInfo implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/** 
 	* @Fields OptionName : TODO
 	* @date 2016年3月18日 下午4:21:25 

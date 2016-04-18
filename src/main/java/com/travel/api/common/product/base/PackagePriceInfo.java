@@ -1,5 +1,7 @@
 package com.travel.api.common.product.base;
 
+import java.io.Serializable;
+
 import org.simpleframework.xml.Element;
 
 /** 
@@ -12,8 +14,9 @@ import org.simpleframework.xml.Element;
  * @version :1.0
  */
 
-public class PackagePriceInfo {
-
+public class PackagePriceInfo  implements Serializable{
+	
+private static final long serialVersionUID = 1L;
 /** 
 * @Fields PackageCode : 供应商套餐编码，如果为升级套餐，则填入升级套餐编码，如果为基础线路，请赋空值。
 * @date 2016年3月17日 下午3:46:37 

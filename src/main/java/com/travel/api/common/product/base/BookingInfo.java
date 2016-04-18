@@ -1,5 +1,7 @@
 package com.travel.api.common.product.base;
 
+import java.io.Serializable;
+
 /** 
  * <p>Title: BookingInfo.java</p>
  * <p>Package Name: com.travel.api.common.product</p>  
@@ -9,7 +11,9 @@ package com.travel.api.common.product.base;
  * @date  :2016年3月15日 
  * @version :1.0
  */
-public class BookingInfo {
+public class BookingInfo   implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	/** 
 	* @Fields ProductContact : 供应商产品联系人
 	* @date 2016年3月15日 上午11:52:50 

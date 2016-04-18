@@ -1,5 +1,7 @@
 package com.travel.api.common.product.base;
 
+import java.io.Serializable;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -13,7 +15,8 @@ import org.simpleframework.xml.Root;
 * @version :1.0
 */ 
 @Root(name = "BreachClauseType")
-public class BreachClauseType {
+public class BreachClauseType implements Serializable{
+	private static final long serialVersionUID = 1L;
 	/** 
 	* @Fields FromDaysBeforeDeparture : 行程前最大提前天数
 	* @date 2016年3月22日 下午3:32:40 

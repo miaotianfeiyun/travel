@@ -1,5 +1,6 @@
 package com.travel.api.common.product.base;
 
+import java.io.Serializable;
 import java.util.List;
 
 /** 
@@ -12,7 +13,9 @@ import java.util.List;
  * @version :1.0
  */
 
-public class Itinerary {
+public class Itinerary   implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	/** 
 	* @Fields Day : 行程段顺序，即第几天行程。1~20，不得重复，1起步顺序增长
 	* @date 2016年3月15日 上午11:00:22 

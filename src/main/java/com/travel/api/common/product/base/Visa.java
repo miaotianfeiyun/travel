@@ -18,9 +18,7 @@ import org.simpleframework.xml.ElementList;
  */
 
 public class Visa implements Serializable{
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 
 	@Element(required=false)

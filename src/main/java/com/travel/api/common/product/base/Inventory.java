@@ -1,4 +1,5 @@
 package com.travel.api.common.product.base;
+import java.io.Serializable;
 import java.util.List;
 
 import org.simpleframework.xml.Element;
@@ -14,8 +15,9 @@ import org.simpleframework.xml.ElementList;
  * @version :1.0
  */
 
-public class Inventory {
+public class Inventory   implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	/** 
 	* @Fields StartDate : 开始日期
 	* @date 2016年3月17日 下午3:57:25 

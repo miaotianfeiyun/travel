@@ -1,5 +1,7 @@
 package com.travel.api.common.product.base;
 
+import java.io.Serializable;
+
 import org.simpleframework.xml.Element;
 
 /** 
@@ -12,8 +14,12 @@ import org.simpleframework.xml.Element;
  * @version :1.0
  */
 
-public class VisaDeliveryAddress {
+public class VisaDeliveryAddress implements Serializable{
 
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 @Element(required=false)
 private String CityName ;
 

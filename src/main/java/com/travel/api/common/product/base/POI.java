@@ -1,5 +1,7 @@
 package com.travel.api.common.product.base;
 
+import java.io.Serializable;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -14,7 +16,11 @@ import org.simpleframework.xml.Root;
  */
 
 @Root(name="POI")
-public class POI {
+public class POI implements Serializable{
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 @Element(required=false)
 private String POIName ;
 

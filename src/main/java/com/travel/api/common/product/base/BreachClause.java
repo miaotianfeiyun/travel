@@ -1,5 +1,6 @@
 package com.travel.api.common.product.base;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.simpleframework.xml.ElementList;
@@ -15,8 +16,9 @@ import org.simpleframework.xml.Root;
 * @version :1.0
 */ 
 @Root(name="BreachClause")
-public class BreachClause {
-
+public class BreachClause   implements Serializable{
+	
+private static final long serialVersionUID = 1L;
 /** 
 * @Fields TravelerBreachClauseList : 客户违约条款
 * @date 2016年3月22日 下午3:28:59 

@@ -21,8 +21,5 @@ public class GetTodoOrderListResponse extends ResponseBase {
 	public String GetOrderId() {
 		return this.TodoOrderList.get(0).getOrderId();
 	}
-
-	public String GetErrorCode() {
-		return super.GetErrorCode();
-	}
+	
 }

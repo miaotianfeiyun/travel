@@ -23,7 +23,7 @@ public class DateUtil {
     /**
      * yyyy-MM-dd格式的日期格式化类
      */
-    public static final SimpleDateFormat YMD = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat YMD = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * 把java.util.Date对象格式化成指定格式的string类型
@@ -1078,8 +1078,6 @@ public class DateUtil {
     public static List<String> dateWeekList(String startDateStr, String endDateStr) {
         Date startDate = parse(startDateStr);
         Date endDate = parse(endDateStr);
-        List<String> shortMonthList = new ArrayList<String>();
-
         Calendar target = GregorianCalendar.getInstance();
         target.setFirstDayOfWeek(Calendar.MONDAY);
         target.setTime(startDate);
@@ -1090,14 +1088,13 @@ public class DateUtil {
         return null;
     }
 
-    @SuppressWarnings("null")
 	public static List<String> dateMonthList(String startDateStr, String endDateStr) {
         try {
             Date startDate = parse(startDateStr);
             Date endDate = parse(endDateStr);
             int months = dispersionMonth(startDate, endDate);
             List<String> shortMonthList = new ArrayList<String>();
-            String data[] = null;
+            String data[] = new String[months];
             for (int i = 0; i < months; i++) {
                 if (i == 0) {
                     shortMonthList.add(startDateStr);
@@ -1285,7 +1282,7 @@ public class DateUtil {
             Long dateInt = Long.valueOf(sdf.format(date));
             if (now > dateInt) {
                 return -1;
-            } else if (now.equals(dateInt.intValue())) {
+            } else if (now.equals(dateInt.longValue())) {
                 return 0;
             } else {
                 return 1;
