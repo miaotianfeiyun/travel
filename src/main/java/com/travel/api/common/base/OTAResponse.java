@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
  * <p>Title: OTAResponse.java</p>
  * <p>Package Name: com.travel.api.common.base</p>  
  * <p>Description:平台各自的错误返回</p> 
- *  
  * @author liujq
  * @date  :2016年3月25日 
  * @version :1.0
