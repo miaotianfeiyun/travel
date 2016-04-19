@@ -40,4 +40,15 @@ public  String instance(String orgStr,JSONObject jsonObj){
 	}
 	return sb.toString();
 }
+/**
+ * 第三方平台返回的产品编码
+ */
+private String productId;
+
+public String getProductId() {
+	return productId;
+}
+public void setProductId(String productId) {
+	this.productId = productId;
+}
 }

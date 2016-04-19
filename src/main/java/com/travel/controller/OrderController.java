@@ -11,9 +11,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -56,6 +53,9 @@ import com.travel.mybatis.entity.OrderToTop;
 import com.travel.service.NotifyService;
 import com.travel.service.OrderToThirdOtaService;
 import com.travel.service.OrderToTopService;
+
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 /** 
  * <p>Title: OrderController.java</p>
@@ -137,22 +137,20 @@ public class OrderController {
 		log.info("===================================处理携程创建订单操作开始===================================");
 		String sn=System.currentTimeMillis()+"";
 		String rspCtripXml="";
-		String strXml=HttpTookit.getStrXmlFromStream(request);
+		String strXml=HttpTookit.getFromStream(request);
 		OrderToThirdOta orderToThirdOta=new OrderToThirdOta(null, XPathUtil.getResult(strXml, "//OrderId"), sn, OTAType.CTRIP+"", "CreateOrder", ThirdAPIInterfaceName.CTRIP_CREATEORDER, strXml, null, new Date(), null);
 		orderToThirdOtaService.save(orderToThirdOta);
 		CreateOrderResponse createOrderResponse=null;
 		try {
 			CreateOrderRequest createOrderReq=SDKCore.XMLStringToObj(CreateOrderRequest.class, strXml);
-			//给携程的token是本平台分配的 id-key#md5（key#value）
+			//给携程的token是第三方平台的 key-value#md5（key#value）
 			String strToken=createOrderReq.getToken();
-			String appkey=strToken.split("#")[0].split("-")[0];
-			String appSecret=strToken.split("#")[0].split("-")[1];
-			String key=createOrderReq.getRequestHeader().getVendorId()+"";
-			String value=createOrderReq.getRequestHeader().getVendorToken();
+			String key=strToken.split("#")[0].split("-")[0];
+			String value=strToken.split("#")[0].split("-")[1];
 			if(Md5.getMd5Str(key+"#"+value).equals(strToken.split("#")[1])){
 				com.travel.api.third.ctrip.Contract.Order tempOrder=createOrderReq.getOrder();
 				
-				OrderResponse rsponse=this.commonOrderDeal(appkey, appSecret, tempOrder, CommonConstant.NOTIFY_TYPE_CTIP_ORDER_CREATE,sn,"CreateOrderRequest",OrderDealType.CREATE);
+				OrderResponse rsponse=this.commonOrderDeal(key, value, tempOrder, CommonConstant.NOTIFY_TYPE_CTIP_ORDER_CREATE,sn,"CreateOrderRequest",OrderDealType.CREATE);
 				
 				createOrderResponse=new CreateOrderResponse();
 				BeanUtils.copyProperties(createOrderResponse, rsponse);
@@ -196,15 +194,13 @@ public class OrderController {
     	PayOrderResponse payOrderResponse=null;
 		try {
 			CreateOrderRequest createOrderReq=SDKCore.XMLStringToObj(CreateOrderRequest.class, strXml);
-			//给携程的token是本平台分配的 id-key#md5（key#value）
+			//给携程的token是第三方平台的 key-value#md5（key#value）
 			String strToken=createOrderReq.getToken();
-			String appkey=strToken.split("#")[0].split("-")[0];
-			String appSecret=strToken.split("#")[0].split("-")[1];
-			String key=createOrderReq.getRequestHeader().getVendorId()+"";
-			String value=createOrderReq.getRequestHeader().getVendorToken();
+			String key=strToken.split("#")[0].split("-")[0];
+			String value=strToken.split("#")[0].split("-")[1];
 			if(Md5.getMd5Str(key+"#"+value).equals(strToken.split("#")[1])){
 				com.travel.api.third.ctrip.Contract.Order tempOrder=createOrderReq.getOrder();
-				OrderResponse rsponse=this.commonOrderDeal(appkey, appSecret, tempOrder, CommonConstant.NOTIFY_TYPE_CTIP_ORDER_PAY,sn,"PayOrderRequest",OrderDealType.PAY);
+				OrderResponse rsponse=this.commonOrderDeal(key, value, tempOrder, CommonConstant.NOTIFY_TYPE_CTIP_ORDER_PAY,sn,"PayOrderRequest",OrderDealType.PAY);
 				//返回给供应商的
 				payOrderResponse=new PayOrderResponse();
 				//公共返回
@@ -245,15 +241,13 @@ public class OrderController {
 		ModifyOrderResponse modifyOrderResponse=null;
 		try {
 			ModifyOrderRequest modifyOrderReq=SDKCore.XMLStringToObj(ModifyOrderRequest.class, strXml);
-			//给携程的token是本平台分配的 id-key#md5（key#value）
+			//给携程的token是第三方平台的 key-value#md5（key#value）
 			String strToken=modifyOrderReq.getToken();
-			String appkey=strToken.split("#")[0].split("-")[0];
-			String appSecret=strToken.split("#")[0].split("-")[1];
-			String key=modifyOrderReq.getRequestHeader().getVendorId()+"";
-			String value=modifyOrderReq.getRequestHeader().getVendorToken();
+			String key=strToken.split("#")[0].split("-")[0];
+			String value=strToken.split("#")[0].split("-")[1];
 			if(Md5.getMd5Str(key+"#"+value).equals(strToken.split("#")[1])){
 				com.travel.api.third.ctrip.Contract.Order tempOrder=modifyOrderReq.getOrder();
-				OrderResponse rsponse=this.commonOrderDeal(appkey, appSecret, tempOrder, CommonConstant.NOTIFY_TYPE_CTIP_ORDER_UPDATE,sn,"ModifyOrderRequest",OrderDealType.UPDATE);
+				OrderResponse rsponse=this.commonOrderDeal(key, value, tempOrder, CommonConstant.NOTIFY_TYPE_CTIP_ORDER_UPDATE,sn,"ModifyOrderRequest",OrderDealType.UPDATE);
 				modifyOrderResponse=new ModifyOrderResponse();
 				BeanUtils.copyProperties(modifyOrderResponse, rsponse);
 				modifyOrderResponse.setVendorOrderId(rsponse.getVendorOrderId());//携程订单号	
@@ -293,15 +287,13 @@ public class OrderController {
 		CancelOrderResponse cancelOrderResponse=null;
 		try {
 			CancelOrderRequest cancleOrderReq=SDKCore.XMLStringToObj(CancelOrderRequest.class, strXml);
-			//给携程的token是本平台分配的 id-key#md5（key#value）
+			//给携程的token是第三方平台的 key-value#md5（key#value）
 			String strToken=cancleOrderReq.getToken();
-			String appkey=strToken.split("#")[0].split("-")[0];
-			String appSecret=strToken.split("#")[0].split("-")[1];
-			String key=cancleOrderReq.getRequestHeader().getVendorId()+"";
-			String value=cancleOrderReq.getRequestHeader().getVendorToken();
+			String key=strToken.split("#")[0].split("-")[0];
+			String value=strToken.split("#")[0].split("-")[1];
 			if(Md5.getMd5Str(key+"#"+value).equals(strToken.split("#")[1])){
 				com.travel.api.third.ctrip.Contract.Order tempOrder=cancleOrderReq.getOrder();
-				OrderResponse rsponse=this.commonOrderDeal(appkey, appSecret, tempOrder, CommonConstant.NOTIFY_TYPE_CTIP_ORDER_CANCLE,sn,"CancelOrderRequest",OrderDealType.CANCLE);
+				OrderResponse rsponse=this.commonOrderDeal(key, value, tempOrder, CommonConstant.NOTIFY_TYPE_CTIP_ORDER_CANCLE,sn,"CancelOrderRequest",OrderDealType.CANCLE);
 				cancelOrderResponse=new CancelOrderResponse();
 				BeanUtils.copyProperties(cancelOrderResponse, rsponse);
 				cancelOrderResponse.setVendorOrderId(rsponse.getVendorOrderId());//携程订单号	
@@ -450,7 +442,7 @@ public class OrderController {
 		newOrderInfo.setIsPaid(oldOrderInfo.getIsPaid());
 		newOrderInfo.setRemark(oldOrderInfo.getRemark());
 		newOrder.setOrderInfo(newOrderInfo);
-		newOrder.setProductCode(thirdOrder.getProductCode());
+		newOrder.setProductCode(thirdOrder.getVendorProductCode());
 		return newOrder;
 	}
 }

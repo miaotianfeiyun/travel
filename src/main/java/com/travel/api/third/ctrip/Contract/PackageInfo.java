@@ -14,7 +14,7 @@ public class PackageInfo {
 	 * 供应商套餐编码 如果是基础套餐则为空
 	 */
 	@Element(required=false)
-	private String PackageCode;
+	private String VendorPackageCode;
 
 	/**
 	 * 币种
@@ -70,12 +70,13 @@ public class PackageInfo {
 	@Element(required=false)
 	private int InfantQuantity;
 
-	public String getPackageCode() {
-		return PackageCode;
+
+	public String getVendorPackageCode() {
+		return VendorPackageCode;
 	}
 
-	public void setPackageCode(String packageCode) {
-		PackageCode = packageCode;
+	public void setVendorPackageCode(String vendorPackageCode) {
+		VendorPackageCode = vendorPackageCode;
 	}
 
 	public String getCurrency() {

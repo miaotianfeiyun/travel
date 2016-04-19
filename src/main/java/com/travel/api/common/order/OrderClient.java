@@ -5,11 +5,9 @@ import java.util.List;
 import com.travel.api.common.base.ClientBase;
 import com.travel.api.common.base.ThirdOTA;
 import com.travel.api.common.order.base.OrderOperateType;
-import com.travel.api.common.product.ProductClient;
+import com.travel.api.common.util.HttpTookit;
 import com.travel.api.common.util.JsonUtil;
 import com.travel.api.common.util.Sign;
-import com.travel.common.util.HttpTookit;
-
 /** 
  * <p>Title: OrderClient.java</p>
  * <p>Package Name: com.travel.api.common.order</p>  
@@ -20,6 +18,11 @@ import com.travel.common.util.HttpTookit;
  */
 
 public class OrderClient extends ClientBase{
+	/** 
+	* @Fields token : 认证标识
+	* @date 2016年3月21日 上午11:11:13 
+	*/ 
+	private String token;
 	/** 
 	* @Fields thirdOTAList : 第三方平台合作key和secret列表
 	* @date 2016年3月21日 下午2:03:41 
@@ -43,7 +46,6 @@ public class OrderClient extends ClientBase{
 	 * 拒绝原因
 	 */
 	private String Reason;
-	
 	/**
 	 * 操作类型
 	 */
@@ -55,7 +57,7 @@ public class OrderClient extends ClientBase{
 	private String timeStamp;
 	
 	
-	public String invoke(ProductClient client,String host){
+	public String invoke(OrderClient client,String host){
 		client.setToken(Sign.signature(JsonUtil.toJson(client),getAppKey(), getAppSecret()));
 		return HttpTookit.postStream(host+"/travel"+orderDealUrl, JsonUtil.toJson(client), HttpTookit.CHARSET, false);
 	}
@@ -115,8 +117,12 @@ public class OrderClient extends ClientBase{
 	public void setThirdOTAList(List<ThirdOTA> thirdOTAList) {
 		this.thirdOTAList = thirdOTAList;
 	}
-	
 
+	public String getToken() {
+		return token;
+	}
 
-
+	public void setToken(String token) {
+		this.token = token;
+	}
 }

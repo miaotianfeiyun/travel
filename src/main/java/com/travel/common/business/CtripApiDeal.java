@@ -215,6 +215,9 @@ public class CtripApiDeal {
 		AddProductInfoResponse addProductInfoResponse=this.addProduct(client, requestHeader);
 		errorMsg=response.instance(errorMsg, JSONObject.fromObject(addProductInfoResponse));
 		if(!StringUtils.isNotBlank(addProductInfoResponse.getErrorCode())){//每天加成功 其他的操作都白扯 
+			//设置携程返回的产品编码
+			response.setProductId(addProductInfoResponse.getCtripProductCode());
+			
 			UpdateProductInventoryResponse updateProductInventoryResponse=this.doInventory(client, requestHeader);
 			UpdateProductPriceResponse updateProductPriceResponse=this.doPrice(client, requestHeader);
 			errorMsg=response.instance(errorMsg, JSONObject.fromObject(updateProductInventoryResponse));
@@ -405,6 +408,12 @@ public class CtripApiDeal {
 		return updateProductInfoResponse;
 	
 	}
+	/** 
+	 * @Description:	添加产品
+	 * @return	AddProductInfoResponse
+	 * @author	liujq
+	 * @Date	2016年3月29日 下午5:36:36 
+	 */
 	 private AddProductInfoResponse addProduct(ProductClient client,RequestHeaderType requestHeader) throws Exception{
 		 		//产品基本信息
 				AddProductInfoRequest addProductInfo=new AddProductInfoRequest();

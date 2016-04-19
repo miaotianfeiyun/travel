@@ -17,7 +17,7 @@ public class OptionInfo {
 	 * 供应商附加服务编码
 	 */
 	@Element(required = false)
-	private String OptionCode;
+	private String VendorOptionCode;
 	/**
 	 * 币种
 	 */
@@ -88,13 +88,14 @@ public class OptionInfo {
 		TravelerIdList = traveleridlist;
 	}
 
-	public String getOptionCode() {
-		return OptionCode;
+	public String getVendorOptionCode() {
+		return VendorOptionCode;
 	}
 
-	public void setOptionCode(String optionCode) {
-		OptionCode = optionCode;
+	public void setVendorOptionCode(String vendorOptionCode) {
+		VendorOptionCode = vendorOptionCode;
 	}
+
 
 
 }

@@ -36,7 +36,6 @@ public class OrderInfo {
 	/**
 	 * 上车地点
 	 */
-	@Deprecated
 	@Element(required = false)
 	private BoardingInfo BoardingInfo;
 	

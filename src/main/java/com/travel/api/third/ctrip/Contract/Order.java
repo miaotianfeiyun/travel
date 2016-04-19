@@ -21,7 +21,7 @@ public class Order {
 	 * 供应商产品编码
 	 */
 	@Element(required = false)
-	private String ProductCode;
+	private String VendorProductCode;
 	
 	/**
 	 * 出发日期
@@ -58,12 +58,13 @@ public class Order {
 		return DepartureDate;
 	}
 
-	public String getProductCode() {
-		return ProductCode;
+
+	public String getVendorProductCode() {
+		return VendorProductCode;
 	}
 
-	public void setProductCode(String productCode) {
-		ProductCode = productCode;
+	public void setVendorProductCode(String vendorProductCode) {
+		VendorProductCode = vendorProductCode;
 	}
 
 	public void setDepartureDate(String departuredate) {

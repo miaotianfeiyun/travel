@@ -160,12 +160,10 @@ public class ProductController {
 		ProductAuditResultResponse productAuditResultResponse=null;//携程返回
 		try {
 			ProductAuditResultRequest productAuditResultRequest=SDKCore.XMLStringToObj(ProductAuditResultRequest.class, strXml);
-			//给携程的token是本平台分配的 id-key#md5（key#value）
+			//给携程的token是第三方平台的 key-value#md5（key#value）
 			String strToken=productAuditResultRequest.getToken();
-			String appkey=strToken.split("#")[0].split("-")[0];
-			String appSecret=strToken.split("#")[0].split("-")[1];
-			String key=productAuditResultRequest.getRequestHeader().getVendorId()+"";
-			String value=productAuditResultRequest.getRequestHeader().getVendorToken();
+			String key=strToken.split("#")[0].split("-")[0];
+			String value=strToken.split("#")[0].split("-")[1];
 			if(Md5.getMd5Str(key+"#"+value).equals(strToken.split("#")[1])){
 				ProductAuditResultType auditResult=productAuditResultRequest.getProductAuditResult();
 				auditResult.getAuditType();
@@ -179,7 +177,7 @@ public class ProductController {
 				BeanUtils.copyProperties(productAudit, auditResult);
 				productAudit.setOtaType(OTAType.CTRIP);
 				
-				productAudit.setToken(Sign.signature(JsonUtil.toJson(productAudit),appkey, appSecret));
+				productAudit.setToken(Sign.signature(JsonUtil.toJson(productAudit),key, value));
 				
 				log.info("向供应商平台发送的xml"+JsonUtil.toJson(productAudit));
 				//通过key value找到对应的通知地址

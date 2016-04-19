@@ -7,9 +7,9 @@ import com.travel.api.common.base.ProductOpType;
 import com.travel.api.common.base.ThirdOTA;
 import com.travel.api.common.product.base.Product;
 import com.travel.api.common.product.base.SellingSet;
+import com.travel.api.common.util.HttpTookit;
 import com.travel.api.common.util.JsonUtil;
 import com.travel.api.common.util.Sign;
-import com.travel.common.util.HttpTookit;
 
 /** 
  * <p>Title: ProductClient.java</p>
