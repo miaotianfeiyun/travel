@@ -188,7 +188,7 @@ public class ProductController {
 				String drolayResponseXml="F";
 				if(productAuditNotify!=null){//通知地址不为空
 					//请求供应商地址 如果失败重试N次
-					drolayResponseXml=HttpTookit.retryReqest(JsonUtil.toJson(productAudit),productAuditNotify.getNotify_url());
+					drolayResponseXml=HttpTookit.retryReqest(JsonUtil.toJson(productAudit),productAuditNotify.getNotify_url(),"text/json");
 				}else{
 					log.info("供应商url没有配置");
 				}

@@ -23,7 +23,7 @@ public class OrderRequestTest {
 		Resource resource = new ClassPathResource("com/travel/ctrip/test/xmlfile/ctrip-create-order.xml"); 
 		String param=Dom4jHelper.toString(Dom4jHelper.parse(resource.getURL()), "UTF-8") ;
 		System.out.println(param);
-		String rsp=HttpTookit.postStream(url, param, "UTF-8");
+		String rsp=HttpTookit.doPostByStream(url, param, "UTF-8","text/xml");
 		System.out.println(rsp);
 	}
 	public static void  doModify() throws DocumentException, IOException, Exception{
@@ -31,7 +31,7 @@ public class OrderRequestTest {
 		Resource resource = new ClassPathResource("com/travel/ctrip/test/xmlfile/ctrip-modify-order.xml"); 
 		String param=Dom4jHelper.toString(Dom4jHelper.parse(resource.getURL()), "UTF-8") ;
 		System.out.println(param);
-		String rsp=HttpTookit.postStream(url, param, "UTF-8");
+		String rsp=HttpTookit.doPostByStream(url, param, "UTF-8","text/xml");
 		System.out.println(rsp);
 	}
 	public static void  doPay() throws DocumentException, IOException, Exception{
@@ -39,7 +39,7 @@ public class OrderRequestTest {
 		Resource resource = new ClassPathResource("com/travel/ctrip/test/xmlfile/ctrip-pay-order.xml"); 
 		String param=Dom4jHelper.toString(Dom4jHelper.parse(resource.getURL()), "UTF-8") ;
 		System.out.println(param);
-		String rsp=HttpTookit.postStream(url, param, "UTF-8");
+		String rsp=HttpTookit.doPostByStream(url, param, "UTF-8","text/xml");
 		System.out.println(rsp);
 	}
 	public static void  doCancle() throws DocumentException, IOException, Exception{
@@ -47,7 +47,7 @@ public class OrderRequestTest {
 		Resource resource = new ClassPathResource("com/travel/ctrip/test/xmlfile/ctrip-cancle-order.xml"); 
 		String param=Dom4jHelper.toString(Dom4jHelper.parse(resource.getURL()), "UTF-8") ;
 		System.out.println(param);
-		String rsp=HttpTookit.postStream(url, param, "UTF-8");
+		String rsp=HttpTookit.doPostByStream(url, param, "UTF-8","text/xml");
 		System.out.println(rsp);
 	}
 }

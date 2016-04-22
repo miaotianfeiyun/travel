@@ -265,32 +265,38 @@ public class CtripApiDeal {
 				updateProductInfo.setBookingInfo(bookOther);
 				//违约条款
 				com.travel.api.common.product.base.BreachClause breachClauseThis=client.getProduct().getBreachClause();
-				BreachClause breachclauseOther =new BreachClause();
-				List<BreachClauseType> agencybreachclauselist=new ArrayList<BreachClauseType>();//旅行社违约
-				List<BreachClauseType> travelerbreachclauselist=new ArrayList<BreachClauseType>();//旅客违约
-				List<com.travel.api.common.product.base.BreachClauseType> breachClauseThisItem1=breachClauseThis.getAgencyBreachClauseList();
-				for (int i = 0; i < breachClauseThisItem1.size(); i++) {
-					com.travel.api.common.product.base.BreachClauseType  temp= breachClauseThisItem1.get(i);
-					BreachClauseType newTemp=new BreachClauseType();
-					newTemp.setFromDaysBeforeDeparture(temp.getFromDaysBeforeDeparture());
-					newTemp.setLossPercent(temp.getLossPercent());
-					newTemp.setToDaysBeforeDeparture(temp.getToDaysBeforeDeparture());
-					agencybreachclauselist.add(newTemp);
+				if(breachClauseThis!=null){
+					BreachClause breachclauseOther =new BreachClause();
+					List<BreachClauseType> agencybreachclauselist=new ArrayList<BreachClauseType>();//旅行社违约
+					List<BreachClauseType> travelerbreachclauselist=new ArrayList<BreachClauseType>();//旅客违约
+					List<com.travel.api.common.product.base.BreachClauseType> breachClauseThisItem1=breachClauseThis.getAgencyBreachClauseList();
+					if(breachClauseThisItem1!=null && breachClauseThisItem1.size()>0){
+						for (int i = 0; i < breachClauseThisItem1.size(); i++) {
+							com.travel.api.common.product.base.BreachClauseType  temp= breachClauseThisItem1.get(i);
+							BreachClauseType newTemp=new BreachClauseType();
+							newTemp.setFromDaysBeforeDeparture(temp.getFromDaysBeforeDeparture());
+							newTemp.setLossPercent(temp.getLossPercent());
+							newTemp.setToDaysBeforeDeparture(temp.getToDaysBeforeDeparture());
+							agencybreachclauselist.add(newTemp);
+						}
+					}
+					List<com.travel.api.common.product.base.BreachClauseType> breachClauseThisItem2=breachClauseThis.getTravelerBreachClauseList();
+					if(breachClauseThisItem2!=null && breachClauseThisItem2.size()>0){
+						for (int i = 0; i < breachClauseThisItem2.size(); i++) {
+							com.travel.api.common.product.base.BreachClauseType  temp= breachClauseThisItem2.get(i);
+							BreachClauseType newTemp=new BreachClauseType();
+							newTemp.setFromDaysBeforeDeparture(temp.getFromDaysBeforeDeparture());
+							newTemp.setLossPercent(temp.getLossPercent());
+							newTemp.setToDaysBeforeDeparture(temp.getToDaysBeforeDeparture());
+							travelerbreachclauselist.add(newTemp);
+						}
+					}
+					
+					breachclauseOther.setAgencyBreachClauseList(agencybreachclauselist);
+					breachclauseOther.setTravelerBreachClauseList(travelerbreachclauselist);
+					updateProductInfo.setBreachClause(breachclauseOther);
 				}
-				List<com.travel.api.common.product.base.BreachClauseType> breachClauseThisItem2=breachClauseThis.getTravelerBreachClauseList();
-				for (int i = 0; i < breachClauseThisItem2.size(); i++) {
-					com.travel.api.common.product.base.BreachClauseType  temp= breachClauseThisItem2.get(i);
-					BreachClauseType newTemp=new BreachClauseType();
-					newTemp.setFromDaysBeforeDeparture(temp.getFromDaysBeforeDeparture());
-					newTemp.setLossPercent(temp.getLossPercent());
-					newTemp.setToDaysBeforeDeparture(temp.getToDaysBeforeDeparture());
-					travelerbreachclauselist.add(newTemp);
-				}
-				
-				breachclauseOther.setAgencyBreachClauseList(agencybreachclauselist);
-				breachclauseOther.setTravelerBreachClauseList(travelerbreachclauselist);
 				//
-				updateProductInfo.setBreachClause(breachclauseOther);
 				//行程
 				List<com.travel.api.common.product.base.Itinerary> itinerarylistThis=client.getProduct().getItineraryList();
 				List<ItineraryDay> itinerarylistOther=new ArrayList<ItineraryDay>();
@@ -319,12 +325,14 @@ public class CtripApiDeal {
 				List<ProductDescription> productdescriptionlist=new ArrayList<ProductDescription>();
 				//产品经理推荐
 				List<String> recommendList=client.getProduct().getProductRecommendList();
-				for (int i = 0; i < recommendList.size(); i++) {
-					String temp=recommendList.get(i);
-					ProductDescription newTemp=new ProductDescription();
-					newTemp.setContent(temp);
-					newTemp.setDescriptionType("Recommend");
-					productdescriptionlist.add(newTemp);
+				if(recommendList!=null && recommendList.size()>0){
+					for (int i = 0; i < recommendList.size(); i++) {
+						String temp=recommendList.get(i);
+						ProductDescription newTemp=new ProductDescription();
+						newTemp.setContent(temp);
+						newTemp.setDescriptionType("Recommend");
+						productdescriptionlist.add(newTemp);
+					}
 				}
 				//预定须知
 				ProductDescription productDescriptionBook=new ProductDescription();
@@ -388,15 +396,17 @@ public class CtripApiDeal {
 					visainfo.setVisaDeliveryAddress(visaDeliveryAddressOther);
 					
 					List<VisaDetail> visaDetailLst=visaInfoThis.getVisaList();
-					List<Visa> visalist=new ArrayList<Visa>();
-					for (int i = 0; i < visaDetailLst.size(); i++) {
-						VisaDetail visaDetail=visaDetailLst.get(i);
-						Visa visa=new Visa();
-						visa.setVendorVisaCode(visaDetail.getVisaCode());
-						visa.setVisaName(visaDetail.getVisaName());
-						visalist.add(visa);
+					if(visaDetailLst!=null && visaDetailLst.size()>0){
+						List<Visa> visalist=new ArrayList<Visa>();
+						for (int i = 0; i < visaDetailLst.size(); i++) {
+							VisaDetail visaDetail=visaDetailLst.get(i);
+							Visa visa=new Visa();
+							visa.setVendorVisaCode(visaDetail.getVisaCode());
+							visa.setVisaName(visaDetail.getVisaName());
+							visalist.add(visa);
+						}
+						visainfo.setVisaList(visalist);
 					}
-					visainfo.setVisaList(visalist);
 				}
 				
 				updateProductInfo.setVisaInfo(visainfo);
@@ -439,32 +449,37 @@ public class CtripApiDeal {
 				addProductInfo.setBookingInfo(bookOther);
 				//违约条款
 				com.travel.api.common.product.base.BreachClause breachClauseThis=client.getProduct().getBreachClause();
-				BreachClause breachclauseOther =new BreachClause();
-				List<BreachClauseType> agencybreachclauselist=new ArrayList<BreachClauseType>();//旅行社违约
-				List<BreachClauseType> travelerbreachclauselist=new ArrayList<BreachClauseType>();//旅客违约
-				List<com.travel.api.common.product.base.BreachClauseType> breachClauseThisItem1=breachClauseThis.getAgencyBreachClauseList();
-				for (int i = 0; i < breachClauseThisItem1.size(); i++) {
-					com.travel.api.common.product.base.BreachClauseType  temp= breachClauseThisItem1.get(i);
-					BreachClauseType newTemp=new BreachClauseType();
-					newTemp.setFromDaysBeforeDeparture(temp.getFromDaysBeforeDeparture());
-					newTemp.setLossPercent(temp.getLossPercent());
-					newTemp.setToDaysBeforeDeparture(temp.getToDaysBeforeDeparture());
-					agencybreachclauselist.add(newTemp);
+				if(breachClauseThis!=null){
+					BreachClause breachclauseOther =new BreachClause();
+					List<BreachClauseType> agencybreachclauselist=new ArrayList<BreachClauseType>();//旅行社违约
+					List<BreachClauseType> travelerbreachclauselist=new ArrayList<BreachClauseType>();//旅客违约
+					List<com.travel.api.common.product.base.BreachClauseType> breachClauseThisItem1=breachClauseThis.getAgencyBreachClauseList();
+					if(breachClauseThisItem1!=null && breachClauseThisItem1.size()>0){
+						for (int i = 0; i < breachClauseThisItem1.size(); i++) {
+							com.travel.api.common.product.base.BreachClauseType  temp= breachClauseThisItem1.get(i);
+							BreachClauseType newTemp=new BreachClauseType();
+							newTemp.setFromDaysBeforeDeparture(temp.getFromDaysBeforeDeparture());
+							newTemp.setLossPercent(temp.getLossPercent());
+							newTemp.setToDaysBeforeDeparture(temp.getToDaysBeforeDeparture());
+							agencybreachclauselist.add(newTemp);
+						}
+						breachclauseOther.setAgencyBreachClauseList(agencybreachclauselist);
+					}
+					List<com.travel.api.common.product.base.BreachClauseType> breachClauseThisItem2=breachClauseThis.getTravelerBreachClauseList();
+					if(breachClauseThisItem2!=null && breachClauseThisItem2.size()>0){
+						for (int i = 0; i < breachClauseThisItem2.size(); i++) {
+							com.travel.api.common.product.base.BreachClauseType  temp= breachClauseThisItem2.get(i);
+							BreachClauseType newTemp=new BreachClauseType();
+							newTemp.setFromDaysBeforeDeparture(temp.getFromDaysBeforeDeparture());
+							newTemp.setLossPercent(temp.getLossPercent());
+							newTemp.setToDaysBeforeDeparture(temp.getToDaysBeforeDeparture());
+							travelerbreachclauselist.add(newTemp);
+						}
+						breachclauseOther.setTravelerBreachClauseList(travelerbreachclauselist);
+					}
+					//
+					addProductInfo.setBreachClause(breachclauseOther);
 				}
-				List<com.travel.api.common.product.base.BreachClauseType> breachClauseThisItem2=breachClauseThis.getTravelerBreachClauseList();
-				for (int i = 0; i < breachClauseThisItem2.size(); i++) {
-					com.travel.api.common.product.base.BreachClauseType  temp= breachClauseThisItem2.get(i);
-					BreachClauseType newTemp=new BreachClauseType();
-					newTemp.setFromDaysBeforeDeparture(temp.getFromDaysBeforeDeparture());
-					newTemp.setLossPercent(temp.getLossPercent());
-					newTemp.setToDaysBeforeDeparture(temp.getToDaysBeforeDeparture());
-					travelerbreachclauselist.add(newTemp);
-				}
-				
-				breachclauseOther.setAgencyBreachClauseList(agencybreachclauselist);
-				breachclauseOther.setTravelerBreachClauseList(travelerbreachclauselist);
-				//
-				addProductInfo.setBreachClause(breachclauseOther);
 				//行程
 				List<com.travel.api.common.product.base.Itinerary> itinerarylistThis=client.getProduct().getItineraryList();
 				List<ItineraryDay> itinerarylistOther=new ArrayList<ItineraryDay>();

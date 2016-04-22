@@ -1,11 +1,11 @@
 <CreateOrderRequest>
-	<Token>test-test#6f7d913d6a81fffce9e444f366bdb1d7</Token>
+	<Token>9001-9001#6f7d913d6a81fffce9e444f366bdb1d7</Token>
 	<Order>
-		<OrderId>text</OrderId>
-		<VendorProductCode>String</VendorProductCode>
-		<DepartureDate>1967-08-13</DepartureDate>
+		<OrderId>order01</OrderId>
+		<VendorProductCode>16177100</VendorProductCode>
+		<DepartureDate>2016-05-01</DepartureDate>
 		<OrderInfo>
-			<BookingTime>2001-12-17T09:30:47Z</BookingTime>
+			<BookingTime>2016-04-21T09:30:47Z</BookingTime>
 			<PackageInfo>
 				<VendorPackageCode>String</VendorPackageCode>
 				<Currency>CNY</Currency>

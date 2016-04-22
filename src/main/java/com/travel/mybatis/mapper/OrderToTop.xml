@@ -57,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	         </if>
 	</sql>
 	
-	<insert id="save" parameterType="com.travel.mybatis.entity.OrderToTop" keyProperty="id" >
+	<insert id="save" parameterType="com.travel.mybatis.entity.OrderToTop" useGeneratedKeys="true"   keyProperty="id" >
         INSERT INTO order_to_top ( <include refid="Base_Column_List" /> )  VALUES (
             <include refid="Base_Column_insert" /> 
         )

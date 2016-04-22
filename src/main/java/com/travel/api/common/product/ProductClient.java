@@ -74,7 +74,7 @@ public class ProductClient extends ClientBase{
 	}
 	public String invoke(ProductClient client,String host){
 		client.setToken(Sign.signature(JsonUtil.toJson(client),getAppKey(), getAppSecret()));
-		return HttpTookit.postStream(host+"/travel"+productDealUrl, JsonUtil.toJson(client), HttpTookit.CHARSET, false);
+		return HttpTookit.doPostByStream(host+"/travel"+productDealUrl, JsonUtil.toJson(client), HttpTookit.CHARSET, "application/json");
 	}
 	
 	public Product getProduct() {

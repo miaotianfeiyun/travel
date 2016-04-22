@@ -430,7 +430,7 @@ public class Md5 {
 
         public static void main(String[] args) throws NoSuchAlgorithmException {
         	
-        	System.out.println(getMd5Str("test-test#6f7d913d6a81fffce9e444f366bdb1d7"));
+        	System.out.println(getMd5Str("9001#9001"));
 //        	System.out.println(getMd5Str("9001#9001#6f7d913d6a81fffce9e444f366bdb1d7"));
 //            System.out.println(getMd5Str("drolay@drolay.com"));
         }

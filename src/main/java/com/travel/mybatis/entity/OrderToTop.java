@@ -52,8 +52,9 @@ public class OrderToTop implements java.io.Serializable{
 	 * @param response_xml
 	 * @param response_time
 	 */
-	public OrderToTop(Integer id, String response_xml,Date response_time) {
+	public OrderToTop(Integer id, String response_xml,Date response_time,String vendororderid) {
 		super();
+		this.vendororderid = vendororderid;
 		this.id = id;
 		this.response_xml = response_xml;
 		this.response_time = response_time;

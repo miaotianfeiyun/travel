@@ -7,7 +7,10 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.SqlDateConverter;
 
 import com.travel.api.common.product.base.Product;
+import com.travel.common.util.convert.AgeCategoryConvert;
 import com.travel.common.util.convert.CtripBeanConvert;
+import com.travel.common.util.convert.IDTypeConvert;
+import com.travel.common.util.convert.OrderResultTypeConvert;
 
 /** 
  * <p>Title: BeanUtilsEx.java</p>
@@ -25,8 +28,11 @@ public class BeanUtilsEx extends BeanUtils{
 		    ConvertUtils.register(new SqlDateConverter(), java.sql.Date.class);
 		    //ConvertUtils.register(new SqlTimestampConverter(), java.sql.Timestamp.class);
 		    ConvertUtils.register(new CtripBeanConvert(), Product.class);
+		    ConvertUtils.register(new AgeCategoryConvert(), com.travel.api.common.order.base.AgeCategory.class);
+		    ConvertUtils.register(new IDTypeConvert(), com.travel.api.common.order.base.IDType.class);
+		    ConvertUtils.register(new OrderResultTypeConvert(), com.travel.api.common.order.base.OrderResultType.class);
+		    
 		  }
-
 		  public static void copyProperties(Object target, Object source) throws
 		      InvocationTargetException, IllegalAccessException {
 			  org.apache.commons.beanutils.BeanUtils.copyProperties(target, source);

@@ -3,16 +3,10 @@ package com.travel.api.common.util;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletInputStream;
@@ -25,6 +19,7 @@ import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -159,137 +154,32 @@ public class HttpTookit {
      } 
 
      public static void main(String[] args) { 
-             String y = doGet("http://video.sina.com.cn/life/tips.html", "username=test", "GBK", true); 
+             String y = doGet("http://video.sina.com.cn/life/tips.html", "username=test", "UTF-8", true); 
              System.out.println(y); 
      } 
-     /**
-      * 向指定URL发送GET方法的请求
-      * 
-      * @param url
-      *            发送请求的URL
-      * @param param
-      *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
-      * @return URL 所代表远程资源的响应结果
-      */
-     public static String doStreamGet(String url, String param) {
-         String result = "";
-         BufferedReader in = null;
-         try {
-             String urlNameString = url + "?" + param;
-             URL realUrl = new URL(urlNameString);
-             // 打开和URL之间的连接
-             URLConnection connection = realUrl.openConnection();
-             // 设置通用的请求属性
-             connection.setRequestProperty("accept", "*/*");
-             connection.setRequestProperty("connection", "Keep-Alive");
-             connection.setRequestProperty("user-agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-             // 建立实际的连接
-             connection.connect();
-             // 获取所有响应头字段
-             Map<String, List<String>> map = connection.getHeaderFields();
-             // 遍历所有的响应头字段
-             for (String key : map.keySet()) {
-                logger.info(key + "--->" + map.get(key));
-             }
-             // 定义 BufferedReader输入流来读取URL的响应
-             in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-             String line;
-             while ((line = in.readLine()) != null) {
-                 result += line;
-             }
-         } catch (Exception e) {
-            logger.info("发送GET请求出现异常！" + e);
-             e.printStackTrace();
+     public static String doPostByStream(String url, String params, String charset,String contentType){
+    	 String result="";
+    	 HttpClient httpClient = new HttpClient();  
+         //httpClient.getState().setCookiePolicy(CookiePolicy.COMPATIBILITY);  
+         PostMethod postMethod = new PostMethod(url);  
+         InputStream  in = new ByteArrayInputStream(params.toString().getBytes());  
+         postMethod.setRequestEntity(new InputStreamRequestEntity(in,contentType));  
+         HttpClientParams clientParams = new HttpClientParams();  
+         clientParams.setConnectionManagerTimeout(10000L);  
+         httpClient.setParams(clientParams);  
+         try {  
+             httpClient.executeMethod(postMethod);  
+             //获取二进制的byte流  
+             result =postMethod.getResponseBodyAsString();  
+             logger.debug("client:"+result);  
+         }catch (Exception e) {  
+             // TODO: handle exception  
+             System.out.println(e.getMessage()+","+e.getStackTrace());  
+         }finally{  
+             postMethod.releaseConnection();  
          }
-         finally {
-             try {
-                 if (in != null) {
-                     in.close();
-                 }
-             } catch (Exception e2) {
-                 e2.printStackTrace();
-             }
-         }
-         return result;
+		return result;  
      }
-     /* 向指定 URL 发送POST方法的请求
-     * @param url 发送请求的 URL
-     * @param param 请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
-     * @return 所代表远程资源的响应结果
-     */
-    public static String doStreamPost(String url, String param) {
-        PrintWriter out = null;
-        BufferedReader in = null;
-        String result = "";
-        try {
-            URL realUrl = new URL(url);
-            // 打开和URL之间的连接
-            URLConnection conn = realUrl.openConnection();
-            // 设置通用的请求属性
-            conn.setRequestProperty("accept", "*/*");
-            conn.setRequestProperty("connection", "Keep-Alive");
-            conn.setRequestProperty("user-agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-            // 发送POST请求必须设置如下两行
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            // 获取URLConnection对象对应的输出流
-            out = new PrintWriter(conn.getOutputStream());
-            // 发送请求参数
-            out.print(param);
-            // flush输出流的缓冲
-            out.flush();
-            // 定义BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line;
-            while ((line = in.readLine()) != null) {
-                result += line;
-            }
-        } catch (Exception e) {
-            logger.info("发送 POST 请求出现异常！"+e);
-            e.printStackTrace();
-        }
-        //使用finally块来关闭输出流、输入流
-        finally{
-            try{
-                if(out!=null){
-                    out.close();
-                }
-                if(in!=null){
-                    in.close();
-                }
-            }
-            catch(IOException ex){
-                ex.printStackTrace();
-            }
-        }
-        return result;
-    }  
-    public static String postStream(String url, String params, String charset, boolean pretty){
-    	String result="";
-    	HttpClient client = new HttpClient();   
-    	PostMethod method = new PostMethod(url); 
-        method.getParams().setHttpElementCharset(charset);
-  		method.getParams().setContentCharset(charset);
-  		method.getParams().setCredentialCharset(charset);
-  		try{
-	  		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(params);
-	    	byte[] data = baos.toByteArray();
-	    	ByteArrayInputStream bis = new ByteArrayInputStream(data);
-	    	InputStreamRequestEntity entity=new InputStreamRequestEntity(bis);
-	    	method.setRequestEntity(entity);
-    	    client.executeMethod(method);
-    	    result = method.getResponseBodyAsString();
-    	    logger.info(result);
-    	    return result;
-    	 }catch (Throwable e){
-    		 e.printStackTrace();
-    	 }finally{
-    		 method.releaseConnection();
-    	 }
-    	 return result;
-    }
     public static String getFromStream(HttpServletRequest request) throws Exception{
     	InputStream is = request.getInputStream();
 	    ObjectInputStream ois = new ObjectInputStream(is);
@@ -303,16 +193,22 @@ public class HttpTookit {
 	 * @author	liujq
 	 * @Date	2015年11月3日 下午6:41:37 
 	 */
-	public static String retryReqest(String params,String url){
+	public static String retryReqest(String params,String url,String contentType){
 		int retryTimes=Integer.valueOf(PropertyUtil.getSystemProperty("retry_times")).intValue();
-		String rsp=HttpTookit.postStream(url, params, CHARSET, false);
+		String rsp=HttpTookit.doPostByStream(url, params, CHARSET,contentType);
 		int temp=1;
 		while("F".equals(rsp) && temp<retryTimes){
-			rsp=HttpTookit.postStream(url, params, CHARSET, false);
+			rsp=HttpTookit.doPostByStream(url, params, CHARSET,contentType);
 			temp++;
 		}
 		return rsp;
 	}
+	/**
+	 * 携程返回的比较特别 用此方法获取携程返回的数据
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
 	public static String getStrXmlFromStream(HttpServletRequest request) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream(),CHARSET));
         String line = null;

@@ -27,9 +27,12 @@ import com.travel.api.common.order.OrderClient;
 import com.travel.api.common.order.OrderRequest;
 import com.travel.api.common.order.OrderResponse;
 import com.travel.api.common.order.base.Change;
+import com.travel.api.common.order.base.OptionInfo;
 import com.travel.api.common.order.base.Order;
 import com.travel.api.common.order.base.OrderDealType;
 import com.travel.api.common.order.base.OrderInfo;
+import com.travel.api.common.order.base.PackageInfo;
+import com.travel.api.common.order.base.Traveler;
 import com.travel.api.common.product.ProductClient;
 import com.travel.api.common.util.Sign;
 import com.travel.api.third.ctrip.Contract.CancelOrderRequest;
@@ -42,6 +45,7 @@ import com.travel.api.third.ctrip.Contract.PayOrderResponse;
 import com.travel.api.third.ctrip.SDK.SDKCore;
 import com.travel.common.business.CtripApiDeal;
 import com.travel.common.constant.ThirdAPIInterfaceName;
+import com.travel.common.util.BeanUtilsEx;
 import com.travel.common.util.HttpTookit;
 import com.travel.common.util.JsonDateValueProcessor;
 import com.travel.common.util.JsonUtil;
@@ -87,13 +91,14 @@ public class OrderController {
 		String appSecret=(String) json.get("appSecret");
 		json.remove("token");
 		Integer id=null;
+		OrderClient orderClient=null;
 		if(StringUtils.isNoneBlank(orToken) && orToken.equalsIgnoreCase(Sign.signature(json.toString(), appkey, appSecret))){
 			@SuppressWarnings("rawtypes")
 			Map<String,Class> classMap =new HashMap<String,Class>();
 			classMap.put("thirdOTAList", ThirdOTA.class);
 			JsonConfig jsonConfig = new JsonConfig();  
 			jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor());
-			OrderClient orderClient=(OrderClient)JSONObject.toBean(JSONObject.fromObject(strXml,jsonConfig), ProductClient.class,classMap);
+			orderClient=(OrderClient)JSONObject.toBean(JSONObject.fromObject(strXml,jsonConfig), ProductClient.class,classMap);
 			//这儿的接口名称需要top的接口名 sn需要传过来统一下
 			OrderToTop  orderToTop=new OrderToTop(orderClient.getOrderId(), orderClient.getThirdOrderId(), orderClient.getTimeStamp(), null, null,orderClient.getOperateType()+"", strXml, null, new Date(), null);
 			orderToTopService.save(orderToTop);
@@ -117,7 +122,7 @@ public class OrderController {
 			log.info("签名不通过");
 			rsp=new OrderResponse(ErrorCode.SIGN_EXCEPTION, "签名错误", "");
 		}
-		OrderToTop orderToTopU=new OrderToTop(id, JsonUtil.toJson(rsp), new Date());
+		OrderToTop orderToTopU=new OrderToTop(id, JsonUtil.toJson(rsp), new Date(),orderClient.getOrderId());
 		orderToTopService.update(orderToTopU);
 		response.getWriter().print(JSONObject.fromObject(rsp));
 	}
@@ -137,7 +142,7 @@ public class OrderController {
 		log.info("===================================处理携程创建订单操作开始===================================");
 		String sn=System.currentTimeMillis()+"";
 		String rspCtripXml="";
-		String strXml=HttpTookit.getFromStream(request);
+		String strXml=HttpTookit.getStrXmlFromStream(request);
 		OrderToThirdOta orderToThirdOta=new OrderToThirdOta(null, XPathUtil.getResult(strXml, "//OrderId"), sn, OTAType.CTRIP+"", "CreateOrder", ThirdAPIInterfaceName.CTRIP_CREATEORDER, strXml, null, new Date(), null);
 		orderToThirdOtaService.save(orderToThirdOta);
 		CreateOrderResponse createOrderResponse=null;
@@ -153,7 +158,7 @@ public class OrderController {
 				OrderResponse rsponse=this.commonOrderDeal(key, value, tempOrder, CommonConstant.NOTIFY_TYPE_CTIP_ORDER_CREATE,sn,"CreateOrderRequest",OrderDealType.CREATE);
 				
 				createOrderResponse=new CreateOrderResponse();
-				BeanUtils.copyProperties(createOrderResponse, rsponse);
+				BeanUtilsEx.copyProperties(createOrderResponse, rsponse);
 				createOrderResponse.setVendorOrderId(rsponse.getVendorOrderId());//携程订单号	
 				rspCtripXml=SDKCore.<CreateOrderResponse> ObjToXMLString(createOrderResponse);
 			}else{
@@ -170,7 +175,7 @@ public class OrderController {
 		log.info("返回携程结果"+rspCtripXml);
 		OrderToThirdOta orderToThirdOtaU=new OrderToThirdOta(orderToThirdOta.getId(), rspCtripXml, new Date());
 		orderToThirdOtaService.update(orderToThirdOtaU);
-		log.info("===================================处理携程删除订单操作完成===================================");
+		log.info("===================================处理携程创建订单操作完成===================================");
 	}
 	
 	/** 
@@ -204,7 +209,7 @@ public class OrderController {
 				//返回给供应商的
 				payOrderResponse=new PayOrderResponse();
 				//公共返回
-				BeanUtils.copyProperties(payOrderResponse, rsponse);
+				BeanUtilsEx.copyProperties(payOrderResponse, rsponse);
 				payOrderResponse.setVendorOrderId(rsponse.getVendorOrderId());//携程订单号	
 			}
 		} catch (Exception e) {
@@ -249,7 +254,7 @@ public class OrderController {
 				com.travel.api.third.ctrip.Contract.Order tempOrder=modifyOrderReq.getOrder();
 				OrderResponse rsponse=this.commonOrderDeal(key, value, tempOrder, CommonConstant.NOTIFY_TYPE_CTIP_ORDER_UPDATE,sn,"ModifyOrderRequest",OrderDealType.UPDATE);
 				modifyOrderResponse=new ModifyOrderResponse();
-				BeanUtils.copyProperties(modifyOrderResponse, rsponse);
+				BeanUtilsEx.copyProperties(modifyOrderResponse, rsponse);
 				modifyOrderResponse.setVendorOrderId(rsponse.getVendorOrderId());//携程订单号	
 				
 			}
@@ -295,7 +300,7 @@ public class OrderController {
 				com.travel.api.third.ctrip.Contract.Order tempOrder=cancleOrderReq.getOrder();
 				OrderResponse rsponse=this.commonOrderDeal(key, value, tempOrder, CommonConstant.NOTIFY_TYPE_CTIP_ORDER_CANCLE,sn,"CancelOrderRequest",OrderDealType.CANCLE);
 				cancelOrderResponse=new CancelOrderResponse();
-				BeanUtils.copyProperties(cancelOrderResponse, rsponse);
+				BeanUtilsEx.copyProperties(cancelOrderResponse, rsponse);
 				cancelOrderResponse.setVendorOrderId(rsponse.getVendorOrderId());//携程订单号	
 			}
 		} catch (Exception e) {
@@ -398,46 +403,93 @@ public class OrderController {
 		paraAuditNotify.setThird_type(OTAType.CTRIP+"");
 		paraAuditNotify.setNotify_type(notifyType);//通知类型
 		Notify productAuditNotify=notifyService.getNotifyByParas(paraAuditNotify); 
-		OrderToTop orderToTop=new OrderToTop(null, req.getVendorOrderId(), sn, OTAType.CTRIP+"", interfaceName, operateType+"", strRequestXml, null, new Date(), null);
+		OrderToTop orderToTop=new OrderToTop(null, tempOrder.getOrderId(), sn, OTAType.CTRIP+"", interfaceName, operateType+"", strRequestXml, null, new Date(), null);
 		orderToTopService.save(orderToTop);
 		String drolayResponseXml="";
 		//这里没想要如果它那边异常了这边咋搞~~
+		OrderResponse respOrder=null;
 		if(productAuditNotify!=null){
-			drolayResponseXml=HttpTookit.retryReqest(JsonUtil.toJson(req),productAuditNotify.getNotify_url());
-			OrderToTop orderToTopU=new OrderToTop(orderToTop.getId(), drolayResponseXml, new Date());
-			orderToTopService.update(orderToTopU);
+			drolayResponseXml=HttpTookit.retryReqest(JsonUtil.toJson(req),productAuditNotify.getNotify_url(),"");
+			if(StringUtils.isNotBlank((drolayResponseXml))){
+				@SuppressWarnings("rawtypes")
+				Map<String,Class> classMap =new HashMap<String,Class>();
+				classMap.put("responseList", OTAResponse.class);
+				JsonConfig jsonConfig = new JsonConfig();  
+				jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor());
+				respOrder=(OrderResponse)JSONObject.toBean(JSONObject.fromObject(drolayResponseXml,jsonConfig), OrderResponse.class,classMap);
+				
+				OrderToTop orderToTopU=new OrderToTop(orderToTop.getId(), drolayResponseXml, new Date(), respOrder.getVendorOrderId());
+				orderToTopService.update(orderToTopU);
+			}
 		}else{
 			log.info("供应商url没有配置");
 		}
 		//公共返回
-		OrderResponse rsponse=SDKCore.XMLStringToObj(OrderResponse.class, drolayResponseXml);
-		return rsponse;
+		return respOrder;
 	}
 	/** 
 	 * @Description:	把携程的订单信息转换成公共的订单信息
 	 * @return	Order
 	 * @author	liujq
+	 * @throws Exception 
 	 * @Date	2016年4月14日 下午6:05:35 
 	 */
-	public Order thirdOrderToCommonOrder(com.travel.api.third.ctrip.Contract.Order thirdOrder){
+	public Order thirdOrderToCommonOrder(com.travel.api.third.ctrip.Contract.Order thirdOrder) throws Exception{
 		Order newOrder=new Order();
 		newOrder.setAction(thirdOrder.getAction()+"");
 		List<Change> changelist =new ArrayList<Change>();
 		List<com.travel.api.third.ctrip.Contract.Change> changeLst=thirdOrder.getChangeList();
-		for (int i = 0; i <changeLst.size(); i++) {
-			com.travel.api.third.ctrip.Contract.Change temp=changeLst.get(i);
-			Change newTemp=new Change();
-			newTemp.setCurrentValue(temp.getCurrentValue());
-			newTemp.setElement(temp.getElement());
-			newTemp.setOriginalValue(temp.getOriginalValue());
-			changelist.add(newTemp);
+		if(changeLst!=null && changeLst.size()>0){
+			for (int i = 0; i <changeLst.size(); i++) {
+				com.travel.api.third.ctrip.Contract.Change temp=changeLst.get(i);
+				Change newTemp=new Change();
+				newTemp.setCurrentValue(temp.getCurrentValue());
+				newTemp.setElement(temp.getElement());
+				newTemp.setOriginalValue(temp.getOriginalValue());
+				changelist.add(newTemp);
+			}
 		}
 		newOrder.setChangeList(changelist);
 		newOrder.setDepartureDate(thirdOrder.getDepartureDate());
 		newOrder.setMessageId(thirdOrder.getMessageId());
 		newOrder.setOrderId(thirdOrder.getOrderId());
 		com.travel.api.third.ctrip.Contract.OrderInfo oldOrderInfo=thirdOrder.getOrderInfo();
+		oldOrderInfo.getPackageInfo();
+		oldOrderInfo.getTravelerList();
+		oldOrderInfo.getOptionInfoList();
 		OrderInfo newOrderInfo=new OrderInfo();
+		//set packageinfo
+		com.travel.api.third.ctrip.Contract.PackageInfo packageinfoOld=oldOrderInfo.getPackageInfo();
+		PackageInfo packageinfo=new PackageInfo();
+		BeanUtils.copyProperties(packageinfo, packageinfoOld);
+		newOrderInfo.setPackageInfo(packageinfo);
+		//set travelerlist
+		List<com.travel.api.third.ctrip.Contract.Traveler> travelerlistOld=oldOrderInfo.getTravelerList();
+		List<Traveler> travelerlist=new ArrayList<Traveler>();
+		
+		if(travelerlistOld!=null && travelerlistOld.size()>0){
+			for (int i = 0; i < travelerlistOld.size(); i++) {
+				com.travel.api.third.ctrip.Contract.Traveler old=travelerlistOld.get(i);
+				Traveler traveler=new Traveler();
+				BeanUtilsEx.copyProperties(traveler, old);
+				travelerlist.add(traveler);
+			}
+		}
+		newOrderInfo.setTravelerList(travelerlist);
+		//set optioninfolist
+		List<com.travel.api.third.ctrip.Contract.OptionInfo> optioninfolistOld=oldOrderInfo.getOptionInfoList();
+		List<OptionInfo> optioninfolist=new ArrayList<OptionInfo>();
+		
+		if(optioninfolistOld!=null && optioninfolistOld.size()>0){
+			for (int i = 0; i < optioninfolistOld.size(); i++) {
+				com.travel.api.third.ctrip.Contract.OptionInfo old=optioninfolistOld.get(i);
+				OptionInfo optioninfo=new OptionInfo();
+				BeanUtils.copyProperties(optioninfo, old);
+				optioninfolist.add(optioninfo);
+			}
+		}
+		newOrderInfo.setOptionInfoList(optioninfolist);
+		
 		newOrderInfo.setBookingTime(oldOrderInfo.getBookingTime());
 		newOrderInfo.setIsPaid(oldOrderInfo.getIsPaid());
 		newOrderInfo.setRemark(oldOrderInfo.getRemark());

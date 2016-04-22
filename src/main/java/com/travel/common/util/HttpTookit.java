@@ -3,16 +3,10 @@ package com.travel.common.util;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletInputStream;
@@ -25,6 +19,7 @@ import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -162,32 +157,29 @@ public class HttpTookit {
              String y = doGet("http://video.sina.com.cn/life/tips.html", "username=test", "GBK", true); 
              System.out.println(y); 
      } 
-    public static String postStream(String url, String params, String charset){
-    	String result="";
-    	HttpClient client = new HttpClient();   
-    	PostMethod method = new PostMethod(url); 
-        method.getParams().setHttpElementCharset(charset);
-  		method.getParams().setContentCharset(charset);
-  		method.getParams().setCredentialCharset(charset);
-  		try{
-	  		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(params);
-	    	byte[] data = baos.toByteArray();
-	    	ByteArrayInputStream bis = new ByteArrayInputStream(data);
-	    	InputStreamRequestEntity entity=new InputStreamRequestEntity(bis,"text/xml");
-	    	method.setRequestEntity(entity);
-    	    client.executeMethod(method);
-    	    result = method.getResponseBodyAsString();
-    	    logger.info(result);
-    	    return result;
-    	 }catch (Throwable e){
-    		 e.printStackTrace();
-    	 }finally{
-    		 method.releaseConnection();
-    	 }
-    	 return result;
-    }
+     public static String doPostByStream(String url, String params, String charset,String contentType){
+    	 String result="";
+    	 HttpClient httpClient = new HttpClient();  
+         //httpClient.getState().setCookiePolicy(CookiePolicy.COMPATIBILITY);  
+         PostMethod postMethod = new PostMethod(url);  
+         InputStream  in = new ByteArrayInputStream(params.toString().getBytes());  
+         postMethod.setRequestEntity(new InputStreamRequestEntity(in,contentType));  
+         HttpClientParams clientParams = new HttpClientParams();  
+         clientParams.setConnectionManagerTimeout(10000L);  
+         httpClient.setParams(clientParams);  
+         try {  
+             httpClient.executeMethod(postMethod);  
+             //获取二进制的byte流  
+             result =postMethod.getResponseBodyAsString();  
+             logger.debug("client:"+result);  
+         }catch (Exception e) {  
+             // TODO: handle exception  
+             System.out.println(e.getMessage()+","+e.getStackTrace());  
+         }finally{  
+             postMethod.releaseConnection();  
+         }
+		return result;  
+     }
     public static String getFromStream(HttpServletRequest request) throws Exception{
     	InputStream is = request.getInputStream();
 	    ObjectInputStream ois = new ObjectInputStream(is);
@@ -201,16 +193,22 @@ public class HttpTookit {
 	 * @author	liujq
 	 * @Date	2015年11月3日 下午6:41:37 
 	 */
-	public static String retryReqest(String params,String url){
+	public static String retryReqest(String params,String url,String contentType){
 		int retryTimes=Integer.valueOf(PropertyUtil.getSystemProperty("retry_times")).intValue();
-		String rsp=HttpTookit.postStream(url, params, CHARSET);
+		String rsp=HttpTookit.doPostByStream(url, params, CHARSET,contentType);
 		int temp=1;
 		while("F".equals(rsp) && temp<retryTimes){
-			rsp=HttpTookit.postStream(url, params, CHARSET);
+			rsp=HttpTookit.doPostByStream(url, params, CHARSET,contentType);
 			temp++;
 		}
 		return rsp;
 	}
+	/**
+	 * 携程返回的比较特别 用此方法获取携程返回的数据
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
 	public static String getStrXmlFromStream(HttpServletRequest request) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream(),CHARSET));
         String line = null;
