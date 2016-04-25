@@ -2,7 +2,7 @@ package com.travel.common.util.convert;
 
 import org.apache.commons.beanutils.Converter;
 
-import com.travel.api.common.order.base.IDType;
+import com.travel.api.third.ctrip.Contract.IDType;
 
 public class IDTypeConvert   implements Converter{
 
@@ -10,25 +10,26 @@ public class IDTypeConvert   implements Converter{
 	@Override
 	public <T> T convert(Class<T> type, Object value) {
 		if(value!=null){
-			if((IDType.DrivingLicense+"").equals(com.travel.api.common.order.base.IDType.DrivingLicense+"")){
+			IDType value1=(IDType)value;
+			if((value1.DrivingLicense+"").equals(com.travel.api.common.order.base.IDType.DrivingLicense+"")){
 				return (T) com.travel.api.common.order.base.IDType.DrivingLicense;
 			}
-			if((IDType.ForeignerPermanent+"").equals(com.travel.api.common.order.base.IDType.ForeignerPermanent+"")){
+			if((value1.ForeignerPermanent+"").equals(com.travel.api.common.order.base.IDType.ForeignerPermanent+"")){
 				return (T) com.travel.api.common.order.base.IDType.ForeignerPermanent;
 			}
-			if((IDType.HomeReturnPermit+"").equals(com.travel.api.common.order.base.IDType.HomeReturnPermit+"")){
+			if((value1.HomeReturnPermit+"").equals(com.travel.api.common.order.base.IDType.HomeReturnPermit+"")){
 				return (T) com.travel.api.common.order.base.IDType.HomeReturnPermit;
 			}
-			if((IDType.HouseholdRegister+"").equals(com.travel.api.common.order.base.IDType.HouseholdRegister+"")){
+			if((value1.HouseholdRegister+"").equals(com.travel.api.common.order.base.IDType.HouseholdRegister+"")){
 				return (T) com.travel.api.common.order.base.IDType.HouseholdRegister;
 			}
-			if((IDType.IDCard+"").equals(com.travel.api.common.order.base.IDType.IDCard+"")){
+			if((value1.IDCard+"").equals(com.travel.api.common.order.base.IDType.IDCard+"")){
 				return (T) com.travel.api.common.order.base.IDType.IDCard;
 			}
-			if((IDType.MilitaryOfficer+"").equals(com.travel.api.common.order.base.IDType.MilitaryOfficer+"")){
+			if((value1.MilitaryOfficer+"").equals(com.travel.api.common.order.base.IDType.MilitaryOfficer+"")){
 				return (T) com.travel.api.common.order.base.IDType.MilitaryOfficer;
 			}
-			if((IDType.Other+"").equals(com.travel.api.common.order.base.IDType.Other+"")){
+			if((value1.Other+"").equals(com.travel.api.common.order.base.IDType.Other+"")){
 				return (T) com.travel.api.common.order.base.IDType.Other;
 			}
 			if((IDType.Passport+"").equals(com.travel.api.common.order.base.IDType.Passport+"")){

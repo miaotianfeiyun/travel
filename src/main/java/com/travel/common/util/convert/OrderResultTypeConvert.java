@@ -2,7 +2,7 @@ package com.travel.common.util.convert;
 
 import org.apache.commons.beanutils.Converter;
 
-import com.travel.api.common.order.base.OrderResultType;
+import com.travel.api.third.ctrip.Contract.OrderResultType;
 
 public class OrderResultTypeConvert   implements Converter{
 
@@ -10,14 +10,15 @@ public class OrderResultTypeConvert   implements Converter{
 	@Override
 	public <T> T convert(Class<T> type, Object value) {
 		if(value!=null){
-			if((OrderResultType.Confirmed+"").equals(com.travel.api.common.order.base.OrderResultType.Confirmed+"")){
-				return (T) com.travel.api.common.order.base.OrderResultType.Confirmed;
+			com.travel.api.common.order.base.OrderResultType value1=(com.travel.api.common.order.base.OrderResultType)value;
+			if((value1.Confirmed+"").equals(OrderResultType.Confirmed+"")){
+				return (T) OrderResultType.Confirmed;
 			}
-			if((OrderResultType.InProgress+"").equals(com.travel.api.common.order.base.OrderResultType.InProgress+"")){
-				return (T) com.travel.api.common.order.base.OrderResultType.InProgress;
+			if((value1.InProgress+"").equals(OrderResultType.InProgress+"")){
+				return (T) OrderResultType.InProgress;
 			}
-			if((OrderResultType.Rejected+"").equals(com.travel.api.common.order.base.OrderResultType.Rejected+"")){
-				return (T) com.travel.api.common.order.base.OrderResultType.Rejected;
+			if((value1.Rejected+"").equals(OrderResultType.Rejected+"")){
+				return (T) OrderResultType.Rejected;
 			}
 		}else{
 			return null;

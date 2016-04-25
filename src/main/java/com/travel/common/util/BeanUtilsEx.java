@@ -30,7 +30,7 @@ public class BeanUtilsEx extends BeanUtils{
 		    ConvertUtils.register(new CtripBeanConvert(), Product.class);
 		    ConvertUtils.register(new AgeCategoryConvert(), com.travel.api.common.order.base.AgeCategory.class);
 		    ConvertUtils.register(new IDTypeConvert(), com.travel.api.common.order.base.IDType.class);
-		    ConvertUtils.register(new OrderResultTypeConvert(), com.travel.api.common.order.base.OrderResultType.class);
+		    ConvertUtils.register(new OrderResultTypeConvert(), com.travel.api.third.ctrip.Contract.OrderResultType.class);
 		    
 		  }
 		  public static void copyProperties(Object target, Object source) throws
