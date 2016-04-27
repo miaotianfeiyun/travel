@@ -166,6 +166,7 @@ public class HttpTookit {
          postMethod.setRequestEntity(new InputStreamRequestEntity(in,contentType));  
          HttpClientParams clientParams = new HttpClientParams();  
          clientParams.setConnectionManagerTimeout(10000L);  
+         clientParams.setHttpElementCharset(charset);
          httpClient.setParams(clientParams);  
          try {  
              httpClient.executeMethod(postMethod);  
@@ -174,12 +175,13 @@ public class HttpTookit {
              logger.debug("client:"+result);  
          }catch (Exception e) {  
              // TODO: handle exception  
-             System.out.println(e.getMessage()+","+e.getStackTrace());  
+        	 logger.info(e.getMessage());  
          }finally{  
              postMethod.releaseConnection();  
          }
 		return result;  
      }
+     @Deprecated
     public static String getFromStream(HttpServletRequest request) throws Exception{
     	InputStream is = request.getInputStream();
 	    ObjectInputStream ois = new ObjectInputStream(is);

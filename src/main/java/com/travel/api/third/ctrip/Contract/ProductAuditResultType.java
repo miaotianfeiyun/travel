@@ -5,64 +5,59 @@ import org.simpleframework.xml.Root;
 
 @Root
 public class ProductAuditResultType {
-@Element(required=false)
-private String VendorProductCode ;
+	@Element(required = false)
+	private String VendorProductCode;
 
+	@Element(required = false)
+	private AuditType AuditType;
 
-public String getVendorProductCode() {
-	return VendorProductCode;
- }
+	@Element(required = false)
+	private AuditResult AuditResult;
 
-public void setVendorProductCode(String vendorproductcode) {
-VendorProductCode = vendorproductcode;
-}
+	@Element(required = false)
+	private String Days;
 
-@Element(required=false)
-private AuditType AuditType ;
+	@Element(required = false)
+	private String RejectReason;
 
+	public String getVendorProductCode() {
+		return VendorProductCode;
+	}
 
-public AuditType getAuditType() {
-	return AuditType;
- }
+	public void setVendorProductCode(String vendorproductcode) {
+		VendorProductCode = vendorproductcode;
+	}
 
-public void setAuditType(AuditType audittype) {
-AuditType = audittype;
-}
+	public AuditType getAuditType() {
+		return AuditType;
+	}
 
-@Element(required=false)
-private AuditResult AuditResult ;
+	public void setAuditType(AuditType audittype) {
+		AuditType = audittype;
+	}
 
+	public AuditResult getAuditResult() {
+		return AuditResult;
+	}
 
-public AuditResult getAuditResult() {
-	return AuditResult;
- }
+	public void setAuditResult(AuditResult auditresult) {
+		AuditResult = auditresult;
+	}
 
-public void setAuditResult(AuditResult auditresult) {
-AuditResult = auditresult;
-}
+	public String getDays() {
+		return Days;
+	}
 
-@Element(required=false)
-private String Days ;
+	public void setDays(String days) {
+		Days = days;
+	}
 
+	public String getRejectReason() {
+		return RejectReason;
+	}
 
-public String getDays() {
-	return Days;
- }
-
-public void setDays(String days) {
-Days = days;
-}
-
-@Element(required=false)
-private String RejectReason ;
-
-
-public String getRejectReason() {
-	return RejectReason;
- }
-
-public void setRejectReason(String rejectreason) {
-RejectReason = rejectreason;
-}
+	public void setRejectReason(String rejectreason) {
+		RejectReason = rejectreason;
+	}
 
 }

@@ -72,9 +72,9 @@ public class ProductClient extends ClientBase{
 	public void setThirdOTAList(List<ThirdOTA> thirdOTAList) {
 		this.thirdOTAList = thirdOTAList;
 	}
-	public String invoke(ProductClient client,String host){
+	public String invoke(ProductClient client,String host) throws Exception{
 		client.setToken(Sign.signature(JsonUtil.toJson(client),getAppKey(), getAppSecret()));
-		return HttpTookit.doPostByStream(host+"/travel"+productDealUrl, JsonUtil.toJson(client), HttpTookit.CHARSET, "application/json");
+		return HttpTookit.doPostByStream(host+productDealUrl, JsonUtil.toJson(client), HttpTookit.CHARSET, "application/json");
 	}
 	
 	public Product getProduct() {

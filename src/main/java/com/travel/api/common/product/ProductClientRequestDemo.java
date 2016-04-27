@@ -38,7 +38,7 @@ import com.travel.api.common.product.base.VisaDetail;
  */
 
 public class ProductClientRequestDemo {
-public static void main(String [] argus){
+public static void main(String [] argus) throws Exception{
 	ProductClient client=new ProductClient();
 	List<ThirdOTA> thirdOTAList=new ArrayList<ThirdOTA>();
 	ThirdOTA ctrip=new ThirdOTA();
@@ -225,7 +225,7 @@ public static void main(String [] argus){
 	product.setExcludeExpense("费用不含，费用不含，费用不含费用不含费用不含费用不含费用不含费用不含");
 	product.setIncludeExpense("费用包含费用包含费用包含费用包含费用包含费用包含费用包含费用包含费用包含");
 	client.setProduct(product);
-	String response=client.invoke(client,"http://localhost:8080/travel");
+	String response=client.invoke(client,"http://192.168.79.171:8080");
 	System.out.println(response);
 }
 }

@@ -57,9 +57,9 @@ public class OrderClient extends ClientBase{
 	private String timeStamp;
 	
 	
-	public String invoke(OrderClient client,String host){
+	public String invoke(OrderClient client,String host) throws Exception{
 		client.setToken(Sign.signature(JsonUtil.toJson(client),getAppKey(), getAppSecret()));
-		return HttpTookit.doPostByStream(host+"/travel"+orderDealUrl, JsonUtil.toJson(client), HttpTookit.CHARSET,"application/json");
+		return HttpTookit.doPostByStream(host+orderDealUrl, JsonUtil.toJson(client), HttpTookit.CHARSET,"application/json");
 	}
 	
 	public String getTimeStamp() {

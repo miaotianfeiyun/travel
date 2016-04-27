@@ -14,21 +14,18 @@ public class ResponseBase {
 
 	public String getErrorCode() {
 		return ErrorCode;
-	 }
+	}
 
-	public void setErrorCode(String errorcode) {
-		ErrorCode = errorcode;
+	public void setErrorCode(String errorCode) {
+		ErrorCode = errorCode;
 	}
 
 	public String getErrorMsg() {
 		return ErrorMsg;
-	 }
+	}
 
-	public void setErrorMsg(String errormsg) {
-		ErrorMsg = errormsg;
+	public void setErrorMsg(String errorMsg) {
+		ErrorMsg = errorMsg;
 	}
-	public String GetErrorCode()
-	{
-		return this.ErrorCode;
-	}
+
 }

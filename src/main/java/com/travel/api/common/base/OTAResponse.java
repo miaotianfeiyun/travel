@@ -29,11 +29,10 @@ public void setOtaType(OTAType otaType) {
 	this.otaType = otaType;
 }
 public  String instance(String orgStr,JSONObject jsonObj){
-	StringBuffer sb=new StringBuffer();
+	StringBuffer sb=new StringBuffer(orgStr);
 	if(jsonObj!=null){
 		String errorCode=(String) jsonObj.get("errorMsg");
 		if(StringUtils.isNotBlank(errorCode)){
-			sb.append(orgStr);
 			sb.append(";");
 			sb.append(errorCode);
 		}

@@ -6,6 +6,7 @@ import com.travel.api.common.product.base.ResponseBase;
 
 @Root
 public class ProductAuditResultResponse extends ResponseBase {
+	ProductAuditResultResponse(){};
 	public ProductAuditResultResponse(String errorCode,String errorMessage){
 		this.setErrorCode(errorCode);
 		this.setErrorMsg(errorMessage);

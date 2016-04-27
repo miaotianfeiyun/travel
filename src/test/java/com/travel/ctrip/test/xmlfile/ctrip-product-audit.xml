@@ -1,0 +1,10 @@
+<ProductAuditResultRequest>
+<Token>9001-9001#6f7d913d6a81fffce9e444f366bdb1d7</Token>
+<ProductAuditResult>
+<VendorProductCode>16177122</VendorProductCode>
+<AuditType>Price</AuditType>
+<AuditResult>Approved</AuditResult>
+<Days>2016-04-27,2016-04-28,2016-04-29</Days>
+<RejectReason/>
+</ProductAuditResult>
+</ProductAuditResultRequest>

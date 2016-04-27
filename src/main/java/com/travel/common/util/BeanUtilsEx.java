@@ -8,6 +8,8 @@ import org.apache.commons.beanutils.converters.SqlDateConverter;
 
 import com.travel.api.common.product.base.Product;
 import com.travel.common.util.convert.AgeCategoryConvert;
+import com.travel.common.util.convert.AuditResultConvert;
+import com.travel.common.util.convert.AuditTypeConvert;
 import com.travel.common.util.convert.CtripBeanConvert;
 import com.travel.common.util.convert.IDTypeConvert;
 import com.travel.common.util.convert.OrderResultTypeConvert;
@@ -31,6 +33,10 @@ public class BeanUtilsEx extends BeanUtils{
 		    ConvertUtils.register(new AgeCategoryConvert(), com.travel.api.common.order.base.AgeCategory.class);
 		    ConvertUtils.register(new IDTypeConvert(), com.travel.api.common.order.base.IDType.class);
 		    ConvertUtils.register(new OrderResultTypeConvert(), com.travel.api.third.ctrip.Contract.OrderResultType.class);
+		    ConvertUtils.register(new AuditTypeConvert(), com.travel.api.common.product.base.AuditType.class);
+		    ConvertUtils.register(new AuditResultConvert(), com.travel.api.common.product.base.AuditResult.class);
+		    
+		    
 		    
 		  }
 		  public static void copyProperties(Object target, Object source) throws

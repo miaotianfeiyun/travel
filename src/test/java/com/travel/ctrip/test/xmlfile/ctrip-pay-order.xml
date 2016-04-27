@@ -1,7 +1,7 @@
 <PayOrderRequest>
-	<Token>String</Token>
+	<Token>9001-9001#6f7d913d6a81fffce9e444f366bdb1d7</Token>
 	<Order>
-		<OrderId>text</OrderId>
+		<OrderId>62322215444</OrderId>
 		<VendorProductCode>String</VendorProductCode>
 		<DepartureDate>1967-08-13</DepartureDate>
 		<OrderInfo>

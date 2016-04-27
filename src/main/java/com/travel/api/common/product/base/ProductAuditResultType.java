@@ -2,9 +2,6 @@ package com.travel.api.common.product.base;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
-
-import com.travel.api.third.ctrip.Contract.AuditResult;
-
 @Root
 public class ProductAuditResultType {
 @Element(required=false)

@@ -26,4 +26,13 @@ public static final String SIGN_EXCEPTION="S-00002";
 * @date 2016年3月30日 上午10:37:17 
 */ 
 public static final String THIRD_EXCEPTION="E-00003";
+
+/**
+ * 返回成功标志
+ */
+public static final String SUCCESS="S";
+/**
+ * 返回失败标志
+ */
+public static final String FAILURE="F";
 }

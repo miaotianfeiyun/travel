@@ -15,6 +15,8 @@ public class OrderRequestTest {
 	private static String ctrip_order_update_url="/v1/order/ctripUpdateOrder.in";
 	private static String ctrip_order_pay_url="/v1/order/ctripOrderPay.in";
 	private static String ctrip_order_cancle_url="/v1/order/ctripCancleOrder.in";
+	private static String ctrip_product_audit_url="/v1/product/productAudit.in";
+	
 	public static void main(String[] args) throws Exception{
 		OrderRequestTest.doCreate();	
 	}
@@ -50,4 +52,13 @@ public class OrderRequestTest {
 		String rsp=HttpTookit.doPostByStream(url, param, "UTF-8","text/xml");
 		System.out.println(rsp);
 	}
+	public static void  doProductAudit() throws DocumentException, IOException, Exception{
+		String url=host+ctrip_product_audit_url;
+		Resource resource = new ClassPathResource("com/travel/ctrip/test/xmlfile/ctrip-product-audit.xml"); 
+		String param=Dom4jHelper.toString(Dom4jHelper.parse(resource.getURL()), "UTF-8") ;
+		System.out.println(param);
+		String rsp=HttpTookit.doPostByStream(url, param, "UTF-8","text/xml");
+		System.out.println(rsp);
+	}
+	
 }

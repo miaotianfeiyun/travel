@@ -11,7 +11,7 @@ public class AgeCategoryConvert  implements Converter{
 	public <T> T convert(Class<T> type, Object value) {
 		if(value!=null){
 			AgeCategory value1=(AgeCategory)value;
-			if((value1.Adult).equals(com.travel.api.common.order.base.AgeCategory.Adult+"")){
+			if((value1.Adult+"").equals(com.travel.api.common.order.base.AgeCategory.Adult+"")){
 				return (T) com.travel.api.common.order.base.AgeCategory.Adult;
 			}
 			if((value1.Child+"").equals(com.travel.api.common.order.base.AgeCategory.Child+"")){

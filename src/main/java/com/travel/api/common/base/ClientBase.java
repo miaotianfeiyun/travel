@@ -11,8 +11,14 @@ package com.travel.api.common.base;
  */
 
 public class ClientBase {
-public static final String productDealUrl="/v1/product/addOrModify.in";
-	public static final String orderDealUrl="/v1/product/orderDeal.in";
+	/**
+	 * 添加或者更新产品
+	 */
+	public static final String productDealUrl="/v1/product/addOrModify.in";
+	/**
+	 * 订单的确认和拒绝
+	 */
+	public static final String orderDealUrl="/v1/order/orderDeal.in";
 	/** 
 	* @Fields appKey : 连接接口平台的key
 	* @date 2016年3月21日 下午6:07:35 

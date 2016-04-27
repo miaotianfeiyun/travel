@@ -33,7 +33,6 @@ import com.travel.api.common.order.base.OrderDealType;
 import com.travel.api.common.order.base.OrderInfo;
 import com.travel.api.common.order.base.PackageInfo;
 import com.travel.api.common.order.base.Traveler;
-import com.travel.api.common.product.ProductClient;
 import com.travel.api.common.util.Sign;
 import com.travel.api.third.ctrip.Contract.CancelOrderRequest;
 import com.travel.api.third.ctrip.Contract.CancelOrderResponse;
@@ -80,17 +79,22 @@ public class OrderController {
 	@Resource
 	private NotifyService notifyService;
 	
+	/**
+	 * 订单确认或者拒绝
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/orderDeal.in",method=RequestMethod.POST)
 	public void dealOrderConfirmOrReject(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		response.setCharacterEncoding("UTF-8");
-		OrderResponse rsp=new OrderResponse();
-		String strXml=HttpTookit.getFromStream(request);
+		OrderResponse rsp=new OrderResponse(ErrorCode.SUCCESS, "", "");
+		String strXml=HttpTookit.getStrXmlFromStream(request);
 		JSONObject json=JSONObject.fromObject(strXml);
 		String orToken=(String) json.get("token");
 		String appkey=(String) json.get("appKey");
 		String appSecret=(String) json.get("appSecret");
 		json.remove("token");
-		Integer id=null;
 		OrderClient orderClient=null;
 		if(StringUtils.isNoneBlank(orToken) && orToken.equalsIgnoreCase(Sign.signature(json.toString(), appkey, appSecret))){
 			@SuppressWarnings("rawtypes")
@@ -98,11 +102,10 @@ public class OrderController {
 			classMap.put("thirdOTAList", ThirdOTA.class);
 			JsonConfig jsonConfig = new JsonConfig();  
 			jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor());
-			orderClient=(OrderClient)JSONObject.toBean(JSONObject.fromObject(strXml,jsonConfig), ProductClient.class,classMap);
+			orderClient=(OrderClient)JSONObject.toBean(JSONObject.fromObject(strXml,jsonConfig), OrderClient.class,classMap);
 			//这儿的接口名称需要top的接口名 sn需要传过来统一下
 			OrderToTop  orderToTop=new OrderToTop(orderClient.getOrderId(), orderClient.getThirdOrderId(), orderClient.getTimeStamp(), null, null,orderClient.getOperateType()+"", strXml, null, new Date(), null);
 			orderToTopService.save(orderToTop);
-			id=orderToTop.getId();
 			List<ThirdOTA> otaLst=orderClient.getThirdOTAList();
 			for (int i = 0; i < otaLst.size(); i++) {
 				ThirdOTA temp=otaLst.get(i);
@@ -118,12 +121,20 @@ public class OrderController {
 					
 				}
 			}
+			OrderToTop orderToTopU=new OrderToTop(orderToTop.getId(), JsonUtil.toJson(rsp), new Date(),orderClient.getOrderId());
+			orderToTopService.update(orderToTopU);
 		}else{
 			log.info("签名不通过");
 			rsp=new OrderResponse(ErrorCode.SIGN_EXCEPTION, "签名错误", "");
 		}
-		OrderToTop orderToTopU=new OrderToTop(id, JsonUtil.toJson(rsp), new Date(),orderClient.getOrderId());
-		orderToTopService.update(orderToTopU);
+		List<OTAResponse> temp=new ArrayList<OTAResponse>();
+		if(temp != null){
+			for (int i = 0; i <temp.size(); i++) {
+				if(StringUtils.isNotBlank(temp.get(i).getErrorCode())){
+					rsp.setErrorCode(ErrorCode.THIRD_EXCEPTION);
+				}
+			}
+		}
 		response.getWriter().print(JSONObject.fromObject(rsp));
 	}
 	/** 
@@ -391,34 +402,32 @@ public class OrderController {
 		req.setCooperationPlatform(OTAType.CTRIP+"");
 		req.setOrder(this.thirdOrderToCommonOrder(tempOrder));
 		
-		String strRequestXml=SDKCore.<OrderRequest> ObjToXMLString(req);
+		String reqStr=JsonUtil.toJson(req);
 		
-		Map<String,Object> params=new HashMap<String, Object>();
-		params.put("bodyParas", strRequestXml);
-		params.put("sessionID", Md5.getMd5Str(strRequestXml, "UTF-8"));
-		
-		log.info("向旅业通供应商平台发送的xml"+strRequestXml);
+		log.info("向供应商平台发送的xml"+reqStr);
 		
 		Notify paraAuditNotify=new Notify(key,value);
 		paraAuditNotify.setThird_type(OTAType.CTRIP+"");
 		paraAuditNotify.setNotify_type(notifyType);//通知类型
 		Notify productAuditNotify=notifyService.getNotifyByParas(paraAuditNotify); 
-		OrderToTop orderToTop=new OrderToTop(null, tempOrder.getOrderId(), sn, OTAType.CTRIP+"", interfaceName, operateType+"", strRequestXml, null, new Date(), null);
+		
+		OrderToTop orderToTop=new OrderToTop(null, tempOrder.getOrderId(), sn, OTAType.CTRIP+"", interfaceName, operateType+"", reqStr, null, new Date(), null);
 		orderToTopService.save(orderToTop);
-		String drolayResponseXml="";
+		
+		String rspStr="";
 		//这里没想要如果它那边异常了这边咋搞~~
 		OrderResponse respOrder=null;
 		if(productAuditNotify!=null){
-			drolayResponseXml=HttpTookit.retryReqest(JsonUtil.toJson(req),productAuditNotify.getNotify_url(),"");
-			if(StringUtils.isNotBlank((drolayResponseXml))){
+			rspStr=HttpTookit.retryReqest(reqStr,productAuditNotify.getNotify_url(),"");
+			if(StringUtils.isNotBlank((rspStr))){
 				@SuppressWarnings("rawtypes")
 				Map<String,Class> classMap =new HashMap<String,Class>();
 				classMap.put("responseList", OTAResponse.class);
 				JsonConfig jsonConfig = new JsonConfig();  
 				jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor());
-				respOrder=(OrderResponse)JSONObject.toBean(JSONObject.fromObject(drolayResponseXml,jsonConfig), OrderResponse.class,classMap);
+				respOrder=(OrderResponse)JSONObject.toBean(JSONObject.fromObject(rspStr,jsonConfig), OrderResponse.class,classMap);
 				
-				OrderToTop orderToTopU=new OrderToTop(orderToTop.getId(), drolayResponseXml, new Date(), respOrder.getVendorOrderId());
+				OrderToTop orderToTopU=new OrderToTop(orderToTop.getId(), rspStr, new Date(), respOrder.getVendorOrderId());
 				orderToTopService.update(orderToTopU);
 			}
 		}else{

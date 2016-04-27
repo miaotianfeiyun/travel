@@ -1,8 +1,6 @@
 package com.travel.controller;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,14 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +41,7 @@ import com.travel.api.third.ctrip.Contract.ProductAuditResultRequest;
 import com.travel.api.third.ctrip.Contract.ProductAuditResultType;
 import com.travel.api.third.ctrip.SDK.SDKCore;
 import com.travel.common.business.CtripApiDeal;
+import com.travel.common.util.BeanUtilsEx;
 import com.travel.common.util.HttpTookit;
 import com.travel.common.util.JsonDateValueProcessor;
 import com.travel.common.util.JsonUtil;
@@ -58,6 +52,9 @@ import com.travel.mybatis.entity.ProductToTop;
 import com.travel.service.NotifyService;
 import com.travel.service.ProductAuditContentService;
 import com.travel.service.ProductToTopService;
+
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 
 /** 
@@ -88,8 +85,9 @@ public class ProductController {
 	@RequestMapping(value="/addOrModify.in")
 	public void productDeal(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/plain");
 		ProductResponse rsp=new ProductResponse();
-		String strXml=HttpTookit.getFromStream(request);
+		String strXml=HttpTookit.getStrXmlFromStream(request);
 		JSONObject json=JSONObject.fromObject(strXml);
 		String orToken=(String) json.get("token");
 		String appkey=(String) json.get("appKey");
@@ -150,13 +148,7 @@ public class ProductController {
 	@RequestMapping("/productAudit.in")
 	public void productAuditReceive(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		response.setCharacterEncoding("UTF-8");
-		BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream(),"UTF-8"));
-        String line = null;
-        StringBuffer sb = new StringBuffer();
-        while ((line = br.readLine()) != null) {
-            sb.append(line);
-        }
-        String strXml=sb.toString();
+        String strXml=HttpTookit.getStrXmlFromStream(request);;
 		ProductAuditResultResponse productAuditResultResponse=null;//携程返回
 		try {
 			ProductAuditResultRequest productAuditResultRequest=SDKCore.XMLStringToObj(ProductAuditResultRequest.class, strXml);
@@ -166,15 +158,17 @@ public class ProductController {
 			String value=strToken.split("#")[0].split("-")[1];
 			if(Md5.getMd5Str(key+"#"+value).equals(strToken.split("#")[1])){
 				ProductAuditResultType auditResult=productAuditResultRequest.getProductAuditResult();
-				auditResult.getAuditType();
-				auditResult.getAuditResult();
-				auditResult.getDays();
-				auditResult.getRejectReason();
-				auditResult.getVendorProductCode();
+				if(auditResult!=null){
+					auditResult.getAuditType();
+					auditResult.getAuditResult();
+					auditResult.getDays();
+					auditResult.getRejectReason();
+					auditResult.getVendorProductCode();
+				}
 				
 				//返回给供应商的
 				ProductAudit productAudit=new ProductAudit();
-				BeanUtils.copyProperties(productAudit, auditResult);
+				BeanUtilsEx.copyProperties(productAudit, auditResult);
 				productAudit.setOtaType(OTAType.CTRIP);
 				
 				productAudit.setToken(Sign.signature(JsonUtil.toJson(productAudit),key, value));
@@ -185,18 +179,20 @@ public class ProductController {
 				paraAuditNotify.setThird_type(OTAType.CTRIP+"");
 				paraAuditNotify.setNotify_type(CommonConstant.NOTIFY_TYPE_CTIP_PRODUCT_AUDIT);
 				Notify productAuditNotify=notifyService.getNotifyByParas(paraAuditNotify); 
-				String drolayResponseXml="F";
+				ProductAuditResultResponse supplierRsp=null;
 				if(productAuditNotify!=null){//通知地址不为空
 					//请求供应商地址 如果失败重试N次
-					drolayResponseXml=HttpTookit.retryReqest(JsonUtil.toJson(productAudit),productAuditNotify.getNotify_url(),"text/json");
+					String drolayResponseXml=HttpTookit.doPostByStream(productAuditNotify.getNotify_url(),JsonUtil.toJson(productAudit),"UTF-8","application/json");
+					supplierRsp=JsonUtil.fromJson(drolayResponseXml, ProductAuditResultResponse.class);
+					
+					ProductAuditContent productAuditContent=new ProductAuditContent(auditResult.getVendorProductCode(), strXml, key, value, supplierRsp.getErrorCode().equals("S")?"Y":"N");
+					productAuditContent.setRequest_time(new Date());
+					//记录供应商是否有返回 返回S标识此通知发送成功
+					productAuditContentService.save(productAuditContent);
 				}else{
 					log.info("供应商url没有配置");
 				}
 				log.info("记录审核报文");
-				ProductAuditContent productAuditContent=new ProductAuditContent(auditResult.getVendorProductCode(), strXml, key, value, drolayResponseXml.equals("S")?"Y":"N");
-				productAuditContent.setRequest_time(new Date());
-				//记录供应商是否有返回 返回S标识此通知发送成功
-				productAuditContentService.save(productAuditContent);
 				productAuditResultResponse=new ProductAuditResultResponse("","");
 				String rspCtripXml=SDKCore.<ProductAuditResultResponse> ObjToXMLString(productAuditResultResponse);
 				response.getWriter().print(rspCtripXml);
