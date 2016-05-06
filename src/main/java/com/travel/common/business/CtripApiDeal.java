@@ -184,7 +184,7 @@ public class CtripApiDeal {
 			UpdateProductInventoryResponse updateProductInventoryResponse=this.doInventory(client, requestHeader);
 			errorMsg=response.instance(errorMsg, JSONObject.fromObject(updateProductInventoryResponse));
 		}
-		if(client.getProduct().getItineraryList()!=null && client.getProduct().getItineraryList().size()>0){
+		if(client.getProduct().getPriceList()!=null && client.getProduct().getPriceList().size()>0){
 			UpdateProductPriceResponse updateProductPriceResponse=this.doPrice(client, requestHeader);
 			errorMsg=response.instance(errorMsg, JSONObject.fromObject(updateProductPriceResponse));
 		}
@@ -821,8 +821,8 @@ public class CtripApiDeal {
 	public OTAResponse doConfirmOrder(OrderClient order,RequestHeaderType requestHeader,OTAResponse rsp,String errorMsg) throws Exception{
 		ConfirmOrderRequest request=new ConfirmOrderRequest();
 		request.setRequestHeader(requestHeader);
-		request.setOrderId(order.getThirdOrderId());
-		request.setVendorOrderId(order.getOrderId());
+		request.setOrderId(order.getOrderId());
+		request.setVendorOrderId(order.getThirdOrderId());
 		request.setMessageId(order.getMessageId());
 		OrderToThirdOta orderToThirdOta=new OrderToThirdOta(order.getOrderId(), order.getThirdOrderId(), System.currentTimeMillis()+"", OTAType.CTRIP+"", ThirdAPIInterfaceName.CTRIP_CONFIRMORDER, order.getOperateType()+"", SDKCore.ObjToXMLString(request), null, new Date(), null);
 		orderToThirdOtaService.save(orderToThirdOta);
@@ -844,8 +844,8 @@ public class CtripApiDeal {
 	public OTAResponse doRejectOrder(OrderClient orderClient,RequestHeaderType requestHeader,OTAResponse rsp,String errorMsg) throws Exception{
 		RejectOrderRequest request=new RejectOrderRequest();
 		request.setRequestHeader(requestHeader);
-		request.setOrderId(orderClient.getThirdOrderId());
-		request.setVendorOrderId(orderClient.getOrderId());
+		request.setOrderId(orderClient.getOrderId());
+		request.setVendorOrderId(orderClient.getThirdOrderId());
 		request.setMessageId(orderClient.getMessageId());
 		request.setReason(orderClient.getReason());
 		OrderToThirdOta orderToThirdOta=new OrderToThirdOta(orderClient.getOrderId(), orderClient.getThirdOrderId(), System.currentTimeMillis()+"", OTAType.CTRIP+"", ThirdAPIInterfaceName.CTRIP_REJECTORDER, orderClient.getOperateType()+"", SDKCore.ObjToXMLString(request), null, new Date(), null);

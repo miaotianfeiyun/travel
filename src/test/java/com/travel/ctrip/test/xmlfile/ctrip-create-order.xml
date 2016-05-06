@@ -1,7 +1,7 @@
 <CreateOrderRequest>
 	<Token>9001-9001#6f7d913d6a81fffce9e444f366bdb1d7</Token>
 	<Order>
-		<OrderId>order01</OrderId>
+		<OrderId>order02</OrderId>
 		<VendorProductCode>16177100</VendorProductCode>
 		<DepartureDate>2016-05-01</DepartureDate>
 		<OrderInfo>

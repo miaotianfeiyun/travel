@@ -418,7 +418,7 @@ public class OrderController {
 		//这里没想要如果它那边异常了这边咋搞~~
 		OrderResponse respOrder=null;
 		if(productAuditNotify!=null){
-			rspStr=HttpTookit.retryReqest(reqStr,productAuditNotify.getNotify_url(),"");
+			rspStr=HttpTookit.doPostByStream(productAuditNotify.getNotify_url(), reqStr, HttpTookit.CHARSET,"application/json");
 			if(StringUtils.isNotBlank((rspStr))){
 				@SuppressWarnings("rawtypes")
 				Map<String,Class> classMap =new HashMap<String,Class>();

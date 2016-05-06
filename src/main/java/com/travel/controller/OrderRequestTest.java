@@ -18,7 +18,7 @@ public class OrderRequestTest {
 	private static String ctrip_product_audit_url="/v1/product/productAudit.in";
 	
 	public static void main(String[] args) throws Exception{
-		OrderRequestTest.doCreate();	
+		OrderRequestTest.doModify();	
 	}
 	public static void  doCreate() throws DocumentException, IOException, Exception{
 		String url=host+ctrip_order_create_url;

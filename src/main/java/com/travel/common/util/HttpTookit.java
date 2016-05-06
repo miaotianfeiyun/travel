@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import javax.servlet.ServletInputStream;
@@ -157,16 +158,17 @@ public class HttpTookit {
              String y = doGet("http://video.sina.com.cn/life/tips.html", "username=test", "GBK", true); 
              System.out.println(y); 
      } 
-     public static String doPostByStream(String url, String params, String charset,String contentType){
+     public static String doPostByStream(String url, String params, String charset,String contentType) throws UnsupportedEncodingException{
     	 String result="";
     	 HttpClient httpClient = new HttpClient();  
          //httpClient.getState().setCookiePolicy(CookiePolicy.COMPATIBILITY);  
          PostMethod postMethod = new PostMethod(url);  
-         InputStream  in = new ByteArrayInputStream(params.toString().getBytes());  
+         InputStream  in = new ByteArrayInputStream(params.getBytes(charset));  
          postMethod.setRequestEntity(new InputStreamRequestEntity(in,contentType));  
          HttpClientParams clientParams = new HttpClientParams();  
          clientParams.setConnectionManagerTimeout(10000L);  
-         clientParams.setHttpElementCharset(charset);
+         clientParams.setContentCharset(charset);
+         clientParams.setCredentialCharset(charset);
          httpClient.setParams(clientParams);  
          try {  
              httpClient.executeMethod(postMethod);  
@@ -193,9 +195,10 @@ public class HttpTookit {
 	 * @param url
 	 * @return	String
 	 * @author	liujq
+	 * @throws UnsupportedEncodingException 
 	 * @Date	2015年11月3日 下午6:41:37 
 	 */
-	public static String retryReqest(String params,String url,String contentType){
+	public static String retryReqest(String params,String url,String contentType) throws UnsupportedEncodingException{
 		int retryTimes=Integer.valueOf(PropertyUtil.getSystemProperty("retry_times")).intValue();
 		String rsp=HttpTookit.doPostByStream(url, params, CHARSET,contentType);
 		int temp=1;

@@ -1,8 +1,8 @@
 <PayOrderRequest>
 	<Token>String</Token>
 	<Order>
-		<OrderId>text</OrderId>
-		<VendorProductCode>String</VendorProductCode>
+		<OrderId>order01</OrderId>
+		<VendorProductCode>16177100</VendorProductCode>
 		<DepartureDate>1967-08-13</DepartureDate>
 		<OrderInfo>
 			<BookingTime>2001-12-17T09:30:47Z</BookingTime>
