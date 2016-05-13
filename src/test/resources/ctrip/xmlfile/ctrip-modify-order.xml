@@ -1,7 +1,7 @@
 <ModifyOrderRequest>
   <Token>9001-9001#6f7d913d6a81fffce9e444f366bdb1d7</Token>
   <Order>
-    <OrderId>order01</OrderId>
+    <OrderId>order03</OrderId>
     <VendorProductCode>16177100</VendorProductCode>
     <DepartureDate>2016-07-06T00:00:00</DepartureDate>
     <OrderInfo>
@@ -45,6 +45,10 @@
       <Change>
         <Element>TravelerList_2147483647</Element>
         <OriginalValue>{"TravelerId":2147483647,"ChineseName":"唐一平","EnglishName":"YIPING/TANG","Gender":"Male","Nationality":"中国大陆","BirthDate":"1977-10-26","BirthCity":"","Mobile":"","AgeCategory":"Adult","IDType":"Passport","IDNumber":"G40997256","IssuedDate":"1900-01-01","ExpiredDate":"2025-04-29","IsRoomShare":true}</OriginalValue>
+      </Change>
+      <Change>
+        <Element>TravelerList_33902386</Element>
+        <OriginalValue>{"TravelerId":33902386,"ChineseName":"徐蔚莉","EnglishName":"WEILI/XU","Gender":"Female","Nationality":"中国大陆","BirthDate":"1981-09-11","BirthCity":"","Mobile":"","AgeCategory":"Adult","IDType":"Other","IDNumber":"","IssuedDate":"1900-01-01","ExpiredDate":"2099-12-30","IsRoomShare":true}</OriginalValue>
       </Change>
     </ChangeList>
     <MessageId>635975353045592107</MessageId>

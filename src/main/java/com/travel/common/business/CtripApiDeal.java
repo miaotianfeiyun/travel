@@ -829,7 +829,7 @@ public class CtripApiDeal {
 		
 		ConfirmOrderResponse  confirmOrderResponse =openAPI.ConfirmOrder(request);
 		errorMsg=rsp.instance(errorMsg, JSONObject.fromObject(confirmOrderResponse));
-		confirmOrderResponse.setErrorMsg(errorMsg);
+		rsp.setErrorMsg(errorMsg);
 		OrderToThirdOta orderToThirdOtaU=new OrderToThirdOta(orderToThirdOta.getId(), SDKCore.ObjToXMLString(confirmOrderResponse), new Date());
 		orderToThirdOtaService.update(orderToThirdOtaU);
 		return rsp;
@@ -853,7 +853,7 @@ public class CtripApiDeal {
 		
 		RejectOrderResponse  rejectOrderResponse =openAPI.RejectOrder(request);
 		errorMsg=rsp.instance(errorMsg, JSONObject.fromObject(rejectOrderResponse));;
-		rejectOrderResponse.setErrorMsg(errorMsg);
+		rsp.setErrorMsg(errorMsg);
 		OrderToThirdOta orderToThirdOtaU=new OrderToThirdOta(orderToThirdOta.getId(), SDKCore.ObjToXMLString(rejectOrderResponse), new Date());
 		orderToThirdOtaService.update(orderToThirdOtaU);
 		return rsp;

@@ -1,6 +1,7 @@
 package com.travel.controller;
 
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -146,9 +148,16 @@ public class ProductController {
 	 * @Date	2016年4月8日 下午5:04:54 
 	 */
 	@RequestMapping("/productAudit.in")
-	public void productAuditReceive(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	public void productAuditReceive(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		response.setCharacterEncoding("UTF-8");
-        String strXml=HttpTookit.getStrXmlFromStream(request);;
+		BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream(),"UTF-8"));
+        String line = null;
+        StringBuffer sb = new StringBuffer();
+        while ((line = br.readLine()) != null) {
+            sb.append(line);
+        }
+        String strXml=sb.toString();
+        //String strXml=HttpTookit.getStrXmlFromStream(request);;
 		ProductAuditResultResponse productAuditResultResponse=null;//携程返回
 		try {
 			ProductAuditResultRequest productAuditResultRequest=SDKCore.XMLStringToObj(ProductAuditResultRequest.class, strXml);

@@ -34,6 +34,8 @@ public  String instance(String orgStr,JSONObject jsonObj){
 		String errorCode=(String) jsonObj.get("errorMsg");
 		if(StringUtils.isNotBlank(errorCode)){
 			sb.append(";");
+			sb.append(jsonObj.get("errorCode"));
+			sb.append("-");
 			sb.append(errorCode);
 		}
 	}

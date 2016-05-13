@@ -1,5 +1,7 @@
 package com.travel.api.third.ctrip.Contract;
 
+import java.io.Serializable;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -8,7 +10,10 @@ import org.simpleframework.xml.Root;
  * 出行人
  */
 @Root
-public class Traveler {
+public class Traveler implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 出行人编号
 	 */
@@ -232,5 +237,6 @@ public class Traveler {
 	public void setIsRoomShare(boolean isRoomShare) {
 		IsRoomShare = isRoomShare;
 	}
+
 	
 }

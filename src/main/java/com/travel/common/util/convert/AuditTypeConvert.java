@@ -12,13 +12,13 @@ public class AuditTypeConvert implements Converter{
 	public <T> T convert(Class<T> type, Object value) {
 		if(value!=null){
 			com.travel.api.third.ctrip.Contract.AuditType value1=(com.travel.api.third.ctrip.Contract.AuditType)value;
-			if((value1.Inventory+"").equals(AuditType.Inventory+"")){
+			if((value1.name()).equals(AuditType.Inventory+"")){
 				return (T) AuditType.Inventory;
 			}
-			if((value1.Price+"").equals(AuditType.Price+"")){
+			if((value1.name()).equals(AuditType.Price+"")){
 				return (T) AuditType.Price;
 			}
-			if((value1.Product+"").equals(AuditType.Product+"")){
+			if((value1.name()).equals(AuditType.Product+"")){
 				return (T) AuditType.Product;
 			}
 		}else{

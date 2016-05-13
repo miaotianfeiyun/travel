@@ -11,13 +11,13 @@ public class OrderResultTypeConvert   implements Converter{
 	public <T> T convert(Class<T> type, Object value) {
 		if(value!=null){
 			com.travel.api.common.order.base.OrderResultType value1=(com.travel.api.common.order.base.OrderResultType)value;
-			if((value1.Confirmed+"").equals(OrderResultType.Confirmed+"")){
+			if((value1.name()).equals(OrderResultType.Confirmed+"")){
 				return (T) OrderResultType.Confirmed;
 			}
-			if((value1.InProgress+"").equals(OrderResultType.InProgress+"")){
+			if((value1.name()).equals(OrderResultType.InProgress+"")){
 				return (T) OrderResultType.InProgress;
 			}
-			if((value1.Rejected+"").equals(OrderResultType.Rejected+"")){
+			if((value1.name()).equals(OrderResultType.Rejected+"")){
 				return (T) OrderResultType.Rejected;
 			}
 		}else{

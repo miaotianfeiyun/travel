@@ -11,16 +11,16 @@ public class AgeCategoryConvert  implements Converter{
 	public <T> T convert(Class<T> type, Object value) {
 		if(value!=null){
 			AgeCategory value1=(AgeCategory)value;
-			if((value1.Adult+"").equals(com.travel.api.common.order.base.AgeCategory.Adult+"")){
+			if((value1.name()).equals(com.travel.api.common.order.base.AgeCategory.Adult+"")){
 				return (T) com.travel.api.common.order.base.AgeCategory.Adult;
 			}
-			if((value1.Child+"").equals(com.travel.api.common.order.base.AgeCategory.Child+"")){
+			if((value1.name()).equals(com.travel.api.common.order.base.AgeCategory.Child+"")){
 				return (T) com.travel.api.common.order.base.AgeCategory.Child;
 			}
-			if((value1.Infant+"").equals(com.travel.api.common.order.base.AgeCategory.Infant+"")){
+			if((value1.name()).equals(com.travel.api.common.order.base.AgeCategory.Infant+"")){
 				return (T) com.travel.api.common.order.base.AgeCategory.Infant;
 			}
-			if((value1.Unknown+"").equals(com.travel.api.common.order.base.AgeCategory.Unknown+"")){
+			if((value1.name()).equals(com.travel.api.common.order.base.AgeCategory.Unknown+"")){
 				return (T) com.travel.api.common.order.base.AgeCategory.Unknown;
 			}
 		}else{

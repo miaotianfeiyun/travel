@@ -104,7 +104,7 @@ public class OrderController {
 			jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor());
 			orderClient=(OrderClient)JSONObject.toBean(JSONObject.fromObject(strXml,jsonConfig), OrderClient.class,classMap);
 			//这儿的接口名称需要top的接口名 sn需要传过来统一下
-			OrderToTop  orderToTop=new OrderToTop(orderClient.getOrderId(), orderClient.getThirdOrderId(), orderClient.getTimeStamp(), null, null,orderClient.getOperateType()+"", strXml, null, new Date(), null);
+			OrderToTop  orderToTop=new OrderToTop(orderClient.getThirdOrderId(), orderClient.getOrderId(), orderClient.getTimeStamp(),  OTAType.CTRIP+"", "confirmOrderOrReject",orderClient.getOperateType()+"", strXml, null, new Date(), null);
 			orderToTopService.save(orderToTop);
 			List<ThirdOTA> otaLst=orderClient.getThirdOTAList();
 			for (int i = 0; i < otaLst.size(); i++) {
@@ -114,6 +114,13 @@ public class OrderController {
 				if(OTAType.CTRIP.equals(temp.getOTAType())){
 					responseList.add(new CtripApiDeal().mainOrder(orderClient,temp));
 					rsp.setResponseList(responseList);
+					for (int j = 0; j <responseList.size(); j++) {
+						OTAResponse temp0=responseList.get(j);
+						if(StringUtils.isNotBlank(temp0.getErrorCode()) ||  StringUtils.isNotBlank(temp0.getErrorMsg())){
+							rsp.setErrorCode(ErrorCode.FAILURE);
+							break;
+						}
+					}
 					log.info(JsonUtil.toJson(rsp));
 				}else if(OTAType.TUNIU.equals(temp.getOTAType())){
 					
@@ -121,7 +128,7 @@ public class OrderController {
 					
 				}
 			}
-			OrderToTop orderToTopU=new OrderToTop(orderToTop.getId(), JsonUtil.toJson(rsp), new Date(),orderClient.getOrderId());
+			OrderToTop orderToTopU=new OrderToTop(orderToTop.getId(), JsonUtil.toJson(rsp), new Date(),null);
 			orderToTopService.update(orderToTopU);
 		}else{
 			log.info("签名不通过");

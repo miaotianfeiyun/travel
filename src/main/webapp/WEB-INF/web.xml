@@ -61,7 +61,7 @@
     <url-pattern>*.in</url-pattern>  
   </filter-mapping> -->
   <!-- 安全 -->
-  <filter>  
+  <!-- <filter>  
     <filter-name>xssFilter</filter-name>  
     <filter-class>com.travel.common.filter.XSSCheckFilter </filter-class>  
     <init-param>
@@ -78,7 +78,7 @@
   <filter-mapping>  
     <filter-name>xssFilter</filter-name>  
     <url-pattern>*.in</url-pattern>  
-  </filter-mapping>
+  </filter-mapping> -->
   <session-config>
     <session-timeout>1000</session-timeout>
   </session-config>
