@@ -5,6 +5,12 @@ import org.simpleframework.xml.Root;
 
 @Root
 public class ProductInfoType {
+/**
+ * 产品形态分类，分为跟团游和自由行 Tour:跟团游  FreeTour:自由行
+ */
+@Element(required=false)	
+private String ProductPattern;
+	
 @Element(required=false)
 private String TourType ;
 
@@ -123,6 +129,14 @@ public boolean getIsNeedIDCard() {
 
 public void setIsNeedIDCard(boolean isneedidcard) {
 IsNeedIDCard = isneedidcard;
+}
+
+public String getProductPattern() {
+	return ProductPattern;
+}
+
+public void setProductPattern(String productPattern) {
+	ProductPattern = productPattern;
 }
 
 }

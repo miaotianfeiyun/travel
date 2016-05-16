@@ -554,7 +554,7 @@ public class CtripApiDeal {
 				productInfo.setTransportationType(client.getProduct().getTransportationType()+"");
 				productInfo.setTravelDays(client.getProduct().getTravelDays());
 				productInfo.setVendorProductName(client.getProduct().getProductName());
-				
+//				productInfo.setProductPattern(client.getProduct().getProductPattern().name());
 				addProductInfo.setProductInfo(productInfo);
 				//签证
 				VisaInfoType visainfo=new VisaInfoType();
