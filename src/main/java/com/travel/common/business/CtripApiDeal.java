@@ -12,10 +12,12 @@ import com.travel.api.common.base.ErrorCode;
 import com.travel.api.common.base.OTAResponse;
 import com.travel.api.common.base.OTAType;
 import com.travel.api.common.base.ProductOpType;
+import com.travel.api.common.base.ProductPattern;
 import com.travel.api.common.base.ThirdOTA;
 import com.travel.api.common.order.OrderClient;
 import com.travel.api.common.order.base.OrderOperateType;
 import com.travel.api.common.product.ProductClient;
+import com.travel.api.common.product.base.Product;
 import com.travel.api.common.product.base.SellingSet;
 import com.travel.api.common.product.base.VisaDetail;
 import com.travel.api.third.ctrip.Contract.AddProductInfoRequest;
@@ -336,9 +338,14 @@ public class CtripApiDeal {
 				}
 				//预定须知
 				ProductDescription productDescriptionBook=new ProductDescription();
-				productDescriptionBook.setContent(bookThis.getDescription());
-				productDescriptionBook.setDescriptionType("BookingInfo");
-				productdescriptionlist.add(productDescriptionBook);
+				List<String> bookInfoDescLst=bookThis.getDescription();
+				if(bookInfoDescLst!=null && bookInfoDescLst.size()>0){
+					for (int i = 0; i < bookInfoDescLst.size(); i++) {
+						productDescriptionBook.setContent(bookInfoDescLst.get(i));
+						productDescriptionBook.setDescriptionType("BookingInfo");
+						productdescriptionlist.add(productDescriptionBook);
+					}
+				}
 				//费用包含
 				ProductDescription productDescriptionIncludeExpense=new ProductDescription();
 				productDescriptionIncludeExpense.setContent(client.getProduct().getIncludeExpense());
@@ -517,9 +524,14 @@ public class CtripApiDeal {
 				}
 				//预定须知
 				ProductDescription productDescriptionBook=new ProductDescription();
-				productDescriptionBook.setContent(bookThis.getDescription());
-				productDescriptionBook.setDescriptionType("BookingInfo");
-				productdescriptionlist.add(productDescriptionBook);
+				List<String> bookInfoDescLst=bookThis.getDescription();
+				if(bookInfoDescLst!=null && bookInfoDescLst.size()>0){
+					for (int i = 0; i < bookInfoDescLst.size(); i++) {
+						productDescriptionBook.setContent(bookInfoDescLst.get(i));
+						productDescriptionBook.setDescriptionType("BookingInfo");
+						productdescriptionlist.add(productDescriptionBook);
+					}
+				}
 				//费用包含
 				ProductDescription productDescriptionIncludeExpense=new ProductDescription();
 				productDescriptionIncludeExpense.setContent(client.getProduct().getIncludeExpense());
@@ -544,17 +556,19 @@ public class CtripApiDeal {
 				addProductInfo.setProductDescriptionList(productdescriptionlist);
 				//产品基础信息
 				ProductInfoType productInfo=new ProductInfoType();
-				productInfo.setArrivalCityName(client.getProduct().getArrivalCityName());
-				productInfo.setBrandName(client.getProduct().getBrandName());
-				productInfo.setDepartureCityName(client.getProduct().getDepartureCityName());
-				productInfo.setDescriptionToCtripOperator(client.getProduct().getDescriptionToCtripOperator());
-				productInfo.setIsNeedIDCard(client.getProduct().isNeedIDCard());
-				productInfo.setProductRecommend(client.getProduct().getRecommendContent());
-				productInfo.setTourType(client.getProduct().getTourType()+"");
-				productInfo.setTransportationType(client.getProduct().getTransportationType()+"");
-				productInfo.setTravelDays(client.getProduct().getTravelDays());
-				productInfo.setVendorProductName(client.getProduct().getProductName());
-//				productInfo.setProductPattern(client.getProduct().getProductPattern().name());
+				Product oldProduct= client.getProduct();
+				productInfo.setArrivalCityName(oldProduct.getArrivalCityName());
+				productInfo.setBrandName(oldProduct.getBrandName());
+				productInfo.setDepartureCityName(oldProduct.getDepartureCityName());
+				productInfo.setDescriptionToCtripOperator(oldProduct.getDescriptionToCtripOperator());
+				productInfo.setIsNeedIDCard(oldProduct.isNeedIDCard());
+				productInfo.setProductRecommend(oldProduct.getRecommendContent());
+				productInfo.setTourType(oldProduct.getTourType()+"");
+				productInfo.setTransportationType(oldProduct.getTransportationType()+"");
+				productInfo.setTravelDays(oldProduct.getTravelDays());
+				productInfo.setVendorProductName(oldProduct.getProductName());
+				productInfo.setProductPattern(StringUtils.isNotBlank(oldProduct.getProductPattern().name())?oldProduct.getProductPattern().name():ProductPattern.Tour.name());
+				productInfo.setProductType(oldProduct.getProductType()!=null?oldProduct.getProductType().name():null);
 				addProductInfo.setProductInfo(productInfo);
 				//签证
 				VisaInfoType visainfo=new VisaInfoType();

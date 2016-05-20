@@ -6,6 +6,11 @@ import org.simpleframework.xml.Root;
 @Root
 public class ProductInfoType {
 /**
+ * 产品类型，分为代理/零售和OEM   Retail：零售类型  OEM：OEM类型  为空或null为代理类型
+ */
+@Element(required=false)
+private String ProductType;
+/**
  * 产品形态分类，分为跟团游和自由行 Tour:跟团游  FreeTour:自由行
  */
 @Element(required=false)	
@@ -137,6 +142,14 @@ public String getProductPattern() {
 
 public void setProductPattern(String productPattern) {
 	ProductPattern = productPattern;
+}
+
+public String getProductType() {
+	return ProductType;
+}
+
+public void setProductType(String productType) {
+	ProductType = productType;
 }
 
 }

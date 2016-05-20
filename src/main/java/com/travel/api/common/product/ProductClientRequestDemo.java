@@ -196,7 +196,10 @@ public static void main(String [] argus) throws Exception{
 	BookingInfo bookingInfo =new BookingInfo();
 	bookingInfo.setAdvancedCloseDays(1);
 	bookingInfo.setAdvancedCloseTime("24");
-	bookingInfo.setDescription("cesfsfsdfsd");
+	List<String> bookLst=new ArrayList<String>();
+	bookLst.add(0,"cesfsfsdfsd");
+	bookingInfo.setDescription(bookLst);
+	
 	bookingInfo.setEmergencyContact("liujq");
 	bookingInfo.setEmergencyContactMobile("18210424665");
 	bookingInfo.setIsHolidayWork(true);

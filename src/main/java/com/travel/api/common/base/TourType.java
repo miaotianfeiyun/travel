@@ -15,7 +15,7 @@ public enum TourType {
 	* @Fields AroundTour :国内周边游  
 	* @date 2016年3月14日 下午4:32:54 
 	*/ 
-	//AroundTour,
+//	AroundTour,
 	/** 
 	* @Fields DomesticTour : 国内旅游  
 	* @date 2016年3月14日 下午4:32:57 

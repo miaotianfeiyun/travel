@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.travel.api.common.base.CommonConstant;
 import com.travel.api.common.base.ErrorCode;
@@ -84,12 +85,14 @@ public class ProductController {
 	 * @author	liujq
 	 * @Date	2016年3月25日 下午5:11:24 
 	 */
-	@RequestMapping(value="/addOrModify.in")
+	@RequestMapping(value="/addOrModify.in",method=RequestMethod.POST)
 	public void productDeal(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		log.info("---------------------------------处理产品请求开始-------------------------------------------------");
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/plain");
 		ProductResponse rsp=new ProductResponse();
 		String strXml=HttpTookit.getStrXmlFromStream(request);
+		log.info("请求报文："+strXml);
 		JSONObject json=JSONObject.fromObject(strXml);
 		String orToken=(String) json.get("token");
 		String appkey=(String) json.get("appKey");
@@ -124,22 +127,24 @@ public class ProductController {
 				//携程
 				List<OTAResponse> responseList=new ArrayList<OTAResponse>();
 				if(OTAType.CTRIP.equals(temp.getOTAType())){
+					log.info("---------------------------------处理携程的接口-------------------------------------------------");
 					responseList.add(new CtripApiDeal().mainProduct(clientReq,temp));
 					rsp.setResponseList(responseList);
 					log.info(JsonUtil.toJson(rsp));
 				}else if(OTAType.TUNIU.equals(temp.getOTAType())){
-					
+					log.info("---------------------------------处理途牛的接口-------------------------------------------------");
 				}else if(OTAType.QUNAR.equals(temp.getOTAType())){
-					
+					log.info("---------------------------------处理去哪儿的接口-------------------------------------------------");
 				}
 			}
 		}else{
-			log.info("签名不通过");
+			log.info("---------------------------------签名不通过-------------------------------------------------");
 			rsp=new ProductResponse(ErrorCode.SIGN_EXCEPTION, "签名错误", "");
 		}
 		ProductToTop productToTopU=new ProductToTop(id,null,null, null, null, null, JsonUtil.toJson(rsp), null, new Date(), null);
 		productToTopService.update(productToTopU);
 		response.getWriter().print(JSONObject.fromObject(rsp));
+		log.info("---------------------------------处理产品请求完成-------------------------------------------------");
 	}
 	/** 
 	 * @Description:	携程产品审核
@@ -147,8 +152,9 @@ public class ProductController {
 	 * @author	liujq
 	 * @Date	2016年4月8日 下午5:04:54 
 	 */
-	@RequestMapping("/productAudit.in")
+	@RequestMapping(value="/productAudit.in",method=RequestMethod.POST)
 	public void productAuditReceive(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		log.info("---------------------------------处理产品确认（拒绝）请求开始-------------------------------------------------");
 		response.setCharacterEncoding("UTF-8");
 		BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream(),"UTF-8"));
         String line = null;
@@ -199,16 +205,17 @@ public class ProductController {
 					//记录供应商是否有返回 返回S标识此通知发送成功
 					productAuditContentService.save(productAuditContent);
 				}else{
-					log.info("供应商url没有配置");
+					log.info("---------------------------------供应商url没有配置-------------------------------------------------");
 				}
 				log.info("记录审核报文");
 				productAuditResultResponse=new ProductAuditResultResponse("","");
 				String rspCtripXml=SDKCore.<ProductAuditResultResponse> ObjToXMLString(productAuditResultResponse);
 				response.getWriter().print(rspCtripXml);
-				log.info("返回携程结果"+rspCtripXml);
+				log.info("返回携程结果："+rspCtripXml);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		log.info("---------------------------------处理产品确认（拒绝）请求完成-------------------------------------------------");
 	}
 }

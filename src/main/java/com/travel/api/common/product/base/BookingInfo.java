@@ -1,6 +1,7 @@
 package com.travel.api.common.product.base;
 
 import java.io.Serializable;
+import java.util.List;
 
 /** 
  * <p>Title: BookingInfo.java</p>
@@ -68,15 +69,15 @@ public class BookingInfo   implements Serializable{
 	private boolean IsHolidayWork;
 	
 	/** 
-	* @Fields Description : 预定须知，每条不超过4000个字符
+	* @Fields Description : 预定须知，每条不超过4000个字符 最多三条
 	* @date 2016年3月25日 下午4:30:25 
 	*/ 
-	private String Description;
+	private List<String> Description;
 	
-	public String getDescription() {
+	public List<String> getDescription() {
 		return Description;
 	}
-	public void setDescription(String description) {
+	public void setDescription(List<String> description) {
 		Description = description;
 	}
 	public String getProductContact() {

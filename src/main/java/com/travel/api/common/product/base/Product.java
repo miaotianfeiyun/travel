@@ -22,7 +22,16 @@ import com.travel.api.common.base.TransportationType;
 
 public class Product implements Serializable{
 	private static final long serialVersionUID = 1630992901922883172L;
-	
+	/**
+	 * 产品类型，分为代理/零售和OEM   Retail：零售类型  OEM：OEM类型  为空或null为代理类型
+	 */
+	@Element(required=false)
+	private ProductType ProductType;
+	/**
+	 * 产品形态分类，分为跟团游和自由行 Tour:跟团游  FreeTour:自由行
+	 */
+	@Element(required=false)	
+	private ProductPatternType ProductPattern;
 	/** 
 	* @Fields tourType : 旅游类型（旅游形态）
 	* @date 2016年3月14日 下午4:34:45 
@@ -355,6 +364,18 @@ public class Product implements Serializable{
 
 	public void setChildPriceDefination(String childPriceDefination) {
 		ChildPriceDefination = childPriceDefination;
+	}
+
+	public ProductType getProductType() {
+		return ProductType;
+	}
+
+	public void setProductType(ProductType productType) {
+		ProductType = productType;
+	}
+
+	public void setProductPattern(ProductPatternType productPattern) {
+		ProductPattern = productPattern;
 	}
 	
 }

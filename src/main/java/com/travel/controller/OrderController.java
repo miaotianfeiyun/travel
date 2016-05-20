@@ -87,6 +87,7 @@ public class OrderController {
 	 */
 	@RequestMapping(value="/orderDeal.in",method=RequestMethod.POST)
 	public void dealOrderConfirmOrReject(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		log.info("------------------------------------------------处理确认和拒绝订单开始-----------------------------------------");
 		response.setCharacterEncoding("UTF-8");
 		OrderResponse rsp=new OrderResponse(ErrorCode.SUCCESS, "", "");
 		String strXml=HttpTookit.getStrXmlFromStream(request);
@@ -143,6 +144,7 @@ public class OrderController {
 			}
 		}
 		response.getWriter().print(JSONObject.fromObject(rsp));
+		log.info("------------------------------------------------处理确认和拒绝订单完成-----------------------------------------");
 	}
 	/** 
 	 * @Description:	携程创建订单操作
