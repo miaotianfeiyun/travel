@@ -13,7 +13,9 @@ import java.util.List;
  */
 
 public class RecommendInfo {
+	@Deprecated
 	private String detail;//详情
+	@Deprecated
 	private String  characteristic	;//	是		产品特色推荐
 	private List<RecommendRecord> recommendDetails;//	RecommendRecord[]	否		产品推荐的其他信息
 	public String getDetail() {

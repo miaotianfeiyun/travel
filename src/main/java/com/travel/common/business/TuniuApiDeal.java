@@ -5,7 +5,12 @@
 //
 //import org.apache.log4j.Logger;
 //
+//import com.travel.api.common.base.ProductOpType;
+//import com.travel.api.common.base.ThirdOTA;
+//import com.travel.api.common.base.TourType;
+//import com.travel.api.common.product.ProductClient;
 //import com.travel.api.common.product.base.Price;
+//import com.travel.api.common.product.base.Product;
 //import com.travel.api.common.util.JsonUtil;
 //import com.travel.api.third.ctrip.Contract.ItineraryDay;
 //import com.travel.api.third.tuniu.TuniuAPI;
@@ -37,43 +42,51 @@
 //
 //public class TuniuApiDeal {
 //	private static final Logger log=Logger.getLogger(TuniuApiDeal.class);
-//	public static  ProductInfoResponse dealCtripProduct(ProductClient product,CooperationPlatform cooperationPlatform, long timeStamp) throws Exception{
+//	public static  ProductInfoResponse mainProduct(ProductClient client,ThirdOTA otaInfo) throws Exception{
 //		
-//		com.drolay.distribution.product.request.ProductInfo localProductInfo=product.getProductInfo();
+//		Product localProductInfo=client.getProduct();
 //		
 //		ProductInfo productInfo=new ProductInfo();
-//		productInfo.setApiKey(cooperationPlatform.getAppKey());
-//		productInfo.setTimestamp(DateUtil.formatDate("yyyy-MM-dd HH:mm:ss", new Date()));
+//		productInfo.setApiKey(otaInfo.getAppKey());
+//		productInfo.setTimestamp(client.getTimeStamp());
 //		
-//		productInfo.setAgencyProductId(product.getProductCode());
+//		productInfo.setAgencyProductId(client.getProduct().getProductCode());
 ////		productInfo.setGroupNum(groupNum);
 //		
-//		//1-添加 2-更新 3-库存 4-价格
-//		if(product.getDoType()==1){
-//			productInfo.setType(TuniuConstant.productAdd);
-//		}else if(product.getDoType()==2){
-//			productInfo.setType(TuniuConstant.productUpdate);
+//		if(client.getOperationType().equals(ProductOpType.ADD_PRODUCT)){
+//			productInfo.setType(0);
+//		}else if(client.getOperationType().equals(ProductOpType.UPDATE_PRODUCT)){
+//			productInfo.setType(1);
 //		}
 //		
 //		BasicInfo basicInfo=new BasicInfo();
-//		basicInfo.setAgencyProductName(product.getProductInfo().getProductInfo().getVendorProductName());
-//		basicInfo.setAgencyManagerName(product.getProductInfo().getBookingInfo().getProductContact());
-//		basicInfo.setBookingCity(localProductInfo.getProductInfo().getDepartureCityName());
-//		basicInfo.setCatType(3);//产品类型： 1、周边2、国内长线3、国内当地参团 4、出境当地参团5、出境短线6、出境长线新增是存在，修改时不存在
+//		basicInfo.setAgencyProductName(localProductInfo.getProductName());
+//		basicInfo.setAgencyManagerName(localProductInfo.getBookingInfo().getProductContact());
+//		//basicInfo.setBookingCity();
+//		//产品类型： 1、周边2、国内长线3、国内当地参团 4、出境当地参团5、出境短线6、出境长线新增是存在，修改时不存在
+//		if(localProductInfo.getTourType().equals(TourType.DomesticTour)){
+//			basicInfo.setCatType(1);
+//		}else if(localProductInfo.getTourType().equals(TourType.AroundTour)){
+//			basicInfo.setCatType(1);
+//		}else if(localProductInfo.getTourType().equals(TourType.OutboundTour)){
+//			basicInfo.setCatType(6);
+//		}else if(localProductInfo.getTourType().equals(TourType.OverSeasLocalTour)){
+//			basicInfo.setCatType(6);
+//		}
 //		basicInfo.setFestaName("其他");
-//		basicInfo.setLastName(localProductInfo.getProductInfo().getVendorProductName());
-//		basicInfo.setMainName(localProductInfo.getProductInfo().getDepartureCityName()+"-"+localProductInfo.getProductInfo().getArrivalCityName()+localProductInfo.getProductInfo().getTravelDays()+"日");
+//		basicInfo.setLastName(localProductInfo.getThirdProductName());
+//		basicInfo.setMainName(localProductInfo.getDepartureCityName()+"-"+localProductInfo.getArrivalCityName()+localProductInfo.getTravelDays()+"日");
 //		basicInfo.setProductMode(1);//采购方式：1、打包产品2、机票+地接3、火车票+地接
 ////		basicInfo.setRecommend(localProductInfo.getProductInfo().getProductRecommend());
-//		basicInfo.setStartCity(localProductInfo.getProductInfo().getDepartureCityName());
+//		basicInfo.setStartCity(localProductInfo.getDepartureCityName());
 //		
 //		productInfo.setBasicInfo(basicInfo);
-////		productInfo.setAttentionInfo(attentionInfo);//预定须知可以为空
+//		//productInfo.setAttentionInfo(attentionInfo);//预定须知可以为空 此项信息太细了 实在对不上
 ////		productInfo.setBudgetExcludeInfo(budgetExcludeInfo);//费用不含
 ////		productInfo.setBudgetIncludeInfo(budgetIncludeInfo);//费用包含
 ////		productInfo.setDepartInfo(departInfo);//发车信息
 ////		productInfo.setImportantInfo(importantInfo)//重要信息;
-////		productInfo.setRecommendInfo(recommendInfo);//推荐信息
+//		productInfo.setRecommendInfo(recommendInfo);//推荐信息
 ////		productInfo.setSelfChargeInfo(selfChargeInfo);//活动信息
 ////		productInfo.setSpecialPeopleInfo(specialPeopleInfo);//特殊人群限制信息
 //		return TuniuAPI.productDeal(JsonUtil.toJson(productInfo));

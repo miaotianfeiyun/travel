@@ -11,9 +11,21 @@ package com.travel.api.third.tuniu.API.core.product;
  */
 
 public class RecommendRecord {
-	private int proType	;//	是		推荐类型，1为吃，2为住，3为行，4为游，5为购，6为娱，7为赠，8详情，9特别优惠，10重要提示，11交通信息，12表示产品特色
-	private String description	;//	否		内容详情
-	private int sortOrder;//	否	1	排序(出境存在)
+	/**
+	 * 必填
+	 * 推荐类型，1为吃，2为住，3为行，4为游，5为购，6为娱，7为赠，8详情，9特别优惠，10重要提示，11交通信息，12表示产品特色
+	 */
+	private int proType	;//	
+	/**
+	 * 必填
+	 * 内容详情
+	 */
+	private String description	;	
+	/**
+	 * 非必填
+	 * 排序(出境存在)
+	 */
+	private int sortOrder;
 	public int getProType() {
 		return proType;
 	}
