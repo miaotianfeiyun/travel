@@ -76,7 +76,11 @@ public class Product implements Serializable{
 	* @date 2016年3月14日 下午5:28:31 
 	*/ 
 	private int travelDays;
-	
+	/** 
+	* @Fields travelNights : 行程晚数
+	* @date 2016年3月14日 下午5:28:31 
+	*/ 
+	private int  travelNights;
 	/** 
 	* @Fields departureCityName : 出发城市名称
 	* @date 2016年3月14日 下午5:29:35 
@@ -376,6 +380,14 @@ public class Product implements Serializable{
 
 	public void setProductPattern(ProductPatternType productPattern) {
 		ProductPattern = productPattern;
+	}
+
+	public int getTravelNights() {
+		return travelNights;
+	}
+
+	public void setTravelNights(int travelNights) {
+		this.travelNights = travelNights;
 	}
 	
 }
